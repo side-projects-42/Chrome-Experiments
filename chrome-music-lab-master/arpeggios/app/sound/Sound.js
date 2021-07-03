@@ -14,72 +14,76 @@
  * limitations under the License.
  */
 
-define(["sound/Player", "data/Notes", "Tone/core/Type", "Tone/core/Master", "sound/Interface", "Tone/core/Transport", "jquery"], 
-	function (Player, Notes, Tone, Master, Interface, Transport, $) {
+define([
+  "sound/Player",
+  "data/Notes",
+  "Tone/core/Type",
+  "Tone/core/Master",
+  "sound/Interface",
+  "Tone/core/Transport",
+  "jquery",
+], function (Player, Notes, Tone, Master, Interface, Transport, $) {
+  var harp = new Player("harp");
 
+  var piano = new Player("piano");
 
-	var harp = new Player("harp");
+  var currentInstrument = harp;
 
-	var piano = new Player("piano");
+  //load the harp
 
-	var currentInstrument = harp;
+  Interface.onpiano = function () {
+    if (!piano.isLoaded()) {
+      piano.load();
+    }
+    currentInstrument = piano;
+  };
 
-	//load the harp
+  Interface.onharp = function () {
+    if (!harp.isLoaded()) {
+      harp.load();
+    }
+    currentInstrument = harp;
+  };
 
-	Interface.onpiano = function(){
-		if (!piano.isLoaded()){
-			piano.load();
-		}
-		currentInstrument = piano;
-	};
+  var muted = false;
 
-	Interface.onharp = function(){
-		if (!harp.isLoaded()){
-			harp.load();
-		}
-		currentInstrument = harp;
-	};
+  Interface.onmetroopen = function () {
+    if (Transport.state === "stopped") {
+      muted = true;
+      $("body").addClass("MetronomeOpen");
+      Transport.start();
+    }
+  };
 
-	var muted = false;
+  Interface.onmetroclose = function () {
+    if (muted) {
+      $("body").removeClass("MetronomeOpen");
+      Transport.stop();
+      muted = false;
+    }
+  };
 
-	Interface.onmetroopen = function(){
-		if (Transport.state === "stopped"){
-			muted = true;
-			$("body").addClass("MetronomeOpen");
-			Transport.start();
-		}
-	};
+  var startNote = 48;
+  var noteGap = 4;
 
-	Interface.onmetroclose = function(){
-		if (muted){
-			$("body").removeClass("MetronomeOpen");
-			Transport.stop();
-			muted = false;
-		}
-	};
-
-	var startNote = 48;
-	var noteGap = 4;
-
-	return {
-		strum : function(key, mode){
-			var chord = Notes[mode][key];
-			var now = Tone.context.currentTime + Tone.prototype.blockTime;
-			var wait = 0.05;
-			for (var i = 0; i < 4; i++){
-				this.play(chord[i], now + wait * i, 0.5);
-			}
-		},
-		play : function(midi, time, duration){
-
-			if (!muted){
-				var note = Tone.prototype.midiToNote(midi);
-				currentInstrument.play(note, duration, time);
-			}
-		},
-		load : function(callback){
-			//load the harp initially
-			harp.load(callback);
-		}
-	};
+  return {
+    strum: function (key, mode) {
+      var chord = Notes[mode][key];
+      var now = Tone.context.currentTime + Tone.prototype.blockTime;
+      var wait = 0.05;
+      for (var i = 0; i < 4; i++) {
+        this.play(chord[i], now + wait * i, 0.5);
+      }
+    },
+    play: function (midi, time, duration) {
+      if (!muted) {
+        var note = Tone.prototype.midiToNote(midi);
+        currentInstrument.play(note, duration, time);
+      }
+    },
+    load: function (callback) {
+      //load the harp initially
+      harp.load(callback);
+    },
+  };
 });

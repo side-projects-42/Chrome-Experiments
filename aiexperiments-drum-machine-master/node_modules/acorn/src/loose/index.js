@@ -29,22 +29,22 @@
 // invasive changes and simplifications without creating a complicated
 // tangle.
 
-import acorn from "acorn"
-import {LooseParser, pluginsLoose} from "./state"
-import "./tokenize"
-import "./statement"
-import "./expression"
+import acorn from "acorn";
+import { LooseParser, pluginsLoose } from "./state";
+import "./tokenize";
+import "./statement";
+import "./expression";
 
-export {LooseParser, pluginsLoose} from "./state"
+export { LooseParser, pluginsLoose } from "./state";
 
-acorn.defaultOptions.tabSize = 4
+acorn.defaultOptions.tabSize = 4;
 
 export function parse_dammit(input, options) {
-  let p = new LooseParser(input, options)
-  p.next()
-  return p.parseTopLevel()
+  let p = new LooseParser(input, options);
+  p.next();
+  return p.parseTopLevel();
 }
 
-acorn.parse_dammit = parse_dammit
-acorn.LooseParser = LooseParser
-acorn.pluginsLoose = pluginsLoose
+acorn.parse_dammit = parse_dammit;
+acorn.LooseParser = LooseParser;
+acorn.pluginsLoose = pluginsLoose;

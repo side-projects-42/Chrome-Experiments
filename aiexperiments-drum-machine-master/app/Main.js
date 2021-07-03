@@ -17,56 +17,52 @@ limitations under the License.
 require("style/main.scss");
 var Config = require("Config");
 
-require(["domready"], function(domReady){
+require(["domready"], function (domReady) {
+  domReady(function () {
+    document.onselectstart = function () {
+      return false;
+    };
 
-	domReady(function(){
+    require(["Drums"], function (Drums) {
+      var drums = new Drums();
 
-		document.onselectstart = function () { return false; };
+      var aboutButton = document.getElementById("aboutLink");
+      var startLink = document.getElementById("startLink");
+      var badges = document.getElementById("badges");
+      var cover = document.getElementById("cover");
 
-		require(["Drums"], function(Drums){
-			
-			var drums = new Drums();
+      var onBadges = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      };
 
-			var aboutButton = document.getElementById("aboutLink");
-			var startLink = document.getElementById("startLink");
-			var badges = document.getElementById("badges");
-			var cover = document.getElementById("cover");
+      var onAbout = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      };
 
-			var onBadges = function (event) {
-				event.stopPropagation();
-				event.preventDefault();
-			};
+      var onStart = function (event) {
+        drums.beginExperience();
 
-			var onAbout = function(event){
-				event.preventDefault();
-				event.stopPropagation();
-			};
+        badges.removeEventListener("click", onBadges, false);
+        startLink.removeEventListener("click", onStart, false);
+        aboutButton.removeEventListener("click", onAbout, false);
+        event.preventDefault();
+        event.stopPropagation();
+      };
 
-			var onStart = function(event){
-				drums.beginExperience();
+      drums.addEventListener("DRUMS_LOADED", function () {
+        if (Config.isSplashDisabled) {
+          drums.beginExperience();
+        } else {
+          badges.addEventListener("click", onBadges, false);
+          startLink.addEventListener("click", onStart, false);
+          aboutButton.addEventListener("click", onAbout, false);
+        }
+      });
+      drums.init();
 
-				badges.removeEventListener("click", onBadges,false);
-				startLink.removeEventListener('click', onStart, false);
-				aboutButton.removeEventListener('click', onAbout, false);
-				event.preventDefault();
-				event.stopPropagation();
-			};
-
-			drums.addEventListener("DRUMS_LOADED",function(){
-				if(Config.isSplashDisabled){
-					drums.beginExperience();
-				} else {
-					badges.addEventListener("click", onBadges,false);
-					startLink.addEventListener('click', onStart, false);
-					aboutButton.addEventListener('click', onAbout, false);
-				}
-			});
-			drums.init();
-
-			cover.classList.add("show");
-
-		});
-
-	});
-
+      cover.classList.add("show");
+    });
+  });
 });

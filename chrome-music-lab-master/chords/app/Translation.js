@@ -15,59 +15,63 @@
  */
 
 define(function () {
+  var languageText = null;
 
-	var languageText = null;
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.substr(1);
+  }
 
-	function capitalize(str){
-		return str.charAt(0).toUpperCase() + str.substr(1);
-	}
+  //the number of attempts to get the translation
+  var tries = 0;
 
-	//the number of attempts to get the translation
-	var tries = 0;
-
-	/**
-	 * localize the given word into the desired language
-	 * @param  {String} word
-	 * @return {String} 
-	 */
-	return {
-		load : function(origin, callback){
-			var xhr = new XMLHttpRequest();
-			xhr.open("GET", "https://gweb-musiclab-site.appspot.com/static/locales/"+origin+"/locale-music-lab.json");
-			xhr.onreadystatechange = function () {
-				if (xhr.readyState === 4) {
-					if (xhr.status === 200) {
-						var json = JSON.parse(xhr.responseText);
-						languageText = json;
-						callback();
-					} else {
-						if (tries < 3){
-							tries++;
-							this.load("en", callback);
-						}
-					}
-				}
-			}.bind(this);
-			xhr.send(null);
-		},
-		localize : function(phrase){
-			if (languageText){
-				if (languageText[phrase]){
-					return languageText[phrase].message;
-				} else {
-					return phrase;
-				}
-			} else {
-				return phrase;
-			}
-		},
-		localizeChord : function(key, mode){
-			var transKey = key+"_"+capitalize(mode)+"_Chord";
-			if (languageText && languageText[transKey]){				
-				return languageText[transKey].message;
-			} else {
-				return key + " " + " " + mode + " chord";
-			}
-		}
-	};
+  /**
+   * localize the given word into the desired language
+   * @param  {String} word
+   * @return {String}
+   */
+  return {
+    load: function (origin, callback) {
+      var xhr = new XMLHttpRequest();
+      xhr.open(
+        "GET",
+        "https://gweb-musiclab-site.appspot.com/static/locales/" +
+          origin +
+          "/locale-music-lab.json"
+      );
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            var json = JSON.parse(xhr.responseText);
+            languageText = json;
+            callback();
+          } else {
+            if (tries < 3) {
+              tries++;
+              this.load("en", callback);
+            }
+          }
+        }
+      }.bind(this);
+      xhr.send(null);
+    },
+    localize: function (phrase) {
+      if (languageText) {
+        if (languageText[phrase]) {
+          return languageText[phrase].message;
+        } else {
+          return phrase;
+        }
+      } else {
+        return phrase;
+      }
+    },
+    localizeChord: function (key, mode) {
+      var transKey = key + "_" + capitalize(mode) + "_Chord";
+      if (languageText && languageText[transKey]) {
+        return languageText[transKey].message;
+      } else {
+        return key + " " + " " + mode + " chord";
+      }
+    },
+  };
 });

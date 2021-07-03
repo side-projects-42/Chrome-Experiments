@@ -15,30 +15,29 @@
  */
 
 define(["teoria", "chord/Positions"], function (teoria, Positions) {
+  var Notes = {
+    major: {},
+    minor: {},
+  };
 
-	var Notes = {
-		major : {},
-		minor : {}
-	};
+  for (var i = 0; i < Positions.majorOrder.length; i++) {
+    var key = Positions.majorOrder[i];
+    var major = teoria.note(key + "3").chord("major");
+    var minor = teoria.note(key + "3").chord("minor");
+    Notes.major[key] = [];
+    Notes.minor[key] = [];
+    var octaves = 3;
+    for (var o = 0; o < octaves; o++) {
+      var majorNotes = major.notes();
+      var minorNotes = minor.notes();
+      for (var j = 0; j < majorNotes.length; j++) {
+        Notes.major[key].push(majorNotes[j].midi());
+        Notes.minor[key].push(minorNotes[j].midi());
+      }
+      major.transpose(teoria.interval("P8"));
+      minor.transpose(teoria.interval("P8"));
+    }
+  }
 
-	for (var i = 0; i < Positions.majorOrder.length; i++){
-		var key = Positions.majorOrder[i];
-		var major = teoria.note(key + "3").chord("major");
-		var minor = teoria.note(key + "3").chord("minor");
-		Notes.major[key] = [];
-		Notes.minor[key] = [];
-		var octaves = 3;
-		for (var o = 0; o < octaves; o++){
-			var majorNotes = major.notes();
-			var minorNotes = minor.notes();
-			for (var j = 0; j < majorNotes.length; j++){
-				Notes.major[key].push(majorNotes[j].midi());
-				Notes.minor[key].push(minorNotes[j].midi());
-			}
-			major.transpose(teoria.interval("P8"));
-			minor.transpose(teoria.interval("P8"));
-		}
-	}
-
-	return Notes;
+  return Notes;
 });

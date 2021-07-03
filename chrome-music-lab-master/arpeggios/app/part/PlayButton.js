@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 
-define(["jquery", "Tone/core/Transport", "Orientation"], function ($, Transport, Orientation) {
+define(["jquery", "Tone/core/Transport", "Orientation"], function (
+  $,
+  Transport,
+  Orientation
+) {
+  return function PlayButton(container) {
+    var playButton = $("<div>", {
+      id: "PlayButton",
+      class: "Button icon-svg_play",
+    })
+      .appendTo(container)
+      .on("click", function (e) {
+        e.preventDefault();
+        if (Transport.state === "started") {
+          Transport.stop();
+          playButton.removeClass("Active");
+          playButton.removeClass("icon-svg_pause");
+          playButton.addClass("icon-svg_play");
+        } else {
+          Transport.start();
+          playButton.addClass("Active");
+          playButton.removeClass("icon-svg_play");
+          playButton.addClass("icon-svg_pause");
+        }
+      });
 
-	return function PlayButton(container){
-
-		var playButton = $("<div>", {
-			"id" : "PlayButton",
-			"class" : "Button icon-svg_play"
-		}).appendTo(container)
-			.on("click", function(e){
-				e.preventDefault();
-				if (Transport.state === "started"){
-					Transport.stop();
-					playButton.removeClass("Active");
-					playButton.removeClass("icon-svg_pause");
-					playButton.addClass("icon-svg_play");
-				} else {
-					Transport.start();
-					playButton.addClass("Active");
-					playButton.removeClass("icon-svg_play");
-					playButton.addClass("icon-svg_pause");
-				}
-			});
-
-		var orientation = new Orientation(function(){
-			Transport.stop();
-			playButton.removeClass("Active");
-			playButton.removeClass("icon-svg_pause");
-			playButton.addClass("icon-svg_play");
-		});
-		
-	};
+    var orientation = new Orientation(function () {
+      Transport.stop();
+      playButton.removeClass("Active");
+      playButton.removeClass("icon-svg_pause");
+      playButton.addClass("icon-svg_play");
+    });
+  };
 });

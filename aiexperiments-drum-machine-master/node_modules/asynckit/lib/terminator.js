@@ -1,7 +1,5 @@
-var abort = require('./abort.js')
-  , async = require('./async.js')
-  ;
-
+var abort = require("./abort.js"),
+  async = require("./async.js");
 // API
 module.exports = terminator;
 
@@ -11,10 +9,8 @@ module.exports = terminator;
  * @this  AsyncKitState#
  * @param {function} callback - final callback to invoke after termination
  */
-function terminator(callback)
-{
-  if (!Object.keys(this.jobs).length)
-  {
+function terminator(callback) {
+  if (!Object.keys(this.jobs).length) {
     return;
   }
 

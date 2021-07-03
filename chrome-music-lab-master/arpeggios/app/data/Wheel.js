@@ -15,38 +15,63 @@
  */
 
 define(["data/Colors", "data/Notes"], function (Colors, Notes) {
+  var majorOrder = [
+    "C",
+    "G",
+    "D",
+    "A",
+    "E",
+    "B",
+    "F#",
+    "C#",
+    "G#",
+    "D#",
+    "A#",
+    "F",
+  ];
+  var minorOrder = [
+    "A",
+    "E",
+    "B",
+    "F#",
+    "C#",
+    "G#",
+    "D#",
+    "A#",
+    "F",
+    "C",
+    "G",
+    "D",
+  ];
 
-	var majorOrder = ["C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F"];
-	var minorOrder = ["A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F", "C", "G", "D"];
+  var Wheel = {
+    minor: [],
+    major: [],
+  };
 
-	var Wheel = {
-		"minor" : [],
-		"major" : [],
-	};
+  var note, i;
+  for (i = 0; i < majorOrder.length; i++) {
+    note = majorOrder[i];
+    Wheel.major.push({
+      scale: "major",
+      color: Colors[note],
+      name: note,
+      notes: Notes.major[note],
+      value: 1,
+    });
+  }
 
-	var note, i;
-	for (i = 0; i < majorOrder.length; i++){
-		note = majorOrder[i];
-		Wheel.major.push({
-			"scale" : "major",
-			"color" : Colors[note],
-			"name" : note,
-			"notes" : Notes.major[note],
-			"value" : 1
-		});
-	}
+  for (i = 0; i < minorOrder.length; i++) {
+    note = minorOrder[i];
+    //the minor are lower case
+    Wheel.minor.push({
+      scale: "minor",
+      color: Colors[note],
+      name: note.toLowerCase(),
+      notes: Notes.minor[note],
+      value: 1,
+    });
+  }
 
-	for (i = 0; i < minorOrder.length; i++){
-		note = minorOrder[i];
-		//the minor are lower case
-		Wheel.minor.push({
-			"scale" : "minor",
-			"color" : Colors[note],
-			"name" : note.toLowerCase(),
-			"notes" : Notes.minor[note],
-			"value" : 1
-		});
-	}
-
-	return Wheel;
+  return Wheel;
 });

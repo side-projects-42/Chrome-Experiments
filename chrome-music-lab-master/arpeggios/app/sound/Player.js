@@ -14,43 +14,48 @@
  * limitations under the License.
  */
 
-define(["Tone/core/Type", "sound/Loading", "fileplayer/Player"], 
-function (Tone, Loading, MultiPlayer) {
+define(["Tone/core/Type", "sound/Loading", "fileplayer/Player"], function (
+  Tone,
+  Loading,
+  MultiPlayer
+) {
+  var Player = function (instrument, onload) {
+    this.loaded = false;
 
-	var Player = function(instrument, onload){
+    this.instrument = instrument;
 
-		this.loaded = false;
+    this.player = new MultiPlayer(
+      "https://gweb-musiclab-site.appspot.com/static/sound/" + instrument,
+      "C3",
+      "Gb6",
+      3
+    );
 
-		this.instrument = instrument;
+    this.player.onload = function () {
+      console.log("here");
+    };
+  };
 
-		this.player = new MultiPlayer("https://gweb-musiclab-site.appspot.com/static/sound/" + instrument, "C3", "Gb6", 3);
+  Player.prototype.load = function (callback) {
+    Loading.load(this.instrument);
+    this.player.load();
+    this.player.onload = function () {
+      if (callback) {
+        callback();
+      }
+      Loading.resolve();
+    }.bind(this);
+  };
 
-		this.player.onload = function(){
-			console.log("here");
-		};
+  Player.prototype.play = function (note, duration, time) {
+    if (this.player.loaded) {
+      this.player.triggerAttackRelease(note, duration, time);
+    }
+  };
 
-	};
+  Player.prototype.isLoaded = function () {
+    return this.player.loaded;
+  };
 
-	Player.prototype.load = function(callback){
-		Loading.load(this.instrument);
-		this.player.load();
-		this.player.onload = function(){
-			if (callback){
-				callback();
-			}
-			Loading.resolve();
-		}.bind(this);
-	};
-
-	Player.prototype.play = function(note, duration, time){
-		if(this.player.loaded){
-			this.player.triggerAttackRelease(note, duration, time);
-		}
-	};
-
-	Player.prototype.isLoaded = function(){
-		return this.player.loaded;
-	};
-
-	return Player;
+  return Player;
 });

@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-define(['Tone/event/Sequence', 'data/Config'], function(Sequence, Config) {
+define(["Tone/event/Sequence", "data/Config"], function (Sequence, Config) {
+  var Sequencer = function (callback) {
+    var steps = [];
+    for (var i = 0; i < Config.gridWidth; i++) {
+      steps.push(i);
+    }
 
-	var Sequencer = function(callback) {
+    this.seq = new Sequence(callback, steps, "8n").start(0);
+  };
 
-		var steps = [];
-		for (var i = 0; i < Config.gridWidth; i++) {
-			steps.push(i);
-		}
-
-		this.seq = new Sequence(callback, steps, '8n').start(0);
-	};
-
-	return Sequencer;
+  return Sequencer;
 });

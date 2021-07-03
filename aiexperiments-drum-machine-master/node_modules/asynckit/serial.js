@@ -1,4 +1,4 @@
-var serialOrdered = require('./serialOrdered.js');
+var serialOrdered = require("./serialOrdered.js");
 
 // Public API
 module.exports = serial;
@@ -11,7 +11,6 @@ module.exports = serial;
  * @param   {function} callback - invoked when all elements processed
  * @returns {function} - jobs terminator
  */
-function serial(list, iterator, callback)
-{
+function serial(list, iterator, callback) {
   return serialOrdered(list, iterator, null, callback);
 }

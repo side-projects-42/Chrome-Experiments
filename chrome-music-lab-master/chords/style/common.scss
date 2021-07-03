@@ -1,16 +1,16 @@
-$blue : rgb(22, 168, 240);
-$grey : rgb(175, 175, 175);
-$lightGrey : rgb(230, 231, 232);
-$darkGrey : rgb(102, 102, 102);
-$charcoal : rgb(50, 51, 52);
+$blue: rgb(22, 168, 240);
+$grey: rgb(175, 175, 175);
+$lightGrey: rgb(230, 231, 232);
+$darkGrey: rgb(102, 102, 102);
+$charcoal: rgb(50, 51, 52);
 
 $margin: 26px;
 
-$topbarHeight : 76px;
-$buttonsHeight : 90px;
+$topbarHeight: 76px;
+$buttonsHeight: 90px;
 
-$pianoHeight : 120px;
-$boxHeight : 300px;
+$pianoHeight: 120px;
+$boxHeight: 300px;
 
 $C: #4e61d8;
 $Cs: #8064c6;
@@ -25,10 +25,10 @@ $A: #4bb250;
 $As: #45b5a1;
 $B: #4598b6;
 
-$labelHeight : 45%;
+$labelHeight: 45%;
 
-$toggleHeight : calc(100% - #{$labelHeight} - #{$pianoHeight});
+$toggleHeight: calc(100% - #{$labelHeight} - #{$pianoHeight});
 
 @mixin buttonShadow {
-	box-shadow: 0 0px 2px $grey;
+  box-shadow: 0 0px 2px $grey;
 }

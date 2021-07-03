@@ -18,193 +18,220 @@ require("../style/filter.scss");
 var BoilerPlate = require("./Boilerplate");
 var Data = require("./Data");
 
-var Filter = module.exports = function(x) {
-	var scope = this;
-	BoilerPlate.call(this);
+var Filter = (module.exports = function (x) {
+  var scope = this;
+  BoilerPlate.call(this);
 
-	this.name = "Filter";
+  this.name = "Filter";
 
-	var filter;
-	var filterInput;
-	var filterInputWrapper;
-	var tags;
-	var isTyping = false;
-	var clearIcon;
-	var clearButton;
+  var filter;
+  var filterInput;
+  var filterInputWrapper;
+  var tags;
+  var isTyping = false;
+  var clearIcon;
+  var clearButton;
 
-	this.isVisible = false;
+  this.isVisible = false;
 
-	this.init = function() {
-		filter = document.getElementById("filter");
-		filterInputWrapper = filter.getElementsByClassName('input-wrapper')[0];
+  this.init = function () {
+    filter = document.getElementById("filter");
+    filterInputWrapper = filter.getElementsByClassName("input-wrapper")[0];
 
-		// input field added though Filter.js to prevent visual bugs
-		var input = document.createElement("input");
-		input.className = "input";
-		input.type = "text";
-		input.placeholder = "ALL TAGS";
-		filterInputWrapper.appendChild(input);
+    // input field added though Filter.js to prevent visual bugs
+    var input = document.createElement("input");
+    input.className = "input";
+    input.type = "text";
+    input.placeholder = "ALL TAGS";
+    filterInputWrapper.appendChild(input);
 
-		filterInput = filter.getElementsByTagName('input')[0];
-		tags = filter.getElementsByClassName('tags')[0];
+    filterInput = filter.getElementsByTagName("input")[0];
+    tags = filter.getElementsByClassName("tags")[0];
 
-		clearIcon = filter.getElementsByClassName("clearIcon")[0];
-		clearButton = filter.getElementsByClassName("clearButton")[0];
-		clearButton.classList.add("show");
+    clearIcon = filter.getElementsByClassName("clearIcon")[0];
+    clearButton = filter.getElementsByClassName("clearButton")[0];
+    clearButton.classList.add("show");
 
-		var typeCheckTimer = null;
+    var typeCheckTimer = null;
 
-		filter.addEventListener('input', function(event) {
-			if(isTyping===false) {
-				clearTimeout(typeCheckTimer);
-				typeCheckTimer = setTimeout(function(){
-					if(filterInput.value === "") {
-						this.dispatchEvent("ON_CLEAR",null);
+    filter.addEventListener(
+      "input",
+      function (event) {
+        if (isTyping === false) {
+          clearTimeout(typeCheckTimer);
+          typeCheckTimer = setTimeout(
+            function () {
+              if (filterInput.value === "") {
+                this.dispatchEvent("ON_CLEAR", null);
+              } else {
+                filterInput.value = filterInput.value.replace(/\s/g, "");
+                this.dispatchEvent("ON_UPDATE", [filterInput.value]);
+                clearButton.classList.add("show");
+              }
+              isTyping = false;
+            }.bind(scope),
+            500
+          );
+        }
+        isTyping = true;
+      }.bind(scope)
+    );
 
-					} else {
-						filterInput.value = filterInput.value.replace(/\s/g, "");
-						this.dispatchEvent("ON_UPDATE",[filterInput.value]);
-						clearButton.classList.add("show");
+    var onClearUp = function (event) {
+      if (filterInput.value === "") {
+        this.dispatchEvent("ON_UPDATE", [filterInput.value]);
+        this.dispatchEvent("ON_FOCUS_OUT", null);
+        event.stopPropagation();
+        return;
+      }
+      if (this.isVisible) {
+        filterInput.value = "";
+        this.dispatchEvent("ON_CLEAR", null);
+      }
 
-					}
-					isTyping = false;
-				}.bind(scope), 500);
-			}
-			isTyping = true;
-		}.bind(scope));
+      event.stopPropagation();
+      event.preventDefault();
+    }.bind(scope);
+    clearButton.addEventListener("click", onClearUp, false);
 
-		var onClearUp = function(event) {
-			if(filterInput.value === "") {
-				this.dispatchEvent("ON_UPDATE",[filterInput.value]);
-				this.dispatchEvent("ON_FOCUS_OUT",null);
-				event.stopPropagation();
-				return;
-			}
-			if(this.isVisible) {
-				filterInput.value = "";
-				this.dispatchEvent("ON_CLEAR",null);
-			}
-			
-			event.stopPropagation();
-			event.preventDefault();
-			
-		}.bind(scope);
-		clearButton.addEventListener('click', onClearUp, false);
+    filter.addEventListener(
+      "keypress",
+      function (event) {
+        // SPACE
+        if (event.keyCode === 32) {
+          return false;
+        }
 
-		filter.addEventListener('keypress', function(event) {
-			// SPACE
-			if (event.keyCode === 32) {
-				return false;
-			}
+        // RETURN
+        if (event.keyCode == 13) {
+          clearTimeout(typeCheckTimer);
+          this.dispatchEvent("ON_UPDATE", [filterInput.value]);
+          this.dispatchEvent("ON_FOCUS_OUT", null);
+          event.stopPropagation();
+        }
+      }.bind(this)
+    );
+  };
 
-			// RETURN
-			if (event.keyCode == 13) {
-				clearTimeout(typeCheckTimer);
-				this.dispatchEvent("ON_UPDATE",[filterInput.value]);
-				this.dispatchEvent("ON_FOCUS_OUT",null);
-				event.stopPropagation();				
-			}
-		}.bind(this));
-	};
+  this.setField = function (tag) {
+    filterInput.value = tag;
+    if (tag.toUpperCase() === "" || tag.toUpperCase() === "ALL") {
+      filterInputWrapper.setAttribute(
+        "style",
+        "border: 2px solid #666; border-image: none; border-image-slice: none"
+      );
+    } else {
+      var colorOne =
+        "hsl(" + Data.getColorValue(tag.charAt(0)) + ", 100%, 50%)";
+      var colorTwo =
+        "hsl(" +
+        Data.getColorValue(tag.charAt(tag.length - 1)) +
+        ", 100%, 50%)";
+      filterInputWrapper.setAttribute(
+        "style",
+        "border: 2px solid transparent; border-image: linear-gradient(to bottom right, " +
+          colorOne +
+          " 0%, " +
+          colorTwo +
+          " 100%); border-image-slice: 1;"
+      );
+    }
+    filterInput.focus();
+  };
 
-	this.setField = function(tag) {
-		filterInput.value = tag;
-		if(tag.toUpperCase()==="" || tag.toUpperCase()==="ALL"){
-			filterInputWrapper.setAttribute( "style", "border: 2px solid #666; border-image: none; border-image-slice: none");
+  this.hide = function () {
+    filter.classList.remove("show");
+    this.isVisible = false;
+    filterInput.blur();
+  };
 
-		} else {
-			var colorOne = "hsl("+Data.getColorValue(tag.charAt(0))+", 100%, 50%)";
-			var colorTwo = "hsl("+Data.getColorValue(tag.charAt(tag.length-1))+", 100%, 50%)";
-			filterInputWrapper.setAttribute( "style", "border: 2px solid transparent; border-image: linear-gradient(to bottom right, " + colorOne + " 0%, " + colorTwo + " 100%); border-image-slice: 1;");
-		}
-		filterInput.focus();
-	};
+  this.show = function () {
+    filter.classList.add("show");
+    this.isVisible = true;
+    filterInput.focus();
+  };
 
-	this.hide = function() {
-		filter.classList.remove("show");
-		this.isVisible = false;
-		filterInput.blur();
-	};
+  this.focus = function () {
+    var onBGUp = function (event) {
+      if (Data.totalResults === 0 && Data.suggestionList.length === 0) {
+        filterInput.value = "";
+        this.dispatchEvent("ON_CLEAR", null);
+        event.stopPropagation();
+        return;
+      }
+      if (
+        event.target.className != "input" &&
+        event.target.className != "input-wrapper"
+      ) {
+        // Element that you don't want to be prevented default event.
+        this.dispatchEvent("ON_FOCUS_OUT", null);
+        event.stopPropagation();
+      }
+    }.bind(scope);
 
-	this.show = function() {
-		filter.classList.add("show");
-		this.isVisible = true;
-		filterInput.focus();
-	};
+    filter.addEventListener("click", onBGUp, false);
+    this.dispatchEvent("ON_FOCUS", [filterInput.value]);
+  };
 
-	this.focus = function() {
-		var onBGUp = function(event) {
-			if(Data.totalResults===0 && Data.suggestionList.length===0){
-				filterInput.value = "";
-				this.dispatchEvent("ON_CLEAR",null);
-				event.stopPropagation();
-				return;
-			}
-			if ( 
-				event.target.className != "input" &&
-				event.target.className != "input-wrapper" ) { // Element that you don't want to be prevented default event.
-				this.dispatchEvent("ON_FOCUS_OUT",null);
-				event.stopPropagation();
-			}
+  this.clearAutoSuggest = function () {
+    while (tags.firstChild) {
+      tags.removeChild(tags.firstChild);
+    }
+  };
+  this.updateAutoSuggest = function () {
+    this.clearAutoSuggest();
 
-		}.bind(scope);
+    var createButton = function (text) {
+      var btn = document.createElement("BUTTON");
+      btn.className = "tagButton";
+      var t = document.createTextNode(text);
 
-		filter.addEventListener("click", onBGUp, false);
-		this.dispatchEvent("ON_FOCUS",[filterInput.value]);
+      var colorOne =
+        "hsl(" + Data.getColorValue(text.charAt(0)) + ", 100%, 50%)";
+      var colorTwo =
+        "hsl(" +
+        Data.getColorValue(text.charAt(text.length - 1)) +
+        ", 100%, 50%)";
 
-	};
+      var params1 = "";
+      params1 +=
+        "border-image: linear-gradient(to bottom right, " +
+        colorOne +
+        " 0%, " +
+        colorTwo +
+        " 100%); ";
+      params1 += "border-image-slice: 1; ";
+      btn.setAttribute("style", params1);
 
-	this.clearAutoSuggest = function() {
-		while (tags.firstChild) {
-			tags.removeChild(tags.firstChild);
-		}
-	};
-	this.updateAutoSuggest = function() {
-		this.clearAutoSuggest();
+      var onTagClicked = function (event) {
+        this.dispatchEvent("ON_TAG_CLICKED", [text]);
+        event.stopPropagation();
+      }.bind(scope);
 
-		var createButton = function(text) {
-			var btn = document.createElement("BUTTON");
-			btn.className = "tagButton";
-			var t = document.createTextNode(text);
+      btn.addEventListener("click", onTagClicked, false);
 
-			var colorOne = "hsl("+Data.getColorValue(text.charAt(0))+", 100%, 50%)";
-			var colorTwo = "hsl("+Data.getColorValue(text.charAt(text.length-1))+", 100%, 50%)";
+      btn.appendChild(t);
+      tags.appendChild(btn);
+    };
 
-			var params1 = "";
-			params1 += "border-image: linear-gradient(to bottom right, " + colorOne + " 0%, " + colorTwo + " 100%); ";
-			params1 += "border-image-slice: 1; ";
-			btn.setAttribute("style", params1);
+    var total = Data.suggestionList.length;
 
-			var onTagClicked = function(event){
-				this.dispatchEvent("ON_TAG_CLICKED",[text]);
-				event.stopPropagation();
-			}.bind(scope);
+    if (total === 0 && Data.totalResults === 0) {
+      var container = document.createElement("div");
+      container.className = "tagText";
+      var t = document.createTextNode("NO RESULTS");
 
-			btn.addEventListener('click', onTagClicked, false);
+      container.appendChild(t);
+      tags.appendChild(container);
 
-			btn.appendChild(t);
-			tags.appendChild(btn);
+      // tags.appendChild(t);
+    }
 
-		};
-
-		var total = Data.suggestionList.length;
-
-		if(total===0 && Data.totalResults===0) {
-			var container = document.createElement("div");
-			container.className = "tagText";
-			var t = document.createTextNode("NO RESULTS");
-
-			container.appendChild(t);
-			tags.appendChild(container);
-
-			// tags.appendChild(t);
-		}
-
-		for(var i=0; i<total; i++){
-			createButton(Data.suggestionList[i].value.toUpperCase());
-		}
-	};
-};
+    for (var i = 0; i < total; i++) {
+      createButton(Data.suggestionList[i].value.toUpperCase());
+    }
+  };
+});
 
 Filter.prototype = new BoilerPlate();
 Filter.prototype.constructor = Filter;

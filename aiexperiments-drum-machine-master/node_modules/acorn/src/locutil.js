@@ -1,24 +1,24 @@
-import {lineBreakG} from "./whitespace"
+import { lineBreakG } from "./whitespace";
 
 // These are used when `options.locations` is on, for the
 // `startLoc` and `endLoc` properties.
 
 export class Position {
   constructor(line, col) {
-    this.line = line
-    this.column = col
+    this.line = line;
+    this.column = col;
   }
 
   offset(n) {
-    return new Position(this.line, this.column + n)
+    return new Position(this.line, this.column + n);
   }
 }
 
 export class SourceLocation {
   constructor(p, start, end) {
-    this.start = start
-    this.end = end
-    if (p.sourceFile !== null) this.source = p.sourceFile
+    this.start = start;
+    this.end = end;
+    if (p.sourceFile !== null) this.source = p.sourceFile;
   }
 }
 
@@ -29,14 +29,14 @@ export class SourceLocation {
 // into.
 
 export function getLineInfo(input, offset) {
-  for (let line = 1, cur = 0;;) {
-    lineBreakG.lastIndex = cur
-    let match = lineBreakG.exec(input)
+  for (let line = 1, cur = 0; ; ) {
+    lineBreakG.lastIndex = cur;
+    let match = lineBreakG.exec(input);
     if (match && match.index < offset) {
-      ++line
-      cur = match.index + match[0].length
+      ++line;
+      cur = match.index + match[0].length;
     } else {
-      return new Position(line, offset - cur)
+      return new Position(line, offset - cur);
     }
   }
 }

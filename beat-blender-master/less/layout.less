@@ -3,81 +3,80 @@
  */
 
 .wrapper {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    & > * {
-        padding: 10px;
-    }
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  & > * {
+    padding: 10px;
+  }
 }
 
-
 .waist {
-    // .mobile-landscape({
-    //     margin-bottom: 100px;
-    // });
-    // .tablet({
-    //     margin-bottom: 100px;
-    // });
-    // margin: 0;
-    // padding: 0;
-    // position: absolute;
-    // top: 0;
+  // .mobile-landscape({
+  //     margin-bottom: 100px;
+  // });
+  // .tablet({
+  //     margin-bottom: 100px;
+  // });
+  // margin: 0;
+  // padding: 0;
+  // position: absolute;
+  // top: 0;
 }
 
 .footer {
-    .tablet({
+  .tablet({
         height: 40px;
     });
-    .mobile-landscape({
+  .mobile-landscape({
         height: 40px;
     });
-    .mobile({
+  .mobile({
         padding-top: 15px;
 
     });
 
-    position: fixed;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    display: flex;
-    height: 75px;
-    z-index: 1;
-    // padding: 10px 0px;
-    justify-content: center;
-    flex: 1 4 10%;
-    background-color: #454545;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  height: 75px;
+  z-index: 1;
+  // padding: 10px 0px;
+  justify-content: center;
+  flex: 1 4 10%;
+  background-color: #454545;
 }
 
 .aside {
-    width: 100%;
-    position: relative;
-    text-align: center;
+  width: 100%;
+  position: relative;
+  text-align: center;
 
-    figure {
-        margin: 0;
-    }
-    //box-sizing: border-box;
-    //border: 1px solid white;
+  figure {
+    margin: 0;
+  }
+  //box-sizing: border-box;
+  //border: 1px solid white;
 }
 
 .right-footer-column {
-    .tablet({
+  .tablet({
         justify-content: right !important;
     });
 }
 
 .column {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: nowrap;
-    align-items: center;
-    align-content: stretch;
-    flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-items: center;
+  align-content: stretch;
+  flex: 1;
 }
 
 //@media all and (min-width: 600px) {
@@ -90,4 +89,3 @@
 //    .right-column { order: 3; }
 //    .footer  { order: 4; }
 //}
-

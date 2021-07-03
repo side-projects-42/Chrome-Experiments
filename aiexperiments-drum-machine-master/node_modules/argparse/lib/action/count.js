@@ -7,23 +7,23 @@
  * This class inherided from [[Action]]
  *
  **/
-'use strict';
+"use strict";
 
-var util = require('util');
+var util = require("util");
 
-var Action = require('../action');
+var Action = require("../action");
 
 /*:nodoc:*
  * new ActionCount(options)
  * - options (object): options hash see [[Action.new]]
  *
  **/
-var ActionCount = module.exports = function ActionCount(options) {
+var ActionCount = (module.exports = function ActionCount(options) {
   options = options || {};
   options.nargs = 0;
 
   Action.call(this, options);
-};
+});
 util.inherits(ActionCount, Action);
 
 /*:nodoc:*

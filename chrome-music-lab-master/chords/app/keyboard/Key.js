@@ -15,170 +15,168 @@
  */
 
 define(["data/Colors"], function (Colors) {
+  "use strict";
 
-	"use strict";
+  /**
+   * @class Represents a single key
+   * @param {HTML Canvas}
+   * @param {String} note
+   * @param {String} startNote
+   * @param {String} endNote
+   */
+  var Key = function (note, offset) {
+    /**
+     * The note
+     * @type {String}
+     * @private
+     */
+    this.note = note;
 
-	/**
-	 * @class Represents a single key
-	 * @param {HTML Canvas}
-	 * @param {String} note
-	 * @param {String} startNote
-	 * @param {String} endNote
-	 */
-	var Key = function(note, offset){
+    /**
+     * The key offset between the start note
+     * and this note
+     * @type {Number}
+     * @private
+     */
+    this._offset = offset;
 
-		/**
-		 * The note
-		 * @type {String}
-		 * @private
-		 */
-		this.note = note;
+    /**
+     * The key offset between the start note
+     * and this note
+     * @type {Number}
+     * @private
+     */
+    this.isSharp = this.note.indexOf("#") !== -1;
 
-		/**
-		 * The key offset between the start note
-		 * and this note
-		 * @type {Number}
-		 * @private
-		 */
-		this._offset = offset;
+    /**
+     * If the note is highlighted or not
+     * @type {Boolean}
+     * @private
+     */
+    this._isHighlighted = false;
 
-		/**
-		 * The key offset between the start note
-		 * and this note
-		 * @type {Number}
-		 * @private
-		 */
-		this.isSharp = this.note.indexOf("#") !== -1;
+    /**
+     * The highlight color
+     * @type {String}
+     * @private
+     */
+    this._highlightColor = "";
 
-		/**
-		 * If the note is highlighted or not
-		 * @type {Boolean}
-		 * @private
-		 */
-		this._isHighlighted = false;
+    //defaults to rainbow
+    this.setHighlightColor("rainbow");
 
-		/**
-		 * The highlight color
-		 * @type {String}
-		 * @private
-		 */
-		this._highlightColor = "";
+    this._computeBoundingBox();
+    //listen for mouse and touch events
+    // this._canvas.on("mousedown", this._mousedown.bind(this));
+  };
 
-		//defaults to rainbow
-		this.setHighlightColor("rainbow");
+  /**
+   * returns an array of [left, top, width, height] for the note
+   */
+  Key.prototype._computeBoundingBox = function () {
+    var noteHeight = this.isSharp ? 0.6 : 1;
+    var noteWidth = this.isSharp ? 0.7 : 1;
+    var offset = this.isSharp ? (1 - noteWidth) / 2 : 0;
+    return [this._offset + offset, 0, noteWidth, noteHeight];
+  };
 
-		this._computeBoundingBox();
-		//listen for mouse and touch events
-		// this._canvas.on("mousedown", this._mousedown.bind(this));
-	};
+  /**
+   * The pitch of the note
+   * @return {String}
+   * @private
+   */
+  Key.prototype._getNoteName = function () {
+    var parts = this.note.split(/(-?\d+)/);
+    if (parts.length === 3) {
+      var noteName = parts[0].toUpperCase();
+      return noteName;
+    }
+  };
 
-	/**
-	 * returns an array of [left, top, width, height] for the note
-	 */
-	Key.prototype._computeBoundingBox = function(){
-		var noteHeight = this.isSharp ? 0.6 : 1;
-		var noteWidth = this.isSharp ? 0.7 : 1;
-		var offset = this.isSharp ? (1 - noteWidth) / 2 : 0;
-		return [this._offset + offset, 0, noteWidth, noteHeight];
-	};
+  /**
+   * Mark the key as highlighted
+   * @param  {String} color, set the highlight color
+   * @return {Key} this
+   */
+  Key.prototype.highlight = function (color) {
+    this._isHighlighted = true;
+    this._highlightColor = color;
+    return this;
+  };
 
-	/**
-	 * The pitch of the note
-	 * @return {String}
-	 * @private
-	 */
-	Key.prototype._getNoteName = function(){
-		var parts = this.note.split(/(-?\d+)/);
-		if (parts.length === 3){
-			var noteName = parts[0].toUpperCase();
-			return noteName;
-		}
-	};
+  /**
+   * Unhighlight the key
+   * @return {Key} this
+   */
+  Key.prototype.unhighlight = function () {
+    this._isHighlighted = false;
+    return this;
+  };
 
-	/**
-	 * Mark the key as highlighted
-	 * @param  {String} color, set the highlight color
-	 * @return {Key} this
-	 */
-	Key.prototype.highlight = function(color){
-		this._isHighlighted = true;
-		this._highlightColor = color;
-		return this;
-	};
+  /**
+   * Set the highlight color of the note
+   * @param {String}
+   */
+  Key.prototype.setHighlightColor = function (color) {
+    if (color === "rainbow") {
+      this._highlightColor = Colors[this._getNoteName()];
+    } else {
+      this._highlightColor = color;
+    }
+    return this;
+  };
 
-	/**
-	 * Unhighlight the key
-	 * @return {Key} this
-	 */
-	Key.prototype.unhighlight = function(){
-		this._isHighlighted = false;
-		return this;
-	};
+  /**
+   * Set the lowest note on the piano
+   * @param {String}
+   */
+  Key.prototype.setStartNote = function (startNote) {
+    this._startNote = startNote;
+    this._computeBoundingBox();
+  };
 
-	/**
-	 * Set the highlight color of the note
-	 * @param {String}
-	 */
-	Key.prototype.setHighlightColor = function(color){
-		if (color === "rainbow"){
-			this._highlightColor = Colors[this._getNoteName()];
-		} else {
-			this._highlightColor = color;
-		}
-		return this;
-	};
+  /**
+   * Set the highest note on the piano
+   * @param {String}
+   */
+  Key.prototype.setEndNote = function (endNote) {
+    this._endNote = endNote;
+    this._computeBoundingBox();
+  };
 
-	/**
-	 * Set the lowest note on the piano
-	 * @param {String}
-	 */
-	Key.prototype.setStartNote = function(startNote){
-		this._startNote = startNote;
-		this._computeBoundingBox();
-	};
+  /**
+   * Test if coords intersect with this key
+   */
+  Key.prototype.testCollision = function (x, y) {
+    var box = this._computeBoundingBox();
+    if (box[0] <= x && box[0] + box[2] >= x && box[1] <= y && box[3] >= y) {
+      return true;
+    }
+  };
 
-	/**
-	 * Set the highest note on the piano
-	 * @param {String}
-	 */
-	Key.prototype.setEndNote = function(endNote){
-		this._endNote = endNote;
-		this._computeBoundingBox();
-	};
+  /**
+   * Draw the note on the context
+   * @return {Key} this
+   */
+  Key.prototype.draw = function (context, width, height) {
+    context.beginPath();
+    if (this._isHighlighted) {
+      context.fillStyle = this._highlightColor;
+    } else {
+      context.fillStyle = this.isSharp ? Colors.charcoal : "white";
+    }
+    var box = this._computeBoundingBox();
+    box[0] = Math.round(width * box[0]);
+    box[2] = Math.round(width * box[2]);
+    box[1] = Math.round(height * box[1]);
+    box[3] = Math.round(height * box[3]);
+    context.rect.apply(context, box);
+    context.fill();
+    if (!this.isSharp && !this._isHighlighted) {
+      context.stroke();
+    }
+    return this;
+  };
 
-	/**
-	 * Test if coords intersect with this key
-	 */
-	Key.prototype.testCollision = function(x, y){
-		var box = this._computeBoundingBox();
-		if (box[0] <= x && box[0] + box[2] >= x && box[1] <= y && box[3] >= y){
-			return true;
-		}
-	};
-
-	/**
-	 * Draw the note on the context
-	 * @return {Key} this
-	 */
-	Key.prototype.draw = function(context, width, height){
-		context.beginPath();
-		if (this._isHighlighted){
-			context.fillStyle = this._highlightColor;
-		} else {
-			context.fillStyle = this.isSharp ? Colors.charcoal : "white";
-		}
-		var box = this._computeBoundingBox();
-		box[0] = Math.round(width * box[0]);
-		box[2] = Math.round(width * box[2]);
-		box[1] = Math.round(height * box[1]);
-		box[3] = Math.round(height * box[3]);
-		context.rect.apply(context, box);
-		context.fill();
-		if (!this.isSharp && !this._isHighlighted){
-			context.stroke();
-		}
-		return this;
-	};
-
-	return Key;
+  return Key;
 });

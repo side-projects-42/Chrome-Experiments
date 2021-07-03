@@ -5,14 +5,15 @@
  * Released under the MIT License.
  */
 
-'use strict';
+"use strict";
 
 module.exports = function (arr) {
   return flat(arr, []);
 };
 
 function flat(arr, res) {
-  var i = 0, cur;
+  var i = 0,
+    cur;
   var len = arr.length;
   for (; i < len; i++) {
     cur = arr[i];

@@ -14,38 +14,46 @@
  * limitations under the License.
  */
 
-define(["jquery", "slick-carousel", "slick-carousel/slick/slick.scss"], function ($, slickCarousel, slickStyle) {
+define([
+  "jquery",
+  "slick-carousel",
+  "slick-carousel/slick/slick.scss",
+], function ($, slickCarousel, slickStyle) {
+  var SnapScroll = function (container, change, init) {
+    $(container)
+      .slick({
+        dots: false,
+        accessibility: false,
+        arrows: true,
+        infinite: false,
+      })
+      .on("beforeChange", function (e, slick, currentSlide, nextSlide) {
+        change(currentSlide, nextSlide);
+      })
+      .on("mousedown touchstart", function (e) {
+        //update the chord on touch
+        if (init) {
+          init();
+        }
+      });
 
-	var SnapScroll = function(container, change, init){
-		$(container).slick({
-			dots : false,
-			accessibility : false,
-			arrows : true,
-			infinite: false,
-		}).on("beforeChange", function(e, slick, currentSlide, nextSlide){
-			change(currentSlide, nextSlide);
-		}).on("mousedown touchstart", function(e){
-			//update the chord on touch
-			if (init){
-				init();
-			}
-		});
+    $(container)
+      .find(".slick-arrow")
+      .addClass("Button")
+      .on("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(e.target).blur();
+      });
 
-		$(container).find(".slick-arrow").addClass("Button").on("click", function(e){
-			e.preventDefault();
-			e.stopPropagation();
-			$(e.target).blur();
-		});
+    //remove the text label
+    $(container).find(".slick-arrow").text("");
 
-		//remove the text label
-		$(container).find(".slick-arrow").text("");
-
-		/*$(window).on("resize", function(){
+    /*$(window).on("resize", function(){
 			console.log('here');
 			$(container).width($(window).width());
 		});*/
+  };
 
-	};
-
-	return SnapScroll;
+  return SnapScroll;
 });

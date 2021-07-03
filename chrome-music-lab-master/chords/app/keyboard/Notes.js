@@ -15,52 +15,64 @@
  */
 
 define(function () {
+  var chromatic = [
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B",
+  ];
 
-	var chromatic = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  return {
+    getNotes: function (start, end) {
+      var startOctave = parseInt(start.split(/(-?\d+)/)[1]);
+      var startNote = start.split(/(-?\d+)/)[0];
+      startNote = chromatic.indexOf(startNote);
+      var endOctave = parseInt(end.split(/(-?\d+)/)[1]);
+      var endNote = end.split(/(-?\d+)/)[0];
+      endNote = chromatic.indexOf(endNote);
 
-	return {
-		getNotes : function(start, end){
-			var startOctave = parseInt(start.split(/(-?\d+)/)[1]);
-			var startNote = start.split(/(-?\d+)/)[0];
-			startNote = chromatic.indexOf(startNote);
-			var endOctave = parseInt(end.split(/(-?\d+)/)[1]);
-			var endNote = end.split(/(-?\d+)/)[0];
-			endNote = chromatic.indexOf(endNote);
+      var currentNote = startNote;
+      var currentOctave = startOctave;
 
-			var currentNote = startNote;
-			var currentOctave = startOctave;
+      var retNotes = [];
 
-			var retNotes = [];
+      while (!(currentNote === endNote && currentOctave === endOctave)) {
+        retNotes.push(chromatic[currentNote] + currentOctave);
 
-			while(!(currentNote === endNote && currentOctave === endOctave)){
-				retNotes.push(chromatic[currentNote] + currentOctave);
+        currentNote++;
 
-				currentNote++;
+        if (currentNote >= chromatic.length) {
+          currentNote = 0;
+          currentOctave++;
+        }
+      }
 
-				if (currentNote >= chromatic.length){
-					currentNote = 0;
-					currentOctave++;
-				}
-			}
-
-			return retNotes;
-		},
-		/**
-		 * Get the offset between the start note
-		 * and the give note
-		 */
-		getDistanceBetween : function(start, note){
-			var notes = this.getNotes(start, note);
-			var dist = 0;
-			for (var i = 0; i < notes.length; i++){
-				var n = notes[i];
-				if ((n[0] === "E" || n[0] === "B") && n[1] !== "#"){
-					dist += 1;
-				} else {
-					dist += 0.5;
-				}
-			}
-			return dist;
-		}
-	};
+      return retNotes;
+    },
+    /**
+     * Get the offset between the start note
+     * and the give note
+     */
+    getDistanceBetween: function (start, note) {
+      var notes = this.getNotes(start, note);
+      var dist = 0;
+      for (var i = 0; i < notes.length; i++) {
+        var n = notes[i];
+        if ((n[0] === "E" || n[0] === "B") && n[1] !== "#") {
+          dist += 1;
+        } else {
+          dist += 0.5;
+        }
+      }
+      return dist;
+    },
+  };
 });

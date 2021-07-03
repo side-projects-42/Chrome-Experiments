@@ -5,20 +5,18 @@
  *
  * This class inherited from [[Action]]
  **/
-'use strict';
+"use strict";
 
-var util    = require('util');
-var format  = require('util').format;
+var util = require("util");
+var format = require("util").format;
 
-
-var Action = require('../action');
+var Action = require("../action");
 
 // Constants
-var c = require('../const');
+var c = require("../const");
 
 // Errors
-var argumentErrorHelper = require('../argument/error');
-
+var argumentErrorHelper = require("../argument/error");
 
 /*:nodoc:*
  * new ChoicesPseudoAction(name, help)
@@ -30,7 +28,7 @@ function ChoicesPseudoAction(name, help) {
   var options = {
     optionStrings: [],
     dest: name,
-    help: help
+    help: help,
   };
 
   Action.call(this, options);
@@ -48,7 +46,7 @@ function ActionSubparsers(options) {
   options.dest = options.dest || c.SUPPRESS;
   options.nargs = c.PARSER;
 
-  this.debug = (options.debug === true);
+  this.debug = options.debug === true;
 
   this._progPrefix = options.prog;
   this._parserClass = options.parserClass;
@@ -79,17 +77,17 @@ ActionSubparsers.prototype.addParser = function (name, options) {
 
   options = options || {};
 
-  options.debug = (this.debug === true);
+  options.debug = this.debug === true;
 
   // set program from the existing prefix
   if (!options.prog) {
-    options.prog = this._progPrefix + ' ' + name;
+    options.prog = this._progPrefix + " " + name;
   }
 
   var aliases = options.aliases || [];
 
   // create a pseudo-action to hold the choice help
-  if (!!options.help || typeof options.help === 'string') {
+  if (!!options.help || typeof options.help === "string") {
     var help = options.help;
     delete options.help;
 
@@ -135,11 +133,13 @@ ActionSubparsers.prototype.call = function (parser, namespace, values) {
   if (this._nameParserMap[parserName]) {
     parser = this._nameParserMap[parserName];
   } else {
-    throw argumentErrorHelper(format(
-      'Unknown parser "%s" (choices: [%s]).',
+    throw argumentErrorHelper(
+      format(
+        'Unknown parser "%s" (choices: [%s]).',
         parserName,
-        Object.keys(this._nameParserMap).join(', ')
-    ));
+        Object.keys(this._nameParserMap).join(", ")
+      )
+    );
   }
 
   // parse all the remaining options into the namespace

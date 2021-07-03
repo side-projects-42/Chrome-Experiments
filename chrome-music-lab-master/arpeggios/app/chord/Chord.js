@@ -14,66 +14,81 @@
  * limitations under the License.
  */
 
-define(["chord.scss", "jquery", "chord/Wheel", "chord/Letters", 
-	"chord/Interface", "sound/Sound", "part/Parts", "data/Notes", 
-	"Tone/core/Transport", "part/PlayButton"], 
-	function (chordStyle, $, ChordWheel, ChordLetters, ChordInteractions, 
-		Sound, Parts, Notes, Transport, PlayButton) {
+define([
+  "chord.scss",
+  "jquery",
+  "chord/Wheel",
+  "chord/Letters",
+  "chord/Interface",
+  "sound/Sound",
+  "part/Parts",
+  "data/Notes",
+  "Tone/core/Transport",
+  "part/PlayButton",
+], function (
+  chordStyle,
+  $,
+  ChordWheel,
+  ChordLetters,
+  ChordInteractions,
+  Sound,
+  Parts,
+  Notes,
+  Transport,
+  PlayButton
+) {
+  var chordContainer = $("<div>", {
+    id: "Chord",
+  }).appendTo("body");
 
-	var chordContainer = $("<div>", {
-		"id" : "Chord"
-	}).appendTo("body");
+  function size() {
+    //set the width the same as the height
+    var margin = 15;
+    var dim = Math.min(chordContainer.width(), chordContainer.height());
+    dim -= margin * 2;
+    // var dim = chordContainer.width();
+    wheelContainer.width(dim);
+    wheelContainer.height(dim);
 
-	function size(){
-		//set the width the same as the height
-		var margin = 15	;
-		var dim = Math.min(chordContainer.width(), chordContainer.height());
-		dim -= margin * 2;
-		// var dim = chordContainer.width();
-		wheelContainer.width(dim);
-		wheelContainer.height(dim);
+    //center it in the container
+    wheelContainer.css({
+      "margin-left": -dim / 2,
+      "margin-top": -dim / 2,
+    });
+  }
 
-		//center it in the container
-		wheelContainer.css({
-			"margin-left" : -dim/2,
-			"margin-top" : -dim/2,
-		});
-	}
+  var wheelContainer = $("<div>", {
+    id: "Wheel",
+  }).appendTo(chordContainer);
 
-	var wheelContainer = $("<div>", {
-		"id" : "Wheel"
-	}).appendTo(chordContainer);
+  //size it initially
+  $(window).on("resize", size);
+  size();
 
-	//size it initially
-	$(window).on("resize", size);
-	size();
+  var wheel = new ChordWheel(wheelContainer);
 
-	var wheel = new ChordWheel(wheelContainer);
+  var letters = new ChordLetters(wheelContainer);
 
-	var letters = new ChordLetters(wheelContainer);
+  var interaction = new ChordInteractions(wheelContainer);
 
-	var interaction = new ChordInteractions(wheelContainer);
+  //interactions
+  interaction.onstart = function (letter, key) {
+    currentLetter = letter;
+    currentKey = key;
+    wheel.draw(letter, key);
+    if (Transport.state === "started") {
+    } else {
+      Sound.strum(letter, key);
+    }
+    Parts.setChord(Notes[key][letter]);
+  };
+  interaction.onend = function () {
+    // wheel.draw();
+  };
 
+  //set the chord to C initially
+  interaction.onstart("C", "major");
 
-	//interactions
-	interaction.onstart = function(letter, key){
-		currentLetter = letter;
-		currentKey = key;
-		wheel.draw(letter, key);
-		if (Transport.state === "started"){
-
-		} else {
-			Sound.strum(letter, key);
-		}
-		Parts.setChord(Notes[key][letter]);
-	};
-	interaction.onend = function(){
-		// wheel.draw();
-	};
-
-	//set the chord to C initially
-	interaction.onstart("C", "major");
-
-	//create the play button
-	PlayButton(wheelContainer);
+  //create the play button
+  PlayButton(wheelContainer);
 });

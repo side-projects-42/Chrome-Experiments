@@ -11,15 +11,14 @@
  *
  * [1]:http://docs.python.org/dev/library/argparse.html#formatter-class
  **/
-'use strict';
+"use strict";
 
-var sprintf = require('sprintf-js').sprintf;
+var sprintf = require("sprintf-js").sprintf;
 
 // Constants
-var c = require('../const');
+var c = require("../const");
 
-var $$ = require('../utils');
-
+var $$ = require("../utils");
 
 /*:nodoc:* internal
  * new Support(parent, heding)
@@ -74,18 +73,18 @@ Section.prototype.formatHelp = function (formatter) {
 
   // return nothing if the section was empty
   if (!itemHelp) {
-    return '';
+    return "";
   }
 
   // add the heading if the section was non-empty
-  heading = '';
+  heading = "";
   if (this._heading && this._heading !== c.SUPPRESS) {
     var currentIndent = formatter.currentIndent;
-    heading = $$.repeat(' ', currentIndent) + this._heading + ':' + c.EOL;
+    heading = $$.repeat(" ", currentIndent) + this._heading + ":" + c.EOL;
   }
 
   // join the section-initialize newline, the heading and the help
-  return formatter._joinParts([ c.EOL, heading, itemHelp, c.EOL ]);
+  return formatter._joinParts([c.EOL, heading, itemHelp, c.EOL]);
 };
 
 /**
@@ -98,13 +97,13 @@ Section.prototype.formatHelp = function (formatter) {
  * - `width`: line width
  *
  **/
-var HelpFormatter = module.exports = function HelpFormatter(options) {
+var HelpFormatter = (module.exports = function HelpFormatter(options) {
   options = options || {};
 
   this._prog = options.prog;
 
   this._maxHelpPosition = options.maxHelpPosition || 24;
-  this._width = (options.width || ((process.env.COLUMNS || 80) - 2));
+  this._width = options.width || (process.env.COLUMNS || 80) - 2;
 
   this._currentIndent = 0;
   this._indentIncriment = options.indentIncriment || 2;
@@ -114,9 +113,9 @@ var HelpFormatter = module.exports = function HelpFormatter(options) {
   this._rootSection = new Section(null);
   this._currentSection = this._rootSection;
 
-  this._whitespaceMatcher = new RegExp('\\s+', 'g');
-  this._longBreakMatcher = new RegExp(c.EOL + c.EOL + c.EOL + '+', 'g');
-};
+  this._whitespaceMatcher = new RegExp("\\s+", "g");
+  this._longBreakMatcher = new RegExp(c.EOL + c.EOL + c.EOL + "+", "g");
+});
 
 HelpFormatter.prototype._indent = function () {
   this._currentIndent += this._indentIncriment;
@@ -127,12 +126,12 @@ HelpFormatter.prototype._dedent = function () {
   this._currentIndent -= this._indentIncriment;
   this._level -= 1;
   if (this._currentIndent < 0) {
-    throw new Error('Indent decreased below 0.');
+    throw new Error("Indent decreased below 0.");
   }
 };
 
 HelpFormatter.prototype._addItem = function (func, args) {
-  this._currentSection.addItem([ func, args ]);
+  this._currentSection.addItem([func, args]);
 };
 
 //
@@ -159,7 +158,7 @@ HelpFormatter.prototype.startSection = function (heading) {
   this._indent();
   var section = new Section(this._currentSection, heading);
   var func = section.formatHelp.bind(section);
-  this._addItem(func, [ this ]);
+  this._addItem(func, [this]);
   this._currentSection = section;
 };
 
@@ -196,7 +195,7 @@ HelpFormatter.prototype.endSection = function () {
  **/
 HelpFormatter.prototype.addText = function (text) {
   if (text && text !== c.SUPPRESS) {
-    this._addItem(this._formatText, [ text ]);
+    this._addItem(this._formatText, [text]);
   }
 };
 
@@ -217,7 +216,7 @@ HelpFormatter.prototype.addText = function (text) {
  **/
 HelpFormatter.prototype.addUsage = function (usage, actions, groups, prefix) {
   if (usage !== c.SUPPRESS) {
-    this._addItem(this._formatUsage, [ usage, actions, groups, prefix ]);
+    this._addItem(this._formatUsage, [usage, actions, groups, prefix]);
   }
 };
 
@@ -234,7 +233,7 @@ HelpFormatter.prototype.addArgument = function (action) {
     var self = this;
 
     // find all invocations
-    var invocations = [ this._formatActionInvocation(action) ];
+    var invocations = [this._formatActionInvocation(action)];
     var invocationLength = invocations[0].length;
 
     var actionLength;
@@ -242,11 +241,9 @@ HelpFormatter.prototype.addArgument = function (action) {
     if (action._getSubactions) {
       this._indent();
       action._getSubactions().forEach(function (subaction) {
-
         var invocationNew = self._formatActionInvocation(subaction);
         invocations.push(invocationNew);
         invocationLength = Math.max(invocationLength, invocationNew.length);
-
       });
       this._dedent();
     }
@@ -256,7 +253,7 @@ HelpFormatter.prototype.addArgument = function (action) {
     this._actionMaxLength = Math.max(this._actionMaxLength, actionLength);
 
     // add the item to the list
-    this._addItem(this._formatAction, [ action ]);
+    this._addItem(this._formatAction, [action]);
   }
 };
 
@@ -306,19 +303,25 @@ HelpFormatter.prototype.formatHelp = function () {
 };
 
 HelpFormatter.prototype._joinParts = function (partStrings) {
-  return partStrings.filter(function (part) {
-    return (part && part !== c.SUPPRESS);
-  }).join('');
+  return partStrings
+    .filter(function (part) {
+      return part && part !== c.SUPPRESS;
+    })
+    .join("");
 };
 
-HelpFormatter.prototype._formatUsage = function (usage, actions, groups, prefix) {
-  if (!prefix && typeof prefix !== 'string') {
-    prefix = 'usage: ';
+HelpFormatter.prototype._formatUsage = function (
+  usage,
+  actions,
+  groups,
+  prefix
+) {
+  if (!prefix && typeof prefix !== "string") {
+    prefix = "usage: ";
   }
 
   actions = actions || [];
   groups = groups || [];
-
 
   // if usage is specified, use that
   if (usage) {
@@ -346,27 +349,30 @@ HelpFormatter.prototype._formatUsage = function (usage, actions, groups, prefix)
     });
 
     // build full usage string
-    actionUsage = this._formatActionsUsage([].concat(optionals, positionals), groups);
-    usage = [ prog, actionUsage ].join(' ');
+    actionUsage = this._formatActionsUsage(
+      [].concat(optionals, positionals),
+      groups
+    );
+    usage = [prog, actionUsage].join(" ");
 
     // wrap the usage parts if it's too long
     textWidth = this._width - this._currentIndent;
-    if ((prefix.length + usage.length) > textWidth) {
-
+    if (prefix.length + usage.length > textWidth) {
       // break usage into wrappable parts
-      var regexpPart = new RegExp('\\(.*?\\)+|\\[.*?\\]+|\\S+', 'g');
+      var regexpPart = new RegExp("\\(.*?\\)+|\\[.*?\\]+|\\S+", "g");
       var optionalUsage = this._formatActionsUsage(optionals, groups);
       var positionalUsage = this._formatActionsUsage(positionals, groups);
-
 
       var optionalParts = optionalUsage.match(regexpPart);
       var positionalParts = positionalUsage.match(regexpPart) || [];
 
-      if (optionalParts.join(' ') !== optionalUsage) {
-        throw new Error('assert "optionalParts.join(\' \') === optionalUsage"');
+      if (optionalParts.join(" ") !== optionalUsage) {
+        throw new Error("assert \"optionalParts.join(' ') === optionalUsage\"");
       }
-      if (positionalParts.join(' ') !== positionalUsage) {
-        throw new Error('assert "positionalParts.join(\' \') === positionalUsage"');
+      if (positionalParts.join(" ") !== positionalUsage) {
+        throw new Error(
+          "assert \"positionalParts.join(' ') === positionalUsage\""
+        );
       }
 
       // helper for wrapping lines
@@ -379,7 +385,7 @@ HelpFormatter.prototype._formatUsage = function (usage, actions, groups, prefix)
 
         parts.forEach(function (part) {
           if (lineLength + 1 + part.length > textWidth) {
-            lines.push(indent + line.join(' '));
+            lines.push(indent + line.join(" "));
             line = [];
             lineLength = indent.length - 1;
           }
@@ -388,7 +394,7 @@ HelpFormatter.prototype._formatUsage = function (usage, actions, groups, prefix)
         });
 
         if (line) {
-          lines.push(indent + line.join(' '));
+          lines.push(indent + line.join(" "));
         }
         if (prefix) {
           lines[0] = lines[0].substr(indent.length);
@@ -399,21 +405,21 @@ HelpFormatter.prototype._formatUsage = function (usage, actions, groups, prefix)
       var lines, indent, parts;
       // if prog is short, follow it with optionals or positionals
       if (prefix.length + prog.length <= 0.75 * textWidth) {
-        indent = $$.repeat(' ', (prefix.length + prog.length + 1));
+        indent = $$.repeat(" ", prefix.length + prog.length + 1);
         if (optionalParts) {
           lines = [].concat(
-            _getLines([ prog ].concat(optionalParts), indent, prefix),
+            _getLines([prog].concat(optionalParts), indent, prefix),
             _getLines(positionalParts, indent)
           );
         } else if (positionalParts) {
-          lines = _getLines([ prog ].concat(positionalParts), indent, prefix);
+          lines = _getLines([prog].concat(positionalParts), indent, prefix);
         } else {
-          lines = [ prog ];
+          lines = [prog];
         }
 
         // if prog is long, put it on its own line
       } else {
-        indent = $$.repeat(' ', prefix.length);
+        indent = $$.repeat(" ", prefix.length);
         parts = optionalParts.concat(positionalParts);
         lines = _getLines(parts, indent);
         if (lines.length > 1) {
@@ -422,7 +428,7 @@ HelpFormatter.prototype._formatUsage = function (usage, actions, groups, prefix)
             _getLines(positionalParts, indent)
           );
         }
-        lines = [ prog ].concat(lines);
+        lines = [prog].concat(lines);
       }
       // join lines into usage
       usage = lines.join(c.EOL);
@@ -455,21 +461,21 @@ HelpFormatter.prototype._formatActionsUsage = function (actions, groups) {
 
         if (!group.required) {
           if (inserts[start]) {
-            inserts[start] += ' [';
+            inserts[start] += " [";
           } else {
-            inserts[start] = '[';
+            inserts[start] = "[";
           }
-          inserts[end] = ']';
+          inserts[end] = "]";
         } else {
           if (inserts[start]) {
-            inserts[start] += ' (';
+            inserts[start] += " (";
           } else {
-            inserts[start] = '(';
+            inserts[start] = "(";
           }
-          inserts[end] = ')';
+          inserts[end] = ")";
         }
         for (i = start + 1; i < end; i += 1) {
-          inserts[i] = '|';
+          inserts[i] = "|";
         }
       }
     }
@@ -488,9 +494,9 @@ HelpFormatter.prototype._formatActionsUsage = function (actions, groups) {
     // remove | separators for suppressed arguments
     if (action.help === c.SUPPRESS) {
       parts.push(null);
-      if (inserts[actionIndex] === '|') {
+      if (inserts[actionIndex] === "|") {
         inserts.splice(actionIndex, actionIndex);
-      } else if (inserts[actionIndex + 1] === '|') {
+      } else if (inserts[actionIndex + 1] === "|") {
         inserts.splice(actionIndex + 1, actionIndex + 1);
       }
 
@@ -500,30 +506,30 @@ HelpFormatter.prototype._formatActionsUsage = function (actions, groups) {
 
       // if it's in a group, strip the outer []
       if (groupActions.indexOf(action) >= 0) {
-        if (part[0] === '[' && part[part.length - 1] === ']') {
+        if (part[0] === "[" && part[part.length - 1] === "]") {
           part = part.slice(1, -1);
         }
       }
       // add the action string to the list
       parts.push(part);
 
-    // produce the first way to invoke the option in brackets
+      // produce the first way to invoke the option in brackets
     } else {
       optionString = action.optionStrings[0];
 
       // if the Optional doesn't take a value, format is: -s or --long
       if (action.nargs === 0) {
-        part = '' + optionString;
+        part = "" + optionString;
 
-      // if the Optional takes a value, format is: -s ARGS or --long ARGS
+        // if the Optional takes a value, format is: -s ARGS or --long ARGS
       } else {
         argsDefault = action.dest.toUpperCase();
         argsString = self._formatArgs(action, argsDefault);
-        part = optionString + ' ' + argsString;
+        part = optionString + " " + argsString;
       }
       // make it look optional if it's not required or in a group
       if (!action.required && groupActions.indexOf(action) < 0) {
-        part = '[' + part + ']';
+        part = "[" + part + "]";
       }
       // add the action string to the list
       parts.push(part);
@@ -538,16 +544,18 @@ HelpFormatter.prototype._formatActionsUsage = function (actions, groups) {
   }
 
   // join all the action items with spaces
-  var text = parts.filter(function (part) {
-    return !!part;
-  }).join(' ');
+  var text = parts
+    .filter(function (part) {
+      return !!part;
+    })
+    .join(" ");
 
   // clean up separators for mutually exclusive groups
-  text = text.replace(/([\[(]) /g, '$1'); // remove spaces
-  text = text.replace(/ ([\])])/g, '$1');
-  text = text.replace(/\[ *\]/g, ''); // remove empty groups
-  text = text.replace(/\( *\)/g, '');
-  text = text.replace(/\(([^|]*)\)/g, '$1'); // remove () from single action groups
+  text = text.replace(/([\[(]) /g, "$1"); // remove spaces
+  text = text.replace(/ ([\])])/g, "$1");
+  text = text.replace(/\[ *\]/g, ""); // remove empty groups
+  text = text.replace(/\( *\)/g, "");
+  text = text.replace(/\(([^|]*)\)/g, "$1"); // remove () from single action groups
 
   text = text.trim();
 
@@ -558,7 +566,7 @@ HelpFormatter.prototype._formatActionsUsage = function (actions, groups) {
 HelpFormatter.prototype._formatText = function (text) {
   text = sprintf(text, { prog: this._prog });
   var textWidth = this._width - this._currentIndent;
-  var indentIncriment = $$.repeat(' ', this._currentIndent);
+  var indentIncriment = $$.repeat(" ", this._currentIndent);
   return this._fillText(text, textWidth, indentIncriment) + c.EOL + c.EOL;
 };
 
@@ -578,35 +586,36 @@ HelpFormatter.prototype._formatAction = function (action) {
 
   // no help; start on same line and add a final newline
   if (!action.help) {
-    actionHeader = $$.repeat(' ', this._currentIndent) + actionHeader + c.EOL;
+    actionHeader = $$.repeat(" ", this._currentIndent) + actionHeader + c.EOL;
 
-  // short action name; start on the same line and pad two spaces
+    // short action name; start on the same line and pad two spaces
   } else if (actionHeader.length <= actionWidth) {
-    actionHeader = $$.repeat(' ', this._currentIndent) +
-        actionHeader +
-        '  ' +
-        $$.repeat(' ', actionWidth - actionHeader.length);
+    actionHeader =
+      $$.repeat(" ", this._currentIndent) +
+      actionHeader +
+      "  " +
+      $$.repeat(" ", actionWidth - actionHeader.length);
     indentFirst = 0;
 
-  // long action name; start on the next line
+    // long action name; start on the next line
   } else {
-    actionHeader = $$.repeat(' ', this._currentIndent) + actionHeader + c.EOL;
+    actionHeader = $$.repeat(" ", this._currentIndent) + actionHeader + c.EOL;
     indentFirst = helpPosition;
   }
 
   // collect the pieces of the action help
-  parts = [ actionHeader ];
+  parts = [actionHeader];
 
   // if there was help for the action, add lines of help text
   if (action.help) {
     helpText = this._expandHelp(action);
     helpLines = this._splitLines(helpText, helpWidth);
-    parts.push($$.repeat(' ', indentFirst) + helpLines[0] + c.EOL);
+    parts.push($$.repeat(" ", indentFirst) + helpLines[0] + c.EOL);
     helpLines.slice(1).forEach(function (line) {
-      parts.push($$.repeat(' ', helpPosition) + line + c.EOL);
+      parts.push($$.repeat(" ", helpPosition) + line + c.EOL);
     });
 
-  // or add a newline if the description doesn't end with one
+    // or add a newline if the description doesn't end with one
   } else if (actionHeader.charAt(actionHeader.length - 1) !== c.EOL) {
     parts.push(c.EOL);
   }
@@ -637,33 +646,33 @@ HelpFormatter.prototype._formatActionInvocation = function (action) {
   if (action.nargs === 0) {
     parts = parts.concat(action.optionStrings);
 
-  // if the Optional takes a value, format is: -s ARGS, --long ARGS
+    // if the Optional takes a value, format is: -s ARGS, --long ARGS
   } else {
     argsDefault = action.dest.toUpperCase();
     argsString = this._formatArgs(action, argsDefault);
     action.optionStrings.forEach(function (optionString) {
-      parts.push(optionString + ' ' + argsString);
+      parts.push(optionString + " " + argsString);
     });
   }
-  return parts.join(', ');
+  return parts.join(", ");
 };
 
 HelpFormatter.prototype._metavarFormatter = function (action, metavarDefault) {
   var result;
 
-  if (action.metavar || action.metavar === '') {
+  if (action.metavar || action.metavar === "") {
     result = action.metavar;
   } else if (action.choices) {
     var choices = action.choices;
 
-    if (typeof choices === 'string') {
-      choices = choices.split('').join(', ');
+    if (typeof choices === "string") {
+      choices = choices.split("").join(", ");
     } else if (Array.isArray(choices)) {
-      choices = choices.join(',');
+      choices = choices.join(",");
     } else {
-      choices = Object.keys(choices).join(',');
+      choices = Object.keys(choices).join(",");
     }
-    result = '{' + choices + '}';
+    result = "{" + choices + "}";
   } else {
     result = metavarDefault;
   }
@@ -692,30 +701,30 @@ HelpFormatter.prototype._formatArgs = function (action, metavarDefault) {
     case undefined:
     case null:
       metavars = buildMetavar(1);
-      result = '' + metavars[0];
+      result = "" + metavars[0];
       break;
     case c.OPTIONAL:
       metavars = buildMetavar(1);
-      result = '[' + metavars[0] + ']';
+      result = "[" + metavars[0] + "]";
       break;
     case c.ZERO_OR_MORE:
       metavars = buildMetavar(2);
-      result = '[' + metavars[0] + ' [' + metavars[1] + ' ...]]';
+      result = "[" + metavars[0] + " [" + metavars[1] + " ...]]";
       break;
     case c.ONE_OR_MORE:
       metavars = buildMetavar(2);
-      result = '' + metavars[0] + ' [' + metavars[1] + ' ...]';
+      result = "" + metavars[0] + " [" + metavars[1] + " ...]";
       break;
     case c.REMAINDER:
-      result = '...';
+      result = "...";
       break;
     case c.PARSER:
       metavars = buildMetavar(1);
-      result = metavars[0] + ' ...';
+      result = metavars[0] + " ...";
       break;
     default:
       metavars = buildMetavar(action.nargs);
-      result = metavars.join(' ');
+      result = metavars.join(" ");
   }
   return result;
 };
@@ -732,12 +741,12 @@ HelpFormatter.prototype._expandHelp = function (action) {
   });
 
   if (params.choices) {
-    if (typeof params.choices === 'string') {
-      params.choices = params.choices.split('').join(', ');
+    if (typeof params.choices === "string") {
+      params.choices = params.choices.split("").join(", ");
     } else if (Array.isArray(params.choices)) {
-      params.choices = params.choices.join(', ');
+      params.choices = params.choices.join(", ");
     } else {
-      params.choices = Object.keys(params.choices).join(', ');
+      params.choices = Object.keys(params.choices).join(", ");
     }
   }
 
@@ -746,13 +755,15 @@ HelpFormatter.prototype._expandHelp = function (action) {
 
 HelpFormatter.prototype._splitLines = function (text, width) {
   var lines = [];
-  var delimiters = [ ' ', '.', ',', '!', '?' ];
-  var re = new RegExp('[' + delimiters.join('') + '][^' + delimiters.join('') + ']*$');
+  var delimiters = [" ", ".", ",", "!", "?"];
+  var re = new RegExp(
+    "[" + delimiters.join("") + "][^" + delimiters.join("") + "]*$"
+  );
 
-  text = text.replace(/[\n\|\t]/g, ' ');
+  text = text.replace(/[\n\|\t]/g, " ");
 
   text = text.trim();
-  text = text.replace(this._whitespaceMatcher, ' ');
+  text = text.replace(this._whitespaceMatcher, " ");
 
   // Wraps the single paragraph in text (a string) so every line
   // is at most width characters long.
@@ -767,7 +778,8 @@ HelpFormatter.prototype._splitLines = function (text, width) {
     var delimiterIndex = 0;
     while (wrapEnd <= line.length) {
       if (wrapEnd !== line.length && delimiters.indexOf(line[wrapEnd] < -1)) {
-        delimiterIndex = (re.exec(line.substring(wrapStart, wrapEnd)) || {}).index;
+        delimiterIndex = (re.exec(line.substring(wrapStart, wrapEnd)) || {})
+          .index;
         wrapEnd = wrapStart + delimiterIndex + 1;
       }
       lines.push(line.substring(wrapStart, wrapEnd));

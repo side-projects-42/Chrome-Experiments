@@ -14,73 +14,94 @@
  * limitations under the License.
  */
 
-define(['Tone/instrument/SimpleSynth', 'Tone/core/Master', 'data/Config', 'Tone/core/Transport', 'Tone/instrument/PolySynth'],
-	function(SimpleSynth, Master, Config, Transport, PolySynth) {
+define([
+  "Tone/instrument/SimpleSynth",
+  "Tone/core/Master",
+  "data/Config",
+  "Tone/core/Transport",
+  "Tone/instrument/PolySynth",
+], function (SimpleSynth, Master, Config, Transport, PolySynth) {
+  var Player = function () {
+    // Transport._clock.lookAhead = 0.05;
 
-	var Player = function() {
+    this.melodyPlayer = new PolySynth(3, SimpleSynth)
+      .set({
+        volume: -4,
+        oscillator: {
+          type: "triangle17",
+          // 'partials' : [16, 8, 4, 2, 1, 0.5, 1, 2]
+        },
+        envelope: {
+          attack: 0.01,
+          decay: 0.1,
+          sustain: 0.2,
+          release: 1.7,
+        },
+      })
+      .toMaster();
 
-		// Transport._clock.lookAhead = 0.05;
+    this.melodyPlayer.stealVoices = false;
 
-		this.melodyPlayer = new PolySynth(3, SimpleSynth).set({
-			'volume' : -4,
-			'oscillator' : {
-				'type' : 'triangle17',
-				// 'partials' : [16, 8, 4, 2, 1, 0.5, 1, 2]
-			},
-			'envelope' : {
-				'attack' : 0.01,
-				'decay' : 0.1,
-				'sustain' : 0.2,
-				'release' : 1.7,
-			}
-		}).toMaster();
+    this.harmonyPlayer = new PolySynth(2, SimpleSynth)
+      .set({
+        volume: -8,
+        oscillator: {
+          type: "triangle11",
+        },
+        envelope: {
+          attack: 0.01,
+          decay: 0.1,
+          sustain: 0.2,
+          release: 1.7,
+        },
+      })
+      .toMaster();
+  };
 
-		this.melodyPlayer.stealVoices = false;
+  Player.prototype.play = function (notes, time) {
+    if (notes.melody !== -1) {
+      var melNote = this._indexToNoteName(notes.melody);
+      this.melodyPlayer.triggerAttackRelease(
+        melNote,
+        "8n",
+        time,
+        this._randomVelocity()
+      );
+    }
 
+    if (notes.harmony !== -1) {
+      var harmNote = this._indexToNoteName(notes.harmony);
+      this.harmonyPlayer.triggerAttackRelease(
+        harmNote,
+        "8n",
+        time,
+        this._randomVelocity()
+      );
+    }
+  };
 
-		this.harmonyPlayer = new PolySynth(2, SimpleSynth).set({
-			'volume' : -8,
-			'oscillator' : {
-				'type' : 'triangle11'
-			},
-			'envelope' : {
-				'attack' : 0.01,
-				'decay' : 0.1,
-				'sustain' : 0.2,
-				'release' : 1.7,
-			}
-		}).toMaster();
-	};
+  Player.prototype._indexToNoteName = function (index) {
+    var noteIndex = Config.pitches.length - index - 1;
+    var pitch = Config.pitches[noteIndex];
+    return pitch;
+  };
 
-	Player.prototype.play = function(notes, time) {
-		if (notes.melody !== -1) {
-			var melNote = this._indexToNoteName(notes.melody);
-			this.melodyPlayer.triggerAttackRelease(melNote, '8n', time, this._randomVelocity());
-		}
+  Player.prototype._randomVelocity = function () {
+    return (Math.random() * 0.5 + 0.5) * 0.8;
+  };
 
-		if (notes.harmony !== -1) {
-			var harmNote = this._indexToNoteName(notes.harmony);
-			this.harmonyPlayer.triggerAttackRelease(harmNote, '8n', time, this._randomVelocity());
-		}
-	};
+  Player.prototype.tap = function (note) {
+    if (Transport.state === "stopped") {
+      var noteIndex = Config.pitches.length - note - 1;
+      var pitch = Config.pitches[noteIndex];
+      this.melodyPlayer.triggerAttackRelease(
+        pitch,
+        "8t",
+        "+0.01",
+        this._randomVelocity()
+      );
+    }
+  };
 
-	Player.prototype._indexToNoteName = function(index) {
-		var noteIndex = Config.pitches.length - index - 1;
-		var pitch = Config.pitches[noteIndex];
-		return pitch;
-	};
-
-	Player.prototype._randomVelocity = function() {
-		return (Math.random() * 0.5 + 0.5) * 0.8;
-	};
-
-	Player.prototype.tap = function(note) {
-		if (Transport.state === 'stopped') {
-			var noteIndex = Config.pitches.length - note - 1;
-			var pitch = Config.pitches[noteIndex];
-			this.melodyPlayer.triggerAttackRelease(pitch, '8t', '+0.01', this._randomVelocity());
-		}
-	};
-
-	return Player;
+  return Player;
 });

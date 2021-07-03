@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-define(["StartAudioContext", "Tone/core/Tone"], function (StartAudioContext, Tone) {
+define(["StartAudioContext", "Tone/core/Tone"], function (
+  StartAudioContext,
+  Tone
+) {
+  return function () {
+    // send the ready message to the parent
+    var isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var isAndroid = /Android/.test(navigator.userAgent) && !window.MSStream;
 
-	return function(){
-		// send the ready message to the parent
-		var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-		var isAndroid = /Android/.test(navigator.userAgent) && !window.MSStream;
-
-		// full screen button on iOS
-		if (isIOS || isAndroid) {
-			// make a full screen element and put it in front
-			var iOSTapper = document.createElement("div");
-			iOSTapper.id = "iOSTap";
-			document.body.appendChild(iOSTapper);
-      new StartAudioContext(Tone.context, iOSTapper).then(function() {
+    // full screen button on iOS
+    if (isIOS || isAndroid) {
+      // make a full screen element and put it in front
+      var iOSTapper = document.createElement("div");
+      iOSTapper.id = "iOSTap";
+      document.body.appendChild(iOSTapper);
+      new StartAudioContext(Tone.context, iOSTapper).then(function () {
         iOSTapper.remove();
-        window.parent.postMessage('ready','*');
+        window.parent.postMessage("ready", "*");
       });
-		} else {
-			window.parent.postMessage('ready','*');
-		}
-	};
+    } else {
+      window.parent.postMessage("ready", "*");
+    }
+  };
 });

@@ -14,39 +14,43 @@
  * limitations under the License.
  */
 
-define(["jquery", "sound.scss", "sound/Metronome"], function ($, soundStyle, Metronome) {
+define(["jquery", "sound.scss", "sound/Metronome"], function (
+  $,
+  soundStyle,
+  Metronome
+) {
+  var pianoHarp = $("<div>", {
+    id: "PianoHarp",
+    class: "Button icon-svg_harp",
+  })
+    .appendTo("body")
+    .on("click", function (e) {
+      e.preventDefault();
+      if (pianoHarp.hasClass("icon-svg_piano")) {
+        pianoHarp.removeClass("icon-svg_piano");
+        pianoHarp.addClass("icon-svg_harp");
+        Interface.onharp();
+      } else {
+        pianoHarp.removeClass("icon-svg_harp");
+        pianoHarp.addClass("icon-svg_piano");
+        Interface.onpiano();
+      }
+    });
 
-	var pianoHarp = $("<div>", {
-		"id" : "PianoHarp",
-		"class" : "Button icon-svg_harp"
-	}).appendTo("body")
-		.on("click", function(e){
-			e.preventDefault();
-			if (pianoHarp.hasClass("icon-svg_piano")){
-				pianoHarp.removeClass("icon-svg_piano");
-				pianoHarp.addClass("icon-svg_harp");
-				Interface.onharp();
-			} else {
-				pianoHarp.removeClass("icon-svg_harp");
-				pianoHarp.addClass("icon-svg_piano");
-				Interface.onpiano();
-			}
-		});
+  Metronome.onopen = function () {
+    Interface.onmetroopen();
+  };
 
-	Metronome.onopen = function(){
-		Interface.onmetroopen();
-	};
+  Metronome.onclose = function () {
+    Interface.onmetroclose();
+  };
 
-	Metronome.onclose = function(){
-		Interface.onmetroclose();
-	};
+  var Interface = {
+    onpiano: function () {},
+    onharp: function () {},
+    onmetroopen: function () {},
+    onmetroclose: function () {},
+  };
 
-	var Interface = {
-		onpiano : function(){},
-		onharp : function(){},
-		onmetroopen : function(){},
-		onmetroclose : function(){}
-	};
-
-	return Interface;
+  return Interface;
 });

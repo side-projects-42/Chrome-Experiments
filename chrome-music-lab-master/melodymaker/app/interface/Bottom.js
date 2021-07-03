@@ -14,78 +14,78 @@
  * limitations under the License.
  */
 
-define(['style/bottom.scss', 'interface/Slider', 'Tone/core/Transport', 'interface/Orientation'],
-function(bottomStyle, Slider, Transport, Orientation) {
+define([
+  "style/bottom.scss",
+  "interface/Slider",
+  "Tone/core/Transport",
+  "interface/Orientation",
+], function (bottomStyle, Slider, Transport, Orientation) {
+  var Bottom = function (container) {
+    this._element = document.createElement("div");
+    this._element.id = "Bottom";
+    container.appendChild(this._element);
 
+    this._controlsContainer = document.createElement("div");
+    this._controlsContainer.id = "Controls";
+    this._element.appendChild(this._controlsContainer);
 
-	var Bottom = function(container) {
+    this._playButton = document.createElement("div");
+    this._playButton.id = "PlayButton";
+    this._playButton.classList.add("Button");
+    this._playButton.classList.add("icon-svg_play");
+    this._controlsContainer.appendChild(this._playButton);
+    this._playButton.addEventListener("click", this._playClicked.bind(this));
 
-		this._element = document.createElement('div');
-		this._element.id = 'Bottom';
-		container.appendChild(this._element);
+    this._harmony = document.createElement("div");
+    this._harmony.id = "Harmony";
+    this._harmony.classList.add("Button");
+    this._controlsContainer.appendChild(this._harmony);
+    this._harmony.addEventListener("click", this._directionClicked.bind(this));
 
-		this._controlsContainer = document.createElement('div');
-		this._controlsContainer.id = 'Controls';
-		this._element.appendChild(this._controlsContainer);
+    // this._directions = ['none', 'up', 'down', 'right', 'left'];
+    this._directions = ["none", "right"];
+    this._directionIndex = 0;
 
-		this._playButton = document.createElement('div');
-		this._playButton.id = 'PlayButton';
-		this._playButton.classList.add('Button');
-		this._playButton.classList.add("icon-svg_play");
-		this._controlsContainer.appendChild(this._playButton);
-		this._playButton.addEventListener('click', this._playClicked.bind(this));
+    this.slider = new Slider(this._controlsContainer);
 
-		this._harmony = document.createElement('div');
-		this._harmony.id = 'Harmony';
-		this._harmony.classList.add('Button');
-		this._controlsContainer.appendChild(this._harmony);
-		this._harmony.addEventListener('click', this._directionClicked.bind(this));
+    this.onDirection = function () {};
 
-		// this._directions = ['none', 'up', 'down', 'right', 'left'];
-		this._directions = ['none', 'right'];
-		this._directionIndex = 0;
+    this._orientation = new Orientation(this._rotated.bind(this));
+  };
 
-		this.slider = new Slider(this._controlsContainer);
+  Bottom.prototype._playClicked = function (e) {
+    e.preventDefault();
+    if (Transport.state === "started") {
+      this._playButton.classList.remove("Playing");
+      this._playButton.classList.add("icon-svg_play");
+      this._playButton.classList.remove("icon-svg_pause");
+      Transport.stop();
+    } else {
+      this._playButton.classList.add("Playing");
+      this._playButton.classList.remove("icon-svg_play");
+      this._playButton.classList.add("icon-svg_pause");
+      Transport.start("+0.1");
+    }
+  };
 
-		this.onDirection = function() {};
+  Bottom.prototype._rotated = function () {
+    if (Transport.state === "started") {
+      this._playButton.classList.remove("Playing");
+      this._playButton.classList.add("icon-svg_play");
+      this._playButton.classList.remove("icon-svg_pause");
+      Transport.stop();
+    }
+  };
 
-		this._orientation = new Orientation(this._rotated.bind(this));
-	};
+  Bottom.prototype._directionClicked = function (e) {
+    e.preventDefault();
+    var formerDir = this._directions[this._directionIndex];
+    this._harmony.classList.remove(formerDir);
+    this._directionIndex = (this._directionIndex + 1) % this._directions.length;
+    var dir = this._directions[this._directionIndex];
+    this._harmony.classList.add(dir);
+    this.onDirection(dir);
+  };
 
-	Bottom.prototype._playClicked = function(e) {
-		e.preventDefault();
-		if (Transport.state === 'started') {
-			this._playButton.classList.remove('Playing');
-			this._playButton.classList.add('icon-svg_play');
-			this._playButton.classList.remove('icon-svg_pause');
-			Transport.stop();
-		} else {
-			this._playButton.classList.add('Playing');
-			this._playButton.classList.remove('icon-svg_play');
-			this._playButton.classList.add('icon-svg_pause');
-			Transport.start('+0.1');
-		}
-	};
-
-	Bottom.prototype._rotated = function() {
-		if (Transport.state === 'started') {
-			this._playButton.classList.remove('Playing');
-			this._playButton.classList.add('icon-svg_play');
-			this._playButton.classList.remove('icon-svg_pause');
-			Transport.stop();
-		}
-	};
-
-
-	Bottom.prototype._directionClicked = function(e) {
-		e.preventDefault();
-		var formerDir = this._directions[this._directionIndex];
-		this._harmony.classList.remove(formerDir);
-		this._directionIndex = (this._directionIndex + 1) % this._directions.length;
-		var dir = this._directions[this._directionIndex];
-		this._harmony.classList.add(dir);
-		this.onDirection(dir);
-	};
-
-	return Bottom;
+  return Bottom;
 });

@@ -19,75 +19,74 @@ var Data = require("../Data");
 var Cell = require("./Cell");
 var Beat = require("./Beat");
 
-var Track = module.exports = function(container, id) {
-	var scope = this;
-	BoilerPlate.call(this);
+var Track = (module.exports = function (container, id) {
+  var scope = this;
+  BoilerPlate.call(this);
 
-	this.name = "Track";
-	this.container = container;
+  this.name = "Track";
+  this.container = container;
 
-	this.cells = [];
-	this.trackIndex = id;
-	this.previewTrack = null;
-	this.sampleSoundIndex = Math.random()*Data.getTotalPoints() | 0;
-	
-	// ------------------------------------------------------------
-	// VARS
-	// ------------------------------------------------------------
+  this.cells = [];
+  this.trackIndex = id;
+  this.previewTrack = null;
+  this.sampleSoundIndex = (Math.random() * Data.getTotalPoints()) | 0;
 
-	var track;
-	track = document.createElement("div");
-	track.className = "Track";
-	this.container.appendChild(track);
+  // ------------------------------------------------------------
+  // VARS
+  // ------------------------------------------------------------
 
-	var cell;
-	for (var i = 0; i < 16; i++){
-		cell = new Cell(this.name, track, this.trackIndex, i);
-		this.cells.push(cell);
-		//get the initial state
-		cell.set(Beat.get(this.trackIndex, i));
-	}
+  var track;
+  track = document.createElement("div");
+  track.className = "Track";
+  this.container.appendChild(track);
 
-	// ------------------------------------------------------------
-	// METHODS
-	// ------------------------------------------------------------
+  var cell;
+  for (var i = 0; i < 16; i++) {
+    cell = new Cell(this.name, track, this.trackIndex, i);
+    this.cells.push(cell);
+    //get the initial state
+    cell.set(Beat.get(this.trackIndex, i));
+  }
 
-	this.setBeat = function(pattern){		
-		var i;
-		var total = this.cells.length;
-		for ( i=0; i<total; i++){
-			this.cells[i].set(pattern[i]);
-		}
-		
-	};
+  // ------------------------------------------------------------
+  // METHODS
+  // ------------------------------------------------------------
 
-	this.trigger = function(index){
-		var cell = this.cells[index];
-		cell.trigger();
-	};
+  this.setBeat = function (pattern) {
+    var i;
+    var total = this.cells.length;
+    for (i = 0; i < total; i++) {
+      this.cells[i].set(pattern[i]);
+    }
+  };
 
-	this.setColor = function(soundIndex){
-		var color = Data.getColor(soundIndex);
-		var colorString = Data.getLightColorString(color, 1);
-		for (var i = 0; i < 16; i++){
-			cell = this.cells[i];
-			cell.updateColor(colorString);
-		}
+  this.trigger = function (index) {
+    var cell = this.cells[index];
+    cell.trigger();
+  };
 
-		this.icons = document.getElementsByClassName("previewTracks");
-		if(this.icons){
-			this.icons[id].style.fill = colorString;
-		}
-	};
+  this.setColor = function (soundIndex) {
+    var color = Data.getColor(soundIndex);
+    var colorString = Data.getLightColorString(color, 1);
+    for (var i = 0; i < 16; i++) {
+      cell = this.cells[i];
+      cell.updateColor(colorString);
+    }
 
-	// ------------------------------------------------------------
-	// EVENTS
-	// ------------------------------------------------------------
+    this.icons = document.getElementsByClassName("previewTracks");
+    if (this.icons) {
+      this.icons[id].style.fill = colorString;
+    }
+  };
 
-	// ------------------------------------------------------------
-	// UTILITY
-	// ------------------------------------------------------------
-};
+  // ------------------------------------------------------------
+  // EVENTS
+  // ------------------------------------------------------------
+
+  // ------------------------------------------------------------
+  // UTILITY
+  // ------------------------------------------------------------
+});
 
 Track.prototype = new BoilerPlate();
 Track.prototype.constructor = Track;

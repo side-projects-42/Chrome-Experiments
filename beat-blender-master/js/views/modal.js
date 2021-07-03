@@ -1,41 +1,46 @@
+//
 
 //
 
+import { View } from "./base-view";
+import * as modals from "../models/modals";
+import { copyToClipboard } from "../utils";
 
-//
+const open = (url) =>
+  window.open(
+    url,
+    "fbShareWindow",
+    "height=450, width=550, top=" +
+      (window.innerHeight / 2 - 275) +
+      ", left=" +
+      (window.innerWidth / 2 - 225) +
+      ", toolbar=0, location=0, menubar=0, directories=0, scrollbars=0"
+  );
 
+const facebookId = "224976884733659";
+const description =
+  "Check out these beats I made using machine learning with Beat Blender";
+const twitterTxt = (url) => `${description} → ${url} #beatblender`;
 
+const twitter = ({ shareURL }) =>
+  "https://twitter.com/intent/tweet?text=" +
+  window.encodeURIComponent(twitterTxt(shareURL));
 
-import { View } from './base-view';
-import * as modals from '../models/modals';
-import { copyToClipboard } from '../utils';
-
-
-const open = (url)=>
-    window.open(url, 'fbShareWindow', 'height=450, width=550, top=' + (window.innerHeight / 2 - 275) + ', left=' + (window.innerWidth / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
-
-
-const facebookId = '224976884733659';
-const description = 'Check out these beats I made using machine learning with Beat Blender';
-const twitterTxt = (url)=>`${description} → ${url} #beatblender`;
-
-const twitter = ({shareURL }) =>
-    'https://twitter.com/intent/tweet?text=' + window.encodeURIComponent(twitterTxt(shareURL));
-
-const base = 'https://experiments.withgoogle.com/ai/beat-blender/view/';
+const base = "https://experiments.withgoogle.com/ai/beat-blender/view/";
 
 const facebook = ({ shareURL }) =>
-    [`https://www.facebook.com/dialog/feed?app_id=${facebookId}`,
-        '&display=popup',
-        `&link=${shareURL}`,
-        '&name=Beat Blender',
-        `&caption=${base}`,
-        `&description=${description}`,
-        `&picture=${base + 'assets/share.png'}?type=png`
-    ].join('');
+  [
+    `https://www.facebook.com/dialog/feed?app_id=${facebookId}`,
+    "&display=popup",
+    `&link=${shareURL}`,
+    "&name=Beat Blender",
+    `&caption=${base}`,
+    `&description=${description}`,
+    `&picture=${base + "assets/share.png"}?type=png`,
+  ].join("");
 
 // the html to repeat for every preset
-const shareTemplate = (state)=>`
+const shareTemplate = (state) => `
     <button class="exit"></button>
     <div class="modal-container"style="top: 50%; left:50%; transform: translate(-50%, -50%);">
         <h2>Your beats are saved at this link:</h2>
@@ -47,7 +52,7 @@ const shareTemplate = (state)=>`
         <div/>
     </div>`;
 
-    /*<!--a href="#" class="output-button ">EMBED CODE</a>
+/*<!--a href="#" class="output-button ">EMBED CODE</a>
     <a href="#" class="output-button ">DOWNLOAD MIDI</a>
     <div class="share-embed">
         <textarea class="iframe-code">&lt;iframe width=560 height=315 src=${embedUrl} frameborder=0 allowfullscreen&gt;&lt;/iframe&gt;</textarea>
@@ -56,7 +61,7 @@ const shareTemplate = (state)=>`
         </div>
     </div-->*/
 
-const aboutTemplate = ()=>`
+const aboutTemplate = () => `
     <button class="exit"></button>
     <div class="modal-container">
         <div class="video">
@@ -74,54 +79,57 @@ const aboutTemplate = ()=>`
     </div>`;
 
 export class Modal extends View {
+  constructor(domElement) {
+    super(domElement);
+    this._setEventMap({
+      "click .share-facebook": (event, state) => open(facebook(state)),
+      "click .share-twitter": (event, state) => open(twitter(state)),
+      "click .exit": () => {
+        this.domElement.classList.remove("active");
+        setTimeout(() => {
+          //call exit after fade time has elapsed
+          this.emit("exit", this);
 
-    constructor(domElement){
-        super(domElement);
-        this._setEventMap({
-            'click .share-facebook': (event, state)=> open(facebook(state)),
-            'click .share-twitter': (event, state)=> open(twitter(state)),
-            'click .exit': ()=> {
-                this.domElement.classList.remove('active');
-                setTimeout(() => { //call exit after fade time has elapsed
-                    this.emit('exit', this);
+          const video = document.querySelector(".video > iframe");
+          if (video) {
+            //pause video on exit
+            video.contentWindow.postMessage(
+              JSON.stringify({ event: "command", func: "pauseVideo" }),
+              "*"
+            );
+          }
+        }, 300);
+      },
+      "click .copy-link": (event) => {
+        const input = document.querySelector(".short-url");
+        copyToClipboard(input);
+        event.target.innerHTML = "COPIED";
+        event.target.classList.add("copied");
+      },
+    });
+  }
 
-                    const video = document.querySelector('.video > iframe');
-                    if(video) {
-                        //pause video on exit
-                        video.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo' }), '*');
-                    }
+  shouldComponentUpdate(state, previousState) {
+    return state.modal !== previousState.modal;
+  }
 
-                }, 300);
-            },
-            'click .copy-link': (event)=>{
-                const input = document.querySelector('.short-url');
-                copyToClipboard(input);
-                event.target.innerHTML = 'COPIED';
-                event.target.classList.add('copied');
-            }
-        });
+  /**
+   * render the provided presets
+   * @param {Object} key becomes label, value (Array) is beats
+   * @return itself
+   */
+  render(state, previousState) {
+    this.domElement.style.visibility =
+      previousState.modal === undefined ? "hidden" : "visible"; //on page load modal should be hidden
+    if (state.modal === modals.ABOUT) {
+      this.domElement.innerHTML = aboutTemplate(state);
+      this.domElement.classList.add("active");
+    } else if (state.modal === modals.SHARE) {
+      this.domElement.innerHTML = shareTemplate(state);
+      this.domElement.classList.add("active");
+    } else {
+      this.domElement.style.visibility = "hidden";
     }
-
-    shouldComponentUpdate(state, previousState) {
-        return state.modal !== previousState.modal;
-    }
-
-    /**
-     * render the provided presets
-     * @param {Object} key becomes label, value (Array) is beats
-     * @return itself
-     */
-    render(state, previousState) {
-        this.domElement.style.visibility = previousState.modal === undefined  ? 'hidden' : 'visible'; //on page load modal should be hidden
-        if(state.modal === modals.ABOUT) {
-            this.domElement.innerHTML = aboutTemplate(state);
-            this.domElement.classList.add('active');
-        } else if(state.modal === modals.SHARE) {
-            this.domElement.innerHTML = shareTemplate(state);
-            this.domElement.classList.add('active');
-        } else {
-            this.domElement.style.visibility = 'hidden';
-        }
-        return super.render(state, previousState);
-    }
+    return super.render(state, previousState);
+  }
 }

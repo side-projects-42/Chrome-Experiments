@@ -1,75 +1,96 @@
+//
 
 //
 
+import { View } from "./base-view";
+import assert from "assert";
 
-//
+let isSafari =
+  !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) ||
+  /(CriOS)/i.test(navigator.userAgent);
 
-
-
-import { View } from './base-view';
-import assert from 'assert';
-
-let isSafari =  !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || /(CriOS)/i.test(navigator.userAgent);
-
-
-const same = (a, b)=>{
-    if(!a || !b || a.length !== b.length){
-        return false;
+const same = (a, b) => {
+  if (!a || !b || a.length !== b.length) {
+    return false;
+  }
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
     }
-    for(let i=0; i<a.length; i++){
-        if(a[i] !== b[i]){
-            return false;
-        }
-    }
-    return true;
+  }
+  return true;
 };
 
-
-
-const template = ({ encodedSequences, selectedCornerIndex, cornerIndices, presetBeats })=>
-    `<h3>PRESET BEATS</h3>
-    ${button('Generate New Beat', `preset-button generate-new-beat-button ${isSafari? 'isSafari' : ''}`)}
-    ${Object.keys(presetBeats).map(key=> button(key, 'preset-button ' + (same(encodedSequences[cornerIndices[selectedCornerIndex]], presetBeats[key]) ? 'active' : ''))).join('')}`;
+const template = ({
+  encodedSequences,
+  selectedCornerIndex,
+  cornerIndices,
+  presetBeats,
+}) =>
+  `<h3>PRESET BEATS</h3>
+    ${button(
+      "Generate New Beat",
+      `preset-button generate-new-beat-button ${isSafari ? "isSafari" : ""}`
+    )}
+    ${Object.keys(presetBeats)
+      .map((key) =>
+        button(
+          key,
+          "preset-button " +
+            (same(
+              encodedSequences[cornerIndices[selectedCornerIndex]],
+              presetBeats[key]
+            )
+              ? "active"
+              : "")
+        )
+      )
+      .join("")}`;
 
 // the html to repeat for every preset
-const button = (text, classList)=>`
+const button = (text, classList) => `
     <button class="${classList}" data-value="${text}">${text}</button>`;
 
-
-
 export class PresetButtonGroup extends View {
+  constructor(domElement) {
+    super(domElement);
 
-    constructor(domElement){
-        super(domElement);
+    this._setEventMap({
+      "click .preset-button": (event, state) => {
+        if (event.target.classList.contains("generate-new-beat-button")) {
+          this.emit("generate-new-beat", this);
+        } else {
+          const attr = event.target.attributes["data-value"];
+          assert(
+            attr && attr.value,
+            "Preset Button did not have a data-value attribute"
+          );
+          const beat = state.presetBeats[attr.value];
+          this.emit("click", this, attr.value, beat);
+        }
+      },
+    });
+  }
 
-        this._setEventMap({
-            'click .preset-button': (event, state)=>{
-                if(event.target.classList.contains('generate-new-beat-button')) {
-                    this.emit('generate-new-beat', this);
-                } else {
-                    const attr = event.target.attributes['data-value'];
-                    assert(attr && attr.value, 'Preset Button did not have a data-value attribute');
-                    const beat = state.presetBeats[attr.value];
-                    this.emit('click', this, attr.value, beat);
-                }
-            }
-        });
-    }
+  shouldComponentUpdate(state, previousState) {
+    const i = state.cornerIndices[state.selectedCornerIndex];
+    return (
+      state.selectedCornerIndex !== previousState.selectedCornerIndex ||
+      (!same(state.encodedSequences[i], previousState.encodedSequences[i]) &&
+        state.selectedCornerIndex > -1)
+    );
+  }
 
-    shouldComponentUpdate(state, previousState) {
-        const i = state.cornerIndices[state.selectedCornerIndex];
-        return state.selectedCornerIndex !== previousState.selectedCornerIndex ||
-            (!same(state.encodedSequences[i], previousState.encodedSequences[i]) && state.selectedCornerIndex > -1);
-    }
-
-    /**
-     * render the provided presets
-     * @param {Object} key becomes label, value (Array) is beats
-     * @return itself
-     */
-    render(state, previousState){
-        this.domElement.classList[state.selectedCornerIndex > -1 ? 'add' : 'remove']('active');
-        this.domElement.innerHTML = template(state);
-        return super.render(state, previousState);
-    }
+  /**
+   * render the provided presets
+   * @param {Object} key becomes label, value (Array) is beats
+   * @return itself
+   */
+  render(state, previousState) {
+    this.domElement.classList[
+      state.selectedCornerIndex > -1 ? "add" : "remove"
+    ]("active");
+    this.domElement.innerHTML = template(state);
+    return super.render(state, previousState);
+  }
 }

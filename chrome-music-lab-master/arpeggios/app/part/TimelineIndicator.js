@@ -15,18 +15,17 @@
  */
 
 define(["jquery", "Tone/core/Transport"], function ($, Transport) {
+  var makeIndicator = function (container) {
+    //The timeline position indicator
+    var positionIndicator = $("<div>", {
+      id: "LoopPosition",
+    }).appendTo(container);
+    function loop() {
+      requestAnimationFrame(loop);
+      positionIndicator.css("left", Transport.progress * container.width());
+    }
+    loop();
+  };
 
-	var makeIndicator = function(container){
-		//The timeline position indicator
-		var positionIndicator = $("<div>", {
-			"id" : "LoopPosition"
-		}).appendTo(container);
-		function loop(){
-			requestAnimationFrame(loop);
-			positionIndicator.css("left", Transport.progress * container.width());
-		}
-		loop();
-	};
-
-	return makeIndicator;
+  return makeIndicator;
 });

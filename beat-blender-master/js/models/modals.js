@@ -1,12 +1,7 @@
+//
 
 //
 
-
-//
-
-
-
-
-export const NONE = '';
-export const ABOUT = 'about';
-export const SHARE = 'share';
+export const NONE = "";
+export const ABOUT = "about";
+export const SHARE = "share";

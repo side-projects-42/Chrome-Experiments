@@ -15,34 +15,35 @@
  */
 
 define(["Tone/core/Transport"], function (Transport) {
+  var OrientationListener = function (callback) {
+    window.addEventListener("orientationchange", this._changed.bind(this));
+    if (window.screen && window.screen.orientation) {
+      window.screen.orientation.addEventListener(
+        "change",
+        this._screenChange.bind(this)
+      );
+    }
 
-	var OrientationListener = function(callback){
+    this._callback = callback;
+  };
 
-		window.addEventListener("orientationchange", this._changed.bind(this));
-		if (window.screen && window.screen.orientation){
-			window.screen.orientation.addEventListener("change", this._screenChange.bind(this));
-		}
+  OrientationListener.prototype._changed = function () {
+    //check if it's landscape
+    if (Math.abs(window.orientation) === 90) {
+      if (Transport.state === "started") {
+        this._callback();
+      }
+    }
+  };
 
-		this._callback = callback;
-	};
+  OrientationListener.prototype._screenChange = function () {
+    //check if it's landscape
+    if (Math.abs(window.screen.orientation.angle) === 90) {
+      if (Transport.state === "started") {
+        this._callback();
+      }
+    }
+  };
 
-	OrientationListener.prototype._changed = function(){
-		//check if it's landscape
-		if (Math.abs(window.orientation) === 90){
-			if (Transport.state === "started"){
-				this._callback();
-			}
-		}
-	};
-
-	OrientationListener.prototype._screenChange = function(){		
-		//check if it's landscape
-		if (Math.abs(window.screen.orientation.angle) === 90){
-			if (Transport.state === "started"){
-				this._callback();
-			}
-		}
-	};
-
-	return OrientationListener;
+  return OrientationListener;
 });

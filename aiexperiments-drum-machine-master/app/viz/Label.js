@@ -20,158 +20,155 @@ var BoilerPlate = require("../Boilerplate");
 var Data = require("../Data");
 var THREE = require("three");
 
-var Label = module.exports = function(x) {
-	var scope = this;
-	BoilerPlate.call(this);
-	this.name = "Label";
+var Label = (module.exports = function (x) {
+  var scope = this;
+  BoilerPlate.call(this);
+  this.name = "Label";
 
-	// ------------------------------------------------------------
-	// VARS
-	// ------------------------------------------------------------
-	this.isVisible = false;
-	this.storedSoundIndex = -1;
-	this.trackIndex = x;
+  // ------------------------------------------------------------
+  // VARS
+  // ------------------------------------------------------------
+  this.isVisible = false;
+  this.storedSoundIndex = -1;
+  this.trackIndex = x;
 
-	// ------------------------------------------------------------
-	// METHODS
-	// ------------------------------------------------------------
-	this.init = function() {
-		this.label = document.getElementsByClassName("label")[this.trackIndex];
-		this.offset = new THREE.Vector2(0,0);
-		this.position = new THREE.Vector2(0,0);
-		this.title = this.label.getElementsByClassName('title')[0];
+  // ------------------------------------------------------------
+  // METHODS
+  // ------------------------------------------------------------
+  this.init = function () {
+    this.label = document.getElementsByClassName("label")[this.trackIndex];
+    this.offset = new THREE.Vector2(0, 0);
+    this.position = new THREE.Vector2(0, 0);
+    this.title = this.label.getElementsByClassName("title")[0];
 
-		this.title.addEventListener('click', function(event) {
-			scope.dispatchEvent("ON_INFO",[scope.trackIndex]);
-		});
+    this.title.addEventListener("click", function (event) {
+      scope.dispatchEvent("ON_INFO", [scope.trackIndex]);
+    });
+  };
 
-	};
+  this.enableClick = function () {
+    if (this.isVisible) {
+      return;
+    }
 
-	this.enableClick = function() {
-		if(this.isVisible) {
-			return;
-		}
-		
-		var onUp = function(event) {
-			event.stopPropagation();
-		};
+    var onUp = function (event) {
+      event.stopPropagation();
+    };
 
-		scope.label.addEventListener("click", onUp,false);
-	};
+    scope.label.addEventListener("click", onUp, false);
+  };
 
-	this.updatePosition = function(soundIndex, panner, zoomer) {
-		if(!soundIndex){
-			soundIndex = this.storedSoundIndex;
-		}
-		
-		var pos2D = Data.getPosition(soundIndex);
+  this.updatePosition = function (soundIndex, panner, zoomer) {
+    if (!soundIndex) {
+      soundIndex = this.storedSoundIndex;
+    }
 
-		pos2D.x += panner.position.x;
-		pos2D.y -= panner.position.y;
-		pos2D.x *= zoomer.scale.x;
-		pos2D.y *= zoomer.scale.y;
-		pos2D.x *= -1;
-		pos2D.y *= -1;
+    var pos2D = Data.getPosition(soundIndex);
 
-		var lineOffset = 40; // 15
-		var lineLength = lineOffset * 1.4142;
-		var offset = -lineLength*0.5 - lineOffset*0.5;
-		var extraOffsetX = 0;
-		var extraOffsetY = 0;
+    pos2D.x += panner.position.x;
+    pos2D.y -= panner.position.y;
+    pos2D.x *= zoomer.scale.x;
+    pos2D.y *= zoomer.scale.y;
+    pos2D.x *= -1;
+    pos2D.y *= -1;
 
-		pos2D.x += 0;//lineOffset;
-		pos2D.y += lineOffset;
-		pos2D.x += window.innerWidth*0.5;
-		pos2D.y += window.innerHeight*0.5;
+    var lineOffset = 40; // 15
+    var lineLength = lineOffset * 1.4142;
+    var offset = -lineLength * 0.5 - lineOffset * 0.5;
+    var extraOffsetX = 0;
+    var extraOffsetY = 0;
 
-		this.label.style.bottom  = pos2D.y + "px";
-		this.label.style.right = pos2D.x + "px";
-		this.label.style.left = null;
-		this.label.style.top = null;
-		this.label.style.webkitTransform = 'translateX(50%)';
+    pos2D.x += 0; //lineOffset;
+    pos2D.y += lineOffset;
+    pos2D.x += window.innerWidth * 0.5;
+    pos2D.y += window.innerHeight * 0.5;
 
-		var bounds = this.label.getBoundingClientRect();
+    this.label.style.bottom = pos2D.y + "px";
+    this.label.style.right = pos2D.x + "px";
+    this.label.style.left = null;
+    this.label.style.top = null;
+    this.label.style.webkitTransform = "translateX(50%)";
 
-		if( bounds.left <= 0 ) {
-			extraOffsetX = -bounds.left;
-			this.label.style.left = "0px";
-			this.label.style.right = null;
-			this.label.style.webkitTransform = 'translateX(0%)';
-		} else if( bounds.right >= window.innerWidth ) {
-			this.label.style.left = null;
-			this.label.style.right = "0px";
-			this.label.style.webkitTransform = 'translateX(0%)';
-		}
+    var bounds = this.label.getBoundingClientRect();
 
-		if( bounds.top <= 0 ) {
-			extraOffsetY = -bounds.top;
-			this.label.style.top = "0px";
-			this.label.style.bottom = null;
-		} else if( bounds.bottom >= window.innerHeight  ) {
-			this.label.style.top = null;
-			this.label.style.bottom = "0px";
-		}
+    if (bounds.left <= 0) {
+      extraOffsetX = -bounds.left;
+      this.label.style.left = "0px";
+      this.label.style.right = null;
+      this.label.style.webkitTransform = "translateX(0%)";
+    } else if (bounds.right >= window.innerWidth) {
+      this.label.style.left = null;
+      this.label.style.right = "0px";
+      this.label.style.webkitTransform = "translateX(0%)";
+    }
 
-		var color = Data.getColor(soundIndex);
-		var colorString = Data.getLightColorString(color, 77);
-		this.title.style.color = colorString;
+    if (bounds.top <= 0) {
+      extraOffsetY = -bounds.top;
+      this.label.style.top = "0px";
+      this.label.style.bottom = null;
+    } else if (bounds.bottom >= window.innerHeight) {
+      this.label.style.top = null;
+      this.label.style.bottom = "0px";
+    }
 
-	};
+    var color = Data.getColor(soundIndex);
+    var colorString = Data.getLightColorString(color, 77);
+    this.title.style.color = colorString;
+  };
 
-	this.updateData = function(soundIndex){
-		this.storedSoundIndex = soundIndex;
-		this.title.innerHTML = Data.getTitle(soundIndex).toUpperCase();
-	};
+  this.updateData = function (soundIndex) {
+    this.storedSoundIndex = soundIndex;
+    this.title.innerHTML = Data.getTitle(soundIndex).toUpperCase();
+  };
 
-	this.bringToFront = function() {
-		this.label.parentNode.appendChild(this.label);
+  this.bringToFront = function () {
+    this.label.parentNode.appendChild(this.label);
+  };
 
-	};
+  this.setFocusPosition = function (soundIndex, panner, zoomer) {
+    var pos2D = Data.getPosition(soundIndex);
+    this.focus.x = pos2D.x + panner.position.x;
+    this.focus.y = -pos2D.y + panner.position.y;
 
-	this.setFocusPosition = function(soundIndex, panner, zoomer) {
-		var pos2D = Data.getPosition(soundIndex);
-		this.focus.x = pos2D.x + panner.position.x;
-		this.focus.y = -pos2D.y + panner.position.y;
+    this.focus.x *= zoomer.scale.x;
+    this.focus.y *= zoomer.scale.y;
+  };
 
-		this.focus.x*=zoomer.scale.x;
-		this.focus.y*=zoomer.scale.y;
-	};
+  this.getFocusPosition = function (panner, zoomer) {
+    this.focus.x /= zoomer.scale.x;
+    this.focus.y /= zoomer.scale.y;
+    this.focus.x -= panner.position.x;
+    this.focus.y -= panner.position.y;
 
-	this.getFocusPosition = function(panner, zoomer) {
-		this.focus.x/=zoomer.scale.x;
-		this.focus.y/=zoomer.scale.y;
-		this.focus.x -= panner.position.x;
-		this.focus.y -= panner.position.y;
-		
-		return this.focus;
-	};
+    return this.focus;
+  };
 
-	this.setPosition = function(pos2D, panner, zoomer) {
-		scope.position.x = pos2D.x + panner.position.x;
-		scope.position.y = -pos2D.y + panner.position.y;
+  this.setPosition = function (pos2D, panner, zoomer) {
+    scope.position.x = pos2D.x + panner.position.x;
+    scope.position.y = -pos2D.y + panner.position.y;
 
-		scope.position.x*=zoomer.scale.x;
-		scope.position.y*=zoomer.scale.y;
-	};
+    scope.position.x *= zoomer.scale.x;
+    scope.position.y *= zoomer.scale.y;
+  };
 
-	this.hide = function() {
-		this.label.classList.remove("show");
-		this.isVisible = false;
-	};
+  this.hide = function () {
+    this.label.classList.remove("show");
+    this.isVisible = false;
+  };
 
-	this.show = function() {
-		this.label.classList.add("show");
-		this.isVisible = true;
-	};
+  this.show = function () {
+    this.label.classList.add("show");
+    this.isVisible = true;
+  };
 
-	// ------------------------------------------------------------
-	// EVENTS
-	// ------------------------------------------------------------
+  // ------------------------------------------------------------
+  // EVENTS
+  // ------------------------------------------------------------
 
-	// ------------------------------------------------------------
-	// UTILITY
-	// ------------------------------------------------------------
-};
+  // ------------------------------------------------------------
+  // UTILITY
+  // ------------------------------------------------------------
+});
 
 Label.prototype = new BoilerPlate();
 Label.prototype.constructor = Label;

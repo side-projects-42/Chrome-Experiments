@@ -10,25 +10,27 @@
  * This class inherited from [[Action]]
  **/
 
-'use strict';
+"use strict";
 
-var util = require('util');
+var util = require("util");
 
-var Action = require('../../action');
+var Action = require("../../action");
 
 /*:nodoc:*
  * new ActionAppendConstant(options)
  * - options (object): options hash see [[Action.new]]
  *
  **/
-var ActionAppendConstant = module.exports = function ActionAppendConstant(options) {
+var ActionAppendConstant = (module.exports = function ActionAppendConstant(
+  options
+) {
   options = options || {};
   options.nargs = 0;
-  if (typeof options.constant === 'undefined') {
-    throw new Error('constant option is required for appendAction');
+  if (typeof options.constant === "undefined") {
+    throw new Error("constant option is required for appendAction");
   }
   Action.call(this, options);
-};
+});
 util.inherits(ActionAppendConstant, Action);
 
 /*:nodoc:*

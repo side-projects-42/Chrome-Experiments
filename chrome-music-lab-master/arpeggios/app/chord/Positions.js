@@ -15,60 +15,88 @@
  */
 
 define(function () {
+  function polarToCartesian(theta, radius) {
+    return {
+      x: radius * Math.cos(theta),
+      y: radius * Math.sin(theta),
+    };
+  }
 
+  var innerRadius = 0.66;
 
-	function polarToCartesian(theta, radius){
-		return {
-			x : radius * Math.cos(theta),
-			y : radius * Math.sin(theta)
-		};
-	}
+  var majorOrder = [
+    "C",
+    "G",
+    "D",
+    "A",
+    "E",
+    "B",
+    "F#",
+    "C#",
+    "G#",
+    "D#",
+    "A#",
+    "F",
+  ];
+  var minorOrder = [
+    "A",
+    "E",
+    "B",
+    "F#",
+    "C#",
+    "G#",
+    "D#",
+    "A#",
+    "F",
+    "C",
+    "G",
+    "D",
+  ];
 
-	var innerRadius = 0.66;
+  var majorCoords = {};
 
-	var majorOrder = ["C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F"];
-	var minorOrder = ["A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F", "C", "G", "D"];
+  var minorCoords = {};
 
-	var majorCoords = {};
+  var thresh = 0.01;
+  //draw all of the majors first
+  var arcSize = (Math.PI * 2) / majorOrder.length;
+  var startAngle = 0 - arcSize / 2 - Math.PI / 2;
 
-	var minorCoords = {};
+  for (var i = 0; i < majorOrder.length; i++) {
+    var coord = {
+      startAngle: startAngle - thresh,
+      endAngle: startAngle + arcSize + thresh,
+      innerRadius: innerRadius,
+      outerRadius: 1,
+    };
+    coord.center = polarToCartesian(
+      (coord.endAngle + coord.startAngle) / 2,
+      (coord.outerRadius + coord.innerRadius) / 2
+    );
+    majorCoords[majorOrder[i]] = coord;
+    startAngle += arcSize;
+  }
 
-	var thresh = 0.01;
-	//draw all of the majors first
-	var arcSize = Math.PI * 2 / majorOrder.length;
-	var startAngle = 0 - arcSize / 2 - Math.PI / 2;
+  for (var k = 0; k < minorOrder.length; k++) {
+    var minCoord = {
+      startAngle: startAngle - thresh,
+      endAngle: startAngle + arcSize + thresh,
+      innerRadius: 0,
+      outerRadius: innerRadius,
+    };
+    minCoord.center = polarToCartesian(
+      (minCoord.endAngle + minCoord.startAngle) / 2,
+      (minCoord.outerRadius * 3) / 4
+    );
+    minorCoords[minorOrder[k]] = minCoord;
+    startAngle += arcSize;
+  }
 
-	for (var i = 0; i < majorOrder.length; i++){
-		var coord = {
-			startAngle : startAngle - thresh,
-			endAngle : startAngle + arcSize + thresh,
-			innerRadius : innerRadius,
-			outerRadius : 1,
-		};
-		coord.center = polarToCartesian((coord.endAngle + coord.startAngle)/2, 
-				(coord.outerRadius + coord.innerRadius) / 2);
-		majorCoords[majorOrder[i]] = coord;
-		startAngle += arcSize;
-	}
-
-	for (var k = 0; k < minorOrder.length; k++){
-		 var minCoord = {
-			startAngle : startAngle - thresh,
-			endAngle : startAngle + arcSize + thresh,
-			innerRadius : 0,
-			outerRadius : innerRadius
-		};
-		minCoord.center = polarToCartesian((minCoord.endAngle + minCoord.startAngle)/2, 
-				minCoord.outerRadius * 3 / 4);
-		minorCoords[minorOrder[k]] = minCoord;
-		startAngle += arcSize;
-	}
-
-	return {
-		major : majorCoords,
-		minor: minorCoords,
-		majorOrder : majorOrder,
-		minorOrder : minorOrder,
-		innerRadius : innerRadius
-	};
+  return {
+    major: majorCoords,
+    minor: minorCoords,
+    majorOrder: majorOrder,
+    minorOrder: minorOrder,
+    innerRadius: innerRadius,
+  };
 });

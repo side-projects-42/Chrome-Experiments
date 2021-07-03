@@ -10,12 +10,11 @@
  *
  * This class inherited from [[ArgumentContainer]]
  **/
-'use strict';
+"use strict";
 
-var util = require('util');
+var util = require("util");
 
-var ActionContainer = require('../action_container');
-
+var ActionContainer = require("../action_container");
 
 /**
  * new ArgumentGroup(container, options)
@@ -29,14 +28,18 @@ var ActionContainer = require('../action_container');
  * - **description** group description
  *
  **/
-var ArgumentGroup = module.exports = function ArgumentGroup(container, options) {
-
+var ArgumentGroup = (module.exports = function ArgumentGroup(
+  container,
+  options
+) {
   options = options || {};
 
   // add any missing keyword arguments by checking the container
-  options.conflictHandler = (options.conflictHandler || container.conflictHandler);
-  options.prefixChars = (options.prefixChars || container.prefixChars);
-  options.argumentDefault = (options.argumentDefault || container.argumentDefault);
+  options.conflictHandler =
+    options.conflictHandler || container.conflictHandler;
+  options.prefixChars = options.prefixChars || container.prefixChars;
+  options.argumentDefault =
+    options.argumentDefault || container.argumentDefault;
 
   ActionContainer.call(this, options);
 
@@ -52,9 +55,8 @@ var ArgumentGroup = module.exports = function ArgumentGroup(container, options) 
   this._defaults = container._defaults;
   this._hasNegativeNumberOptionals = container._hasNegativeNumberOptionals;
   this._mutuallyExclusiveGroups = container._mutuallyExclusiveGroups;
-};
+});
 util.inherits(ArgumentGroup, ActionContainer);
-
 
 ArgumentGroup.prototype._addAction = function (action) {
   // Parent add action
@@ -62,7 +64,6 @@ ArgumentGroup.prototype._addAction = function (action) {
   this._groupActions.push(action);
   return action;
 };
-
 
 ArgumentGroup.prototype._removeAction = function (action) {
   // Parent remove action
@@ -72,4 +73,3 @@ ArgumentGroup.prototype._removeAction = function (action) {
     this._groupActions.splice(actionIndex, 1);
   }
 };
-

@@ -1,4 +1,4 @@
-var parallel = require('../parallel.js');
+var parallel = require("../parallel.js");
 
 // API
 module.exports = ReadableParallel;
@@ -11,15 +11,13 @@ module.exports = ReadableParallel;
  * @param   {function} callback - invoked when all elements processed
  * @returns {stream.Readable#}
  */
-function ReadableParallel(list, iterator, callback)
-{
-  if (!(this instanceof ReadableParallel))
-  {
+function ReadableParallel(list, iterator, callback) {
+  if (!(this instanceof ReadableParallel)) {
     return new ReadableParallel(list, iterator, callback);
   }
 
   // turn on object mode
-  ReadableParallel.super_.call(this, {objectMode: true});
+  ReadableParallel.super_.call(this, { objectMode: true });
 
   this._start(parallel, list, iterator, callback);
 }

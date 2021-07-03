@@ -16,57 +16,54 @@
 
 var webpack = require("webpack");
 
-var PROD = JSON.parse(process.env.PROD_ENV || '0');
+var PROD = JSON.parse(process.env.PROD_ENV || "0");
 
 module.exports = {
-	"context": __dirname,
-	entry: {
-		"Main": "app/Main",
-	},
-	output: {
-		filename: "./build/[name].js",
-		chunkFilename: "./build/[id].js",
-		sourceMapFilename : "[file].map",
-	},
-	resolve: {
-		root: __dirname,
-		modulesDirectories : [
-		"node_modules", 
-		"node_modules/tone", 
-		"app"
-		],
-	},
-	plugins: PROD ? [
-		new webpack.optimize.UglifyJsPlugin({minimize: true}),
-		new webpack.DefinePlugin({__DEV__: true})	
-	] : [],
-	module: {
-		preLoaders: [
-			{
-				test: /\.js$/,
-				exclude: [/node_modules/],
-				loader: 'jshint-loader'
-			}
-		],
-		loaders: [
-			{
-				test: /\.scss$/,
-				loader: "style!css!autoprefixer!sass"
-			},
-			{
-				test: /\.json$/,
-				loader: "json-loader"
-			},
-			{
-				test: /\.(png|gif)$/,
-				loader: "url-loader",
-			},
-			{
-				test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-				loader : "file-loader?name=images/font/[hash].[ext]"
-			}
-		]
-	},
-	watch: true
-
+  context: __dirname,
+  entry: {
+    Main: "app/Main",
+  },
+  output: {
+    filename: "./build/[name].js",
+    chunkFilename: "./build/[id].js",
+    sourceMapFilename: "[file].map",
+  },
+  resolve: {
+    root: __dirname,
+    modulesDirectories: ["node_modules", "node_modules/tone", "app"],
+  },
+  plugins: PROD
+    ? [
+        new webpack.optimize.UglifyJsPlugin({ minimize: true }),
+        new webpack.DefinePlugin({ __DEV__: true }),
+      ]
+    : [],
+  module: {
+    preLoaders: [
+      {
+        test: /\.js$/,
+        exclude: [/node_modules/],
+        loader: "jshint-loader",
+      },
+    ],
+    loaders: [
+      {
+        test: /\.scss$/,
+        loader: "style!css!autoprefixer!sass",
+      },
+      {
+        test: /\.json$/,
+        loader: "json-loader",
+      },
+      {
+        test: /\.(png|gif)$/,
+        loader: "url-loader",
+      },
+      {
+        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        loader: "file-loader?name=images/font/[hash].[ext]",
+      },
+    ],
+  },
+  watch: true,
 };

@@ -14,51 +14,55 @@
  * limitations under the License.
  */
 
-require(["domready", "main.scss", "interface/Piano", "sound/Arp",
-	"interface/Toggle", "StartiOS", "Translation"], 
-	function(domready, mainStyle, Piano, Arp, Toggle, StartiOS, Translation){
+require([
+  "domready",
+  "main.scss",
+  "interface/Piano",
+  "sound/Arp",
+  "interface/Toggle",
+  "StartiOS",
+  "Translation",
+], function (domready, mainStyle, Piano, Arp, Toggle, StartiOS, Translation) {
+  //get the origin
 
-	//get the origin
+  var lang = "en";
 
-	var lang = "en";
+  if (window.location.search !== "") {
+    lang = window.location.search.substring(4);
+  }
 
-	if (window.location.search !== ""){
-		lang = window.location.search.substring(4);
-	}
-	
-	Translation.load(lang, function(){
-		domready(function(){
+  Translation.load(lang, function () {
+    domready(function () {
+      //the main box
+      var container = document.createElement("DIV");
+      container.id = "Container";
+      document.body.appendChild(container);
 
-			//the main box
-			var container = document.createElement("DIV");
-			container.id = "Container";
-			document.body.appendChild(container);
+      var lowestNote = "C3";
+      var highestNote = "C5";
 
-			var lowestNote = "C3";
-			var highestNote = "C5";
+      //the piano
+      var piano = new Piano(container, lowestNote, highestNote);
 
-			//the piano
-			var piano = new Piano(container, lowestNote, highestNote);
+      var arp = new Arp(piano.delayTime, lowestNote, "G5");
 
-			var arp = new Arp(piano.delayTime, lowestNote, "G5");
+      arp.load(function () {
+        window.parent.postMessage("loaded", "*");
+        StartiOS();
+      });
 
-			arp.load(function(){
-				window.parent.postMessage("loaded", "*");
-				StartiOS();
-			});
+      var toggle = new Toggle(container);
 
-			var toggle = new Toggle(container);
+      var chordSelected = false;
 
-			var chordSelected = false;
+      piano.onNotes = function (notes, root, mode) {
+        chordSelected = true;
+        arp.play(notes);
+      };
 
-			piano.onNotes = function(notes, root, mode){
-				chordSelected = true;
-				arp.play(notes);
-			};
-
-			toggle.onChange = function(mode){
-				piano.setMode(mode);
-			};
-		});
-	});
+      toggle.onChange = function (mode) {
+        piano.setMode(mode);
+      };
+    });
+  });
 });

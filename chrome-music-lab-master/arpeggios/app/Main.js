@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-require(["domready", "main.scss", "StartAudioContext", "Tone/core/Tone"], 
-function(domReady, mainStyle, StartAudioContext, Tone){
-
-	function testiOS(){
+require([
+  "domready",
+  "main.scss",
+  "StartAudioContext",
+  "Tone/core/Tone",
+], function (domReady, mainStyle, StartAudioContext, Tone) {
+  function testiOS() {
     // send the ready message to the parent
-    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     var isAndroid = /Android/.test(navigator.userAgent) && !window.MSStream;
 
     // full screen button on iOS
@@ -28,28 +32,28 @@ function(domReady, mainStyle, StartAudioContext, Tone){
       var iOSTapper = document.createElement("div");
       iOSTapper.id = "iOSTap";
       document.body.appendChild(iOSTapper);
-      new StartAudioContext(Tone.context, iOSTapper).then(function() {
+      new StartAudioContext(Tone.context, iOSTapper).then(function () {
         iOSTapper.remove();
-        window.parent.postMessage('ready','*');
+        window.parent.postMessage("ready", "*");
       });
     } else {
-      window.parent.postMessage('ready','*');
+      window.parent.postMessage("ready", "*");
     }
-	}
+  }
 
-	domReady(function(){
-
-		require(["chord/Chord", "sound/Sound", "part/Parts"], 
-			function(Chord, Sound, Parts){
-
-				//load the harp sound
-				Sound.load(function(){
-					//post the loaded message
-					window.parent.postMessage("loaded", "*");
-					//the ios tests
-					testiOS();
-				});
-		});
-	});
-
+  domReady(function () {
+    require([
+      "chord/Chord",
+      "sound/Sound",
+      "part/Parts",
+    ], function (Chord, Sound, Parts) {
+      //load the harp sound
+      Sound.load(function () {
+        //post the loaded message
+        window.parent.postMessage("loaded", "*");
+        //the ios tests
+        testiOS();
+      });
+    });
+  });
 });

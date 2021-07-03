@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-var URI = require('uri-js')
-  , equal = require('fast-deep-equal')
-  , util = require('./util')
-  , SchemaObject = require('./schema_obj')
-  , traverse = require('json-schema-traverse');
+var URI = require("uri-js"),
+  equal = require("fast-deep-equal"),
+  util = require("./util"),
+  SchemaObject = require("./schema_obj"),
+  traverse = require("json-schema-traverse");
 
 module.exports = resolve;
 
@@ -26,7 +26,7 @@ resolve.schema = resolveSchema;
 function resolve(compile, root, ref) {
   /* jshint validthis: true */
   var refVal = this._refs[ref];
-  if (typeof refVal == 'string') {
+  if (typeof refVal == "string") {
     if (this._refs[refVal]) refVal = this._refs[refVal];
     else return resolve.call(this, compile, root, refVal);
   }
@@ -34,8 +34,8 @@ function resolve(compile, root, ref) {
   refVal = refVal || this._schemas[ref];
   if (refVal instanceof SchemaObject) {
     return inlineRef(refVal.schema, this._opts.inlineRefs)
-            ? refVal.schema
-            : refVal.validate || this._compile(refVal);
+      ? refVal.schema
+      : refVal.validate || this._compile(refVal);
   }
 
   var res = resolveSchema.call(this, root, ref);
@@ -47,16 +47,17 @@ function resolve(compile, root, ref) {
   }
 
   if (schema instanceof SchemaObject) {
-    v = schema.validate || compile.call(this, schema.schema, root, undefined, baseId);
+    v =
+      schema.validate ||
+      compile.call(this, schema.schema, root, undefined, baseId);
   } else if (schema !== undefined) {
     v = inlineRef(schema, this._opts.inlineRefs)
-        ? schema
-        : compile.call(this, schema, root, undefined, baseId);
+      ? schema
+      : compile.call(this, schema, root, undefined, baseId);
   }
 
   return v;
 }
-
 
 /**
  * Resolve schema, its root and baseId
@@ -67,13 +68,13 @@ function resolve(compile, root, ref) {
  */
 function resolveSchema(root, ref) {
   /* jshint validthis: true */
-  var p = URI.parse(ref)
-    , refPath = _getFullPath(p)
-    , baseId = getFullPath(this._getId(root.schema));
+  var p = URI.parse(ref),
+    refPath = _getFullPath(p),
+    baseId = getFullPath(this._getId(root.schema));
   if (Object.keys(root.schema).length === 0 || refPath !== baseId) {
     var id = normalizeId(refPath);
     var refVal = this._refs[id];
-    if (typeof refVal == 'string') {
+    if (typeof refVal == "string") {
       return resolveRecursive.call(this, root, refVal, p);
     } else if (refVal instanceof SchemaObject) {
       if (!refVal.validate) this._compile(refVal);
@@ -95,7 +96,6 @@ function resolveSchema(root, ref) {
   return getJsonPointer.call(this, p, baseId, root.schema, root);
 }
 
-
 /* @this Ajv */
 function resolveRecursive(root, ref, parsedRef) {
   /* jshint validthis: true */
@@ -110,14 +110,19 @@ function resolveRecursive(root, ref, parsedRef) {
   }
 }
 
-
-var PREVENT_SCOPE_CHANGE = util.toHash(['properties', 'patternProperties', 'enum', 'dependencies', 'definitions']);
+var PREVENT_SCOPE_CHANGE = util.toHash([
+  "properties",
+  "patternProperties",
+  "enum",
+  "dependencies",
+  "definitions",
+]);
 /* @this Ajv */
 function getJsonPointer(parsedRef, baseId, schema, root) {
   /* jshint validthis: true */
-  parsedRef.fragment = parsedRef.fragment || '';
-  if (parsedRef.fragment.slice(0,1) != '/') return;
-  var parts = parsedRef.fragment.split('/');
+  parsedRef.fragment = parsedRef.fragment || "";
+  if (parsedRef.fragment.slice(0, 1) != "/") return;
+  var parts = parsedRef.fragment.split("/");
 
   for (var i = 1; i < parts.length; i++) {
     var part = parts[i];
@@ -145,15 +150,22 @@ function getJsonPointer(parsedRef, baseId, schema, root) {
     return { schema: schema, root: root, baseId: baseId };
 }
 
-
 var SIMPLE_INLINED = util.toHash([
-  'type', 'format', 'pattern',
-  'maxLength', 'minLength',
-  'maxProperties', 'minProperties',
-  'maxItems', 'minItems',
-  'maximum', 'minimum',
-  'uniqueItems', 'multipleOf',
-  'required', 'enum'
+  "type",
+  "format",
+  "pattern",
+  "maxLength",
+  "minLength",
+  "maxProperties",
+  "minProperties",
+  "maxItems",
+  "minItems",
+  "maximum",
+  "minimum",
+  "uniqueItems",
+  "multipleOf",
+  "required",
+  "enum",
 ]);
 function inlineRef(schema, limit) {
   if (limit === false) return false;
@@ -161,41 +173,40 @@ function inlineRef(schema, limit) {
   else if (limit) return countKeys(schema) <= limit;
 }
 
-
 function checkNoRef(schema) {
   var item;
   if (Array.isArray(schema)) {
-    for (var i=0; i<schema.length; i++) {
+    for (var i = 0; i < schema.length; i++) {
       item = schema[i];
-      if (typeof item == 'object' && !checkNoRef(item)) return false;
+      if (typeof item == "object" && !checkNoRef(item)) return false;
     }
   } else {
     for (var key in schema) {
-      if (key == '$ref') return false;
+      if (key == "$ref") return false;
       item = schema[key];
-      if (typeof item == 'object' && !checkNoRef(item)) return false;
+      if (typeof item == "object" && !checkNoRef(item)) return false;
     }
   }
   return true;
 }
 
-
 function countKeys(schema) {
-  var count = 0, item;
+  var count = 0,
+    item;
   if (Array.isArray(schema)) {
-    for (var i=0; i<schema.length; i++) {
+    for (var i = 0; i < schema.length; i++) {
       item = schema[i];
-      if (typeof item == 'object') count += countKeys(item);
+      if (typeof item == "object") count += countKeys(item);
       if (count == Infinity) return Infinity;
     }
   } else {
     for (var key in schema) {
-      if (key == '$ref') return Infinity;
+      if (key == "$ref") return Infinity;
       if (SIMPLE_INLINED[key]) {
         count++;
       } else {
         item = schema[key];
-        if (typeof item == 'object') count += countKeys(item) + 1;
+        if (typeof item == "object") count += countKeys(item) + 1;
         if (count == Infinity) return Infinity;
       }
     }
@@ -203,68 +214,81 @@ function countKeys(schema) {
   return count;
 }
 
-
 function getFullPath(id, normalize) {
   if (normalize !== false) id = normalizeId(id);
   var p = URI.parse(id);
   return _getFullPath(p);
 }
 
-
 function _getFullPath(p) {
-  return URI.serialize(p).split('#')[0] + '#';
+  return URI.serialize(p).split("#")[0] + "#";
 }
-
 
 var TRAILING_SLASH_HASH = /#\/?$/;
 function normalizeId(id) {
-  return id ? id.replace(TRAILING_SLASH_HASH, '') : '';
+  return id ? id.replace(TRAILING_SLASH_HASH, "") : "";
 }
-
 
 function resolveUrl(baseId, id) {
   id = normalizeId(id);
   return URI.resolve(baseId, id);
 }
 
-
 /* @this Ajv */
 function resolveIds(schema) {
   var schemaId = normalizeId(this._getId(schema));
-  var baseIds = {'': schemaId};
-  var fullPaths = {'': getFullPath(schemaId, false)};
+  var baseIds = { "": schemaId };
+  var fullPaths = { "": getFullPath(schemaId, false) };
   var localRefs = {};
   var self = this;
 
-  traverse(schema, {allKeys: true}, function(sch, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
-    if (jsonPtr === '') return;
-    var id = self._getId(sch);
-    var baseId = baseIds[parentJsonPtr];
-    var fullPath = fullPaths[parentJsonPtr] + '/' + parentKeyword;
-    if (keyIndex !== undefined)
-      fullPath += '/' + (typeof keyIndex == 'number' ? keyIndex : util.escapeFragment(keyIndex));
+  traverse(
+    schema,
+    { allKeys: true },
+    function (
+      sch,
+      jsonPtr,
+      rootSchema,
+      parentJsonPtr,
+      parentKeyword,
+      parentSchema,
+      keyIndex
+    ) {
+      if (jsonPtr === "") return;
+      var id = self._getId(sch);
+      var baseId = baseIds[parentJsonPtr];
+      var fullPath = fullPaths[parentJsonPtr] + "/" + parentKeyword;
+      if (keyIndex !== undefined)
+        fullPath +=
+          "/" +
+          (typeof keyIndex == "number"
+            ? keyIndex
+            : util.escapeFragment(keyIndex));
 
-    if (typeof id == 'string') {
-      id = baseId = normalizeId(baseId ? URI.resolve(baseId, id) : id);
+      if (typeof id == "string") {
+        id = baseId = normalizeId(baseId ? URI.resolve(baseId, id) : id);
 
-      var refVal = self._refs[id];
-      if (typeof refVal == 'string') refVal = self._refs[refVal];
-      if (refVal && refVal.schema) {
-        if (!equal(sch, refVal.schema))
-          throw new Error('id "' + id + '" resolves to more than one schema');
-      } else if (id != normalizeId(fullPath)) {
-        if (id[0] == '#') {
-          if (localRefs[id] && !equal(sch, localRefs[id]))
+        var refVal = self._refs[id];
+        if (typeof refVal == "string") refVal = self._refs[refVal];
+        if (refVal && refVal.schema) {
+          if (!equal(sch, refVal.schema))
             throw new Error('id "' + id + '" resolves to more than one schema');
-          localRefs[id] = sch;
-        } else {
-          self._refs[id] = fullPath;
+        } else if (id != normalizeId(fullPath)) {
+          if (id[0] == "#") {
+            if (localRefs[id] && !equal(sch, localRefs[id]))
+              throw new Error(
+                'id "' + id + '" resolves to more than one schema'
+              );
+            localRefs[id] = sch;
+          } else {
+            self._refs[id] = fullPath;
+          }
         }
       }
+      baseIds[jsonPtr] = baseId;
+      fullPaths[jsonPtr] = fullPath;
     }
-    baseIds[jsonPtr] = baseId;
-    fullPaths[jsonPtr] = fullPath;
-  });
+  );
 
   return localRefs;
 }

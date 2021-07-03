@@ -1,9 +1,9 @@
-var async = require('./async.js');
+var async = require("./async.js");
 
 // API
 module.exports = {
   iterator: wrapIterator,
-  callback: wrapCallback
+  callback: wrapCallback,
 };
 
 /**
@@ -13,26 +13,20 @@ module.exports = {
  * @param   {function} iterator - function to wrap
  * @returns {function} - wrapped function
  */
-function wrapIterator(iterator)
-{
+function wrapIterator(iterator) {
   var stream = this;
 
-  return function(item, key, cb)
-  {
-    var aborter
-      , wrappedCb = async(wrapIteratorCallback.call(stream, cb, key))
-      ;
-
+  return function (item, key, cb) {
+    var aborter,
+      wrappedCb = async(wrapIteratorCallback.call(stream, cb, key));
     stream.jobs[key] = wrappedCb;
 
     // it's either shortcut (item, cb)
-    if (iterator.length == 2)
-    {
+    if (iterator.length == 2) {
       aborter = iterator(item, wrappedCb);
     }
     // or long format (item, key, cb)
-    else
-    {
+    else {
       aborter = iterator(item, key, wrappedCb);
     }
 
@@ -49,12 +43,10 @@ function wrapIterator(iterator)
  * @param   {function} callback - function to wrap
  * @returns {function} - wrapped function
  */
-function wrapCallback(callback)
-{
+function wrapCallback(callback) {
   var stream = this;
 
-  var wrapped = function(error, result)
-  {
+  var wrapped = function (error, result) {
     return finisher.call(stream, error, result, callback);
   };
 
@@ -71,15 +63,12 @@ function wrapCallback(callback)
  * @param   {number|string} key - iteration key
  * @returns {function} wrapped callback
  */
-function wrapIteratorCallback(callback, key)
-{
+function wrapIteratorCallback(callback, key) {
   var stream = this;
 
-  return function(error, output)
-  {
+  return function (error, output) {
     // don't repeat yourself
-    if (!(key in stream.jobs))
-    {
+    if (!(key in stream.jobs)) {
       callback(error, output);
       return;
     }
@@ -87,7 +76,7 @@ function wrapIteratorCallback(callback, key)
     // clean up jobs
     delete stream.jobs[key];
 
-    return streamer.call(stream, error, {key: key, value: output}, callback);
+    return streamer.call(stream, error, { key: key, value: output }, callback);
   };
 }
 
@@ -99,13 +88,11 @@ function wrapIteratorCallback(callback, key)
  * @param {mixed} output - iterator output
  * @param {function} callback - callback that expects iterator results
  */
-function streamer(error, output, callback)
-{
-  if (error && !this.error)
-  {
+function streamer(error, output, callback) {
+  if (error && !this.error) {
     this.error = error;
     this.pause();
-    this.emit('error', error);
+    this.emit("error", error);
     // send back value only, as expected
     callback(error, output && output.value);
     return;
@@ -127,12 +114,10 @@ function streamer(error, output, callback)
  * @param {mixed} output - iterator output
  * @param {function} callback - callback that expects final results
  */
-function finisher(error, output, callback)
-{
+function finisher(error, output, callback) {
   // signal end of the stream
   // only for successfully finished streams
-  if (!error)
-  {
+  if (!error) {
     this.push(null);
   }
 

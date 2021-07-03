@@ -16,50 +16,50 @@ limitations under the License.
 
 var BoilerPlate = require("../Boilerplate");
 
-var ZoomControls = module.exports = function() {
-	var scope = this;
-	BoilerPlate.call(this);
+var ZoomControls = (module.exports = function () {
+  var scope = this;
+  BoilerPlate.call(this);
 
-	this.name = "ZoomControls";
+  this.name = "ZoomControls";
 
-	// ------------------------------------------------------------
-	// VARS
-	// ------------------------------------------------------------
+  // ------------------------------------------------------------
+  // VARS
+  // ------------------------------------------------------------
 
-	this.zoomInIcon = document.getElementById("plusIcon");
-	this.zoomInIcon.addEventListener("mousedown", function() {
-		scope.zoomInIcon.classList.add("Active");
-	});
-	this.zoomInIcon.addEventListener("mouseup", function() {
-		scope.zoomInIcon.classList.remove("Active");
-	});
-	this.zoomInIcon.addEventListener("click", function() {
-		scope.dispatchEvent("ON_ZOOM_IN_CLICKED",null);
-	});
+  this.zoomInIcon = document.getElementById("plusIcon");
+  this.zoomInIcon.addEventListener("mousedown", function () {
+    scope.zoomInIcon.classList.add("Active");
+  });
+  this.zoomInIcon.addEventListener("mouseup", function () {
+    scope.zoomInIcon.classList.remove("Active");
+  });
+  this.zoomInIcon.addEventListener("click", function () {
+    scope.dispatchEvent("ON_ZOOM_IN_CLICKED", null);
+  });
 
-	this.zoomOutIcon = document.getElementById("minusIcon");
-	this.zoomOutIcon.addEventListener("mousedown", function() {
-		scope.zoomOutIcon.classList.add("Active");
-	});
-	this.zoomOutIcon.addEventListener("mouseup", function() {
-		scope.zoomOutIcon.classList.remove("Active");
-	});
-	this.zoomOutIcon.addEventListener("click", function() {
-		scope.dispatchEvent("ON_ZOOM_OUT_CLICKED",null);
-	});
+  this.zoomOutIcon = document.getElementById("minusIcon");
+  this.zoomOutIcon.addEventListener("mousedown", function () {
+    scope.zoomOutIcon.classList.add("Active");
+  });
+  this.zoomOutIcon.addEventListener("mouseup", function () {
+    scope.zoomOutIcon.classList.remove("Active");
+  });
+  this.zoomOutIcon.addEventListener("click", function () {
+    scope.dispatchEvent("ON_ZOOM_OUT_CLICKED", null);
+  });
 
-	// ------------------------------------------------------------
-	// METHODS
-	// ------------------------------------------------------------
+  // ------------------------------------------------------------
+  // METHODS
+  // ------------------------------------------------------------
 
-	// ------------------------------------------------------------
-	// EVENTS
-	// ------------------------------------------------------------
+  // ------------------------------------------------------------
+  // EVENTS
+  // ------------------------------------------------------------
 
-	// ------------------------------------------------------------
-	// UTILITY
-	// ------------------------------------------------------------
-};
+  // ------------------------------------------------------------
+  // UTILITY
+  // ------------------------------------------------------------
+});
 
 ZoomControls.prototype = new BoilerPlate();
 ZoomControls.prototype.constructor = ZoomControls;

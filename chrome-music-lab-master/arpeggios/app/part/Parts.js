@@ -14,79 +14,92 @@
  * limitations under the License.
  */
 
-define(["jquery", "data/Parts", "part/Part", "part.scss", "data/Notes",
- "Tone/core/Transport", "part/SnapScroll", "part/TimelineIndicator"], 
-	function ($, PartsData, Part, partStyle, Notes, Transport, SnapScroll, 
-		TimelineIndicator) {
+define([
+  "jquery",
+  "data/Parts",
+  "part/Part",
+  "part.scss",
+  "data/Notes",
+  "Tone/core/Transport",
+  "part/SnapScroll",
+  "part/TimelineIndicator",
+], function (
+  $,
+  PartsData,
+  Part,
+  partStyle,
+  Notes,
+  Transport,
+  SnapScroll,
+  TimelineIndicator
+) {
+  var partsContainer = $("<div>", {
+    id: "Parts",
+  }).appendTo("body");
 
-	var partsContainer = $("<div>", {
-		"id" : "Parts"
-	}).appendTo("body");
+  //reset the chord when the parts container changes size
+  $(window).on("resize", function () {
+    Parts.setChord(currentNotes);
+  });
 
-	//reset the chord when the parts container changes size
-	$(window).on("resize", function(){
-		Parts.setChord(currentNotes);
-	});
+  /**
+   *  THE PARTS
+   */
+  var parts = [];
+  var currentPart = 0;
 
-	/**
-	 *  THE PARTS
-	 */
-	var parts = [];
-	var currentPart = 0;
+  //setup
+  for (var i = 0; i < PartsData.parts.length; i++) {
+    var part = new Part(partsContainer, PartsData.parts[i]);
+    part.enabled = false;
+    parts.push(part);
+  }
 
-	//setup
-	for (var i = 0; i < PartsData.parts.length; i++){
-		var part = new Part(partsContainer, PartsData.parts[i]);
-		part.enabled = false;
-		parts.push(part);
-	}
+  // the current notes
+  var currentNotes = [];
 
-	// the current notes
-	var currentNotes = [];
+  /**
+   * The return object
+   */
+  var Parts = {
+    setChord: function (notes) {
+      currentNotes = notes;
+      parts.forEach(function (part) {
+        part.setChord(notes);
+      });
+    },
+    initChord: function () {
+      parts.forEach(function (part) {
+        part.initChord();
+      });
+    },
+    setPart: function (currentIndex, nextIndex) {
+      var lastPart = parts[currentIndex];
+      lastPart.enable(false);
+      //setup the new part
+      currentPart = nextIndex;
+      parts[nextIndex].enable(true);
+    },
+  };
 
-	/**
-	 * The return object
-	 */
-	var Parts = {
-		setChord : function(notes){
-			currentNotes = notes;
-			parts.forEach(function(part){
-				part.setChord(notes);
-			});
-		},
-		initChord : function(){
-			parts.forEach(function(part){
-				part.initChord();
-			});	
-		},
-		setPart : function(currentIndex, nextIndex){
-			var lastPart = parts[currentIndex];
-			lastPart.enable(false);
-			//setup the new part
-			currentPart = nextIndex;
-			parts[nextIndex].enable(true);
-		}
-	};
+  //initially just set it to C
+  Parts.setChord(Notes.major.C);
+  //and enable the first part
+  parts[currentPart].enable(true);
 
-	//initially just set it to C
-	Parts.setChord(Notes.major.C);
-	//and enable the first part
-	parts[currentPart].enable(true);
+  //and make the parts scrollable
+  SnapScroll(partsContainer, Parts.setPart);
 
-	//and make the parts scrollable
-	SnapScroll(partsContainer, Parts.setPart);
+  //swap out the icons
+  partsContainer.find(".slick-prev").addClass("icon-svg_left_arrow");
+  partsContainer.find(".slick-next").addClass("icon-svg_right_arrow");
 
-	//swap out the icons
-	partsContainer.find(".slick-prev").addClass("icon-svg_left_arrow");
-	partsContainer.find(".slick-next").addClass("icon-svg_right_arrow");
+  //set the loop position of the transport
+  Transport.loop = true;
+  Transport.loopEnd = PartsData.loopDuration;
 
-	//set the loop position of the transport
-	Transport.loop = true;
-	Transport.loopEnd = PartsData.loopDuration;
+  //the timelint indicator
+  TimelineIndicator(partsContainer);
 
-	//the timelint indicator
-	TimelineIndicator(partsContainer);
-
-
-	return Parts;
+  return Parts;
 });

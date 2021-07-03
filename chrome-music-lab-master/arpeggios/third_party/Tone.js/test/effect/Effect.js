@@ -1,5 +1,5 @@
 define(["Tone/effect/Effect", "helper/Basic"], function (Effect, Basic) {
-	describe("Effect", function(){
-		Basic(Effect);
-	});
+  describe("Effect", function () {
+    Basic(Effect);
+  });
 });

@@ -15,25 +15,22 @@
  */
 
 define(["chordlabel.scss", "Translation"], function (labelStyle, Translate) {
+  var ChordLabel = function (container) {
+    this.element = document.createElement("DIV");
+    this.element.id = "ChordLabel";
+    container.appendChild(this.element);
 
-	var ChordLabel = function(container){
+    this.text = document.createElement("DIV");
+    this.text.id = "Text";
+    this.element.appendChild(this.text);
 
-		this.element = document.createElement("DIV");
-		this.element.id = "ChordLabel";
-		container.appendChild(this.element);
+    this.text.textContent = Translate.localize("Chords_UI_Press_Key");
+  };
 
-		this.text = document.createElement("DIV");
-		this.text.id = "Text";
-		this.element.appendChild(this.text);
+  ChordLabel.prototype.setChord = function (key, mode) {
+    key = key[0].toUpperCase() + key.substring(1);
+    this.text.textContent = Translate.localizeChord(key, mode);
+  };
 
-		this.text.textContent = Translate.localize("Chords_UI_Press_Key");
-
-	};
-
-	ChordLabel.prototype.setChord = function(key, mode){
-		key = key[0].toUpperCase() + key.substring(1);
-		this.text.textContent = Translate.localizeChord(key, mode);
-	};
-
-	return ChordLabel;
+  return ChordLabel;
 });

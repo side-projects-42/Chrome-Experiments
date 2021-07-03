@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-var util    = require('util');
+var util = require("util");
 
 // Constants
-var c = require('../const');
+var c = require("../const");
 
-var $$ = require('../utils');
-var HelpFormatter = require('./formatter.js');
+var $$ = require("../utils");
+var HelpFormatter = require("./formatter.js");
 
 /**
  * new RawDescriptionHelpFormatter(options)
@@ -26,11 +26,11 @@ util.inherits(ArgumentDefaultsHelpFormatter, HelpFormatter);
 
 ArgumentDefaultsHelpFormatter.prototype._getHelpString = function (action) {
   var help = action.help;
-  if (action.help.indexOf('%(defaultValue)s') === -1) {
+  if (action.help.indexOf("%(defaultValue)s") === -1) {
     if (action.defaultValue !== c.SUPPRESS) {
-      var defaulting_nargs = [ c.OPTIONAL, c.ZERO_OR_MORE ];
-      if (action.isOptional() || (defaulting_nargs.indexOf(action.nargs) >= 0)) {
-        help += ' (default: %(defaultValue)s)';
+      var defaulting_nargs = [c.OPTIONAL, c.ZERO_OR_MORE];
+      if (action.isOptional() || defaulting_nargs.indexOf(action.nargs) >= 0) {
+        help += " (default: %(defaultValue)s)";
       }
     }
   }
@@ -55,12 +55,16 @@ function RawDescriptionHelpFormatter(options) {
 
 util.inherits(RawDescriptionHelpFormatter, HelpFormatter);
 
-RawDescriptionHelpFormatter.prototype._fillText = function (text, width, indent) {
-  var lines = text.split('\n');
+RawDescriptionHelpFormatter.prototype._fillText = function (
+  text,
+  width,
+  indent
+) {
+  var lines = text.split("\n");
   lines = lines.map(function (line) {
     return $$.trimEnd(indent + line);
   });
-  return lines.join('\n');
+  return lines.join("\n");
 };
 module.exports.RawDescriptionHelpFormatter = RawDescriptionHelpFormatter;
 
@@ -81,7 +85,7 @@ function RawTextHelpFormatter(options) {
 util.inherits(RawTextHelpFormatter, RawDescriptionHelpFormatter);
 
 RawTextHelpFormatter.prototype._splitLines = function (text) {
-  return text.split('\n');
+  return text.split("\n");
 };
 
 module.exports.RawTextHelpFormatter = RawTextHelpFormatter;

@@ -1,60 +1,58 @@
-define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function(Tone){
+define(["Tone/core/Tone", "Tone/signal/GreaterThanZero"], function (Tone) {
+  "use strict";
 
-	"use strict";
+  /**
+   *  @class [OR](https://en.wikipedia.org/wiki/OR_gate)
+   *         the inputs together. True if at least one of the inputs is true.
+   *
+   *  @extends {Tone.SignalBase}
+   *  @constructor
+   *  @param {number} [inputCount=2] the input count
+   *  @example
+   * var or = new Tone.OR(2);
+   * var sigA = new Tone.Signal(0)connect(or, 0, 0);
+   * var sigB = new Tone.Signal(1)connect(or, 0, 1);
+   * //output of or is 1 because at least
+   * //one of the inputs is equal to 1.
+   */
+  Tone.OR = function (inputCount) {
+    inputCount = this.defaultArg(inputCount, 2);
+    Tone.call(this, inputCount, 0);
 
-	/**
-	 *  @class [OR](https://en.wikipedia.org/wiki/OR_gate)
-	 *         the inputs together. True if at least one of the inputs is true. 
-	 *
-	 *  @extends {Tone.SignalBase}
-	 *  @constructor
-	 *  @param {number} [inputCount=2] the input count
-	 *  @example
-	 * var or = new Tone.OR(2);
-	 * var sigA = new Tone.Signal(0)connect(or, 0, 0);
-	 * var sigB = new Tone.Signal(1)connect(or, 0, 1);
-	 * //output of or is 1 because at least
-	 * //one of the inputs is equal to 1. 
-	 */
-	Tone.OR = function(inputCount){
+    /**
+     *  a private summing node
+     *  @type {GainNode}
+     *  @private
+     */
+    this._sum = this.context.createGain();
 
-		inputCount = this.defaultArg(inputCount, 2);
-		Tone.call(this, inputCount, 0);
+    /**
+     *  @type {Tone.Equal}
+     *  @private
+     */
+    this._gtz = this.output = new Tone.GreaterThanZero();
 
-		/**
-		 *  a private summing node
-		 *  @type {GainNode}
-		 *  @private
-		 */
-		this._sum = this.context.createGain();
+    //make each of the inputs an alias
+    for (var i = 0; i < inputCount; i++) {
+      this.input[i] = this._sum;
+    }
+    this._sum.connect(this._gtz);
+  };
 
-		/**
-		 *  @type {Tone.Equal}
-		 *  @private
-		 */
-		this._gtz = this.output = new Tone.GreaterThanZero();
+  Tone.extend(Tone.OR, Tone.SignalBase);
 
-		//make each of the inputs an alias
-		for (var i = 0; i < inputCount; i++){
-			this.input[i] = this._sum;
-		}
-		this._sum.connect(this._gtz);
-	};
+  /**
+   *  clean up
+   *  @returns {Tone.OR} this
+   */
+  Tone.OR.prototype.dispose = function () {
+    Tone.prototype.dispose.call(this);
+    this._gtz.dispose();
+    this._gtz = null;
+    this._sum.disconnect();
+    this._sum = null;
+    return this;
+  };
 
-	Tone.extend(Tone.OR, Tone.SignalBase);
-
-	/**
-	 *  clean up
-	 *  @returns {Tone.OR} this
-	 */
-	Tone.OR.prototype.dispose = function(){
-		Tone.prototype.dispose.call(this);
-		this._gtz.dispose();
-		this._gtz = null;
-		this._sum.disconnect();
-		this._sum = null;
-		return this;
-	};
-
-	return Tone.OR;
+  return Tone.OR;
 });

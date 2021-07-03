@@ -14,65 +14,74 @@
  * limitations under the License.
  */
 
-define(["Tone/event/Part", "part/Note", "jquery", "sound/Sound"], 
-function (Part, Note, $, Sound) {
+define(["Tone/event/Part", "part/Note", "jquery", "sound/Sound"], function (
+  Part,
+  Note,
+  $,
+  Sound
+) {
+  var ArpPart = function (container, notes) {
+    this.element = $("<div>", {
+      class: "Part",
+    }).appendTo(container);
 
-	var ArpPart = function(container, notes){
+    this.notes = [];
+    //make each of the notes in the part
+    var i;
+    for (i = 0; i < notes.length; i++) {
+      this.notes.push([
+        notes[i].time,
+        new Note(
+          this.element,
+          notes[i].time,
+          notes[i].degree,
+          notes[i].duration
+        ),
+      ]);
+    }
 
-		this.element = $("<div>", {
-			"class" : "Part"
-		}).appendTo(container);
+    this.part = new Part(this.onnote.bind(this), this.notes).start(0);
 
-		this.notes = [];
-		//make each of the notes in the part
-		var i;
-		for (i = 0; i < notes.length; i++){
-			this.notes.push([notes[i].time, new Note(this.element, notes[i].time, notes[i].degree, notes[i].duration)]);
-		}
+    this.enabled = true;
+  };
 
-		this.part = new Part(this.onnote.bind(this), this.notes).start(0);
+  ArpPart.prototype.onnote = function (time, note) {
+    if (this.enabled) {
+      // console.log(note.note)
+      var duration = this.part.toSeconds(note.duration);
+      note.play(duration);
+      Sound.play(this.chord[note.degree], time, duration);
+    }
+  };
 
-		this.enabled = true;
+  ArpPart.prototype.enable = function (enabled) {
+    this.enabled = enabled;
+    if (enabled) {
+      this.setChord(this.chord);
+    }
+  };
 
-	};
+  /**
+   *  Reset the current chord
+   */
+  ArpPart.prototype.initChord = function () {
+    var notes = this.chord;
+    this.notes.forEach(function (note) {
+      note[1].setChord(notes);
+    });
+  };
 
-	ArpPart.prototype.onnote = function(time, note) {
-		if (this.enabled){
-			// console.log(note.note)
-			var duration = this.part.toSeconds(note.duration);
-			note.play(duration);
-			Sound.play(this.chord[note.degree], time, duration);
-		}
-	};
+  /**
+   *  The array of midi note numbers
+   */
+  ArpPart.prototype.setChord = function (notes) {
+    if (this.enabled) {
+      this.notes.forEach(function (note) {
+        note[1].setChord(notes);
+      });
+    }
+    this.chord = notes;
+  };
 
-	ArpPart.prototype.enable = function(enabled) {
-		this.enabled = enabled;
-		if (enabled){
-			this.setChord(this.chord);	
-		} 
-	};
-
-	/**
-	 *  Reset the current chord
-	 */
-	ArpPart.prototype.initChord = function() {
-		var notes = this.chord;
-		this.notes.forEach(function(note){
-			note[1].setChord(notes);
-		});
-	};
-
-	/**
-	 *  The array of midi note numbers
-	 */
-	ArpPart.prototype.setChord = function(notes) {
-		if (this.enabled){
-			this.notes.forEach(function(note){
-				note[1].setChord(notes);
-			});
-		}
-		this.chord = notes;
-	};
-
-	return ArpPart;
+  return ArpPart;
 });

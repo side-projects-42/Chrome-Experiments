@@ -1,16 +1,15 @@
 @import "common.scss";
 
-
 #PianoHarp {
-	position: absolute;
-	bottom: $Margin;
-	left: $Margin;
-	z-index: 3;
+  position: absolute;
+  bottom: $Margin;
+  left: $Margin;
+  z-index: 3;
 }
 
 #MetronomeButton {
-	position: absolute;
-	bottom: $Margin;
-	right: $Margin;
-	z-index: 3;
+  position: absolute;
+  bottom: $Margin;
+  right: $Margin;
+  z-index: 3;
 }

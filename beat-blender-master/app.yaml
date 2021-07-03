@@ -17,56 +17,55 @@ api_version: 1
 threadsafe: true
 
 handlers:
+  - url: /
+    script: main.app
 
-- url: /
-  script: main.app
+  - url: /ai/beat-blender/view
+    script: main.app
 
-- url: /ai/beat-blender/view
-  script: main.app
+  - url: /ai/beat-blender/view/
+    static_files: index.html
+    upload: index.html
 
-- url: /ai/beat-blender/view/
-  static_files: index.html
-  upload: index.html
+  - url: /ai/beat-blender/view/main
+    static_files: index.html
+    upload: index.html
 
-- url: /ai/beat-blender/view/main
-  static_files: index.html
-  upload: index.html
+  - url: /ai/beat-blenader/view/share
+    static_files: index.html
+    upload: index.html
 
-- url: /ai/beat-blenader/view/share
-  static_files: index.html
-  upload: index.html
+  - url: /ai/beat-blenader/view/share/
+    static_files: index.html
+    upload: index.html
 
-- url: /ai/beat-blenader/view/share/
-  static_files: index.html
-  upload: index.html
+  - url: /ai/beat-blender/view/share/.*
+    static_files: index.html
+    upload: index.html
 
-- url: /ai/beat-blender/view/share/.*
-  static_files: index.html
-  upload: index.html
+  - url: /ai/beat-blender/view/about
+    static_files: index.html
+    upload: index.html
 
-- url: /ai/beat-blender/view/about
-  static_files: index.html
-  upload: index.html
+  - url: /ai/beat-bleander/view/main
+    static_files: index.html
+    upload: index.html
 
-- url: /ai/beat-bleander/view/main
-  static_files: index.html
-  upload: index.html
+  - url: /ai/beat-blender/view/assets
+    static_dir: assets
 
-- url: /ai/beat-blender/view/assets
-  static_dir: assets
-
-- url: /ai/beat-blender/view/third_party
-  static_dir: third_party
+  - url: /ai/beat-blender/view/third_party
+    static_dir: third_party
 
 skip_files:
-- ^.git/.*
-- ^.*node_modules(/.*)?
-- ^node_modules/(.*/)?
-- ^js/(.*/)?
-- ^json/(.*/)?
-- ^less/(.*/)?
-- ^assets/big_melodies/(.*/)?
-- ^big_loopz_mel/(.*/)?
-- ^ml-loopz-demo-website/(.*/)?
-- ^big_loopz_mel/(.*/)?
-- ^assets/big_melodies/(.*/)?
+  - ^.git/.*
+  - ^.*node_modules(/.*)?
+  - ^node_modules/(.*/)?
+  - ^js/(.*/)?
+  - ^json/(.*/)?
+  - ^less/(.*/)?
+  - ^assets/big_melodies/(.*/)?
+  - ^big_loopz_mel/(.*/)?
+  - ^ml-loopz-demo-website/(.*/)?
+  - ^big_loopz_mel/(.*/)?
+  - ^assets/big_melodies/(.*/)?

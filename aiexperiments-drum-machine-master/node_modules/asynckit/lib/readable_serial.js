@@ -1,4 +1,4 @@
-var serial = require('../serial.js');
+var serial = require("../serial.js");
 
 // API
 module.exports = ReadableSerial;
@@ -11,15 +11,13 @@ module.exports = ReadableSerial;
  * @param   {function} callback - invoked when all elements processed
  * @returns {stream.Readable#}
  */
-function ReadableSerial(list, iterator, callback)
-{
-  if (!(this instanceof ReadableSerial))
-  {
+function ReadableSerial(list, iterator, callback) {
+  if (!(this instanceof ReadableSerial)) {
     return new ReadableSerial(list, iterator, callback);
   }
 
   // turn on object mode
-  ReadableSerial.super_.call(this, {objectMode: true});
+  ReadableSerial.super_.call(this, { objectMode: true });
 
   this._start(serial, list, iterator, callback);
 }

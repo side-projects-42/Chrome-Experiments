@@ -14,18 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var Config = module.exports = {
-	isStatsEnabled: false,
-	isDebugEnabled: false,
-	isAudioDisabled: false,
-	isResizeDisabled: false,
-	isSplashDisabled: false,
-	maxChunks: 50,
-	maxChunksMobile: 25,
-	domain: "./", 	
-	paths: {
-		tsne: "meta/",
-		audio: "audio/"
-	}
-
-};
+var Config = (module.exports = {
+  isStatsEnabled: false,
+  isDebugEnabled: false,
+  isAudioDisabled: false,
+  isResizeDisabled: false,
+  isSplashDisabled: false,
+  maxChunks: 50,
+  maxChunksMobile: 25,
+  domain: "./",
+  paths: {
+    tsne: "meta/",
+    audio: "audio/",
+  },
+});

@@ -19,24 +19,24 @@
 // [dammit]: acorn_loose.js
 // [walk]: util/walk.js
 
-import {Parser} from "./state"
-import "./parseutil"
-import "./statement"
-import "./lval"
-import "./expression"
-import "./location"
+import { Parser } from "./state";
+import "./parseutil";
+import "./statement";
+import "./lval";
+import "./expression";
+import "./location";
 
-export {Parser, plugins} from "./state"
-export {defaultOptions} from "./options"
-export {Position, SourceLocation, getLineInfo} from "./locutil"
-export {Node} from "./node"
-export {TokenType, types as tokTypes} from "./tokentype"
-export {TokContext, types as tokContexts} from "./tokencontext"
-export {isIdentifierChar, isIdentifierStart} from "./identifier"
-export {Token} from "./tokenize"
-export {isNewLine, lineBreak, lineBreakG} from "./whitespace"
+export { Parser, plugins } from "./state";
+export { defaultOptions } from "./options";
+export { Position, SourceLocation, getLineInfo } from "./locutil";
+export { Node } from "./node";
+export { TokenType, types as tokTypes } from "./tokentype";
+export { TokContext, types as tokContexts } from "./tokencontext";
+export { isIdentifierChar, isIdentifierStart } from "./identifier";
+export { Token } from "./tokenize";
+export { isNewLine, lineBreak, lineBreakG } from "./whitespace";
 
-export const version = "3.3.0"
+export const version = "3.3.0";
 
 // The main exported interface (under `self.acorn` when in the
 // browser) is a `parse` function that takes a code string and
@@ -46,7 +46,7 @@ export const version = "3.3.0"
 // [api]: https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API
 
 export function parse(input, options) {
-  return new Parser(options, input).parse()
+  return new Parser(options, input).parse();
 }
 
 // This function tries to parse a single expression at a given
@@ -54,14 +54,14 @@ export function parse(input, options) {
 // that embed JavaScript expressions.
 
 export function parseExpressionAt(input, pos, options) {
-  let p = new Parser(options, input, pos)
-  p.nextToken()
-  return p.parseExpression()
+  let p = new Parser(options, input, pos);
+  p.nextToken();
+  return p.parseExpression();
 }
 
 // Acorn is organized as a tokenizer and a recursive-descent parser.
 // The `tokenizer` export provides an interface to the tokenizer.
 
 export function tokenizer(input, options) {
-  return new Parser(options, input)
+  return new Parser(options, input);
 }

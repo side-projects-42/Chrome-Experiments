@@ -5,22 +5,17 @@ module.exports = defer;
  *
  * @param {function} fn - function to run
  */
-function defer(fn)
-{
-  var nextTick = typeof setImmediate == 'function'
-    ? setImmediate
-    : (
-      typeof process == 'object' && typeof process.nextTick == 'function'
+function defer(fn) {
+  var nextTick =
+    typeof setImmediate == "function"
+      ? setImmediate
+      : typeof process == "object" && typeof process.nextTick == "function"
       ? process.nextTick
-      : null
-    );
+      : null;
 
-  if (nextTick)
-  {
+  if (nextTick) {
     nextTick(fn);
-  }
-  else
-  {
+  } else {
     setTimeout(fn, 0);
   }
 }

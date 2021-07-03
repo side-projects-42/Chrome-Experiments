@@ -15,50 +15,53 @@
  */
 
 define(["jquery", "loading.scss"], function ($, loadingStyle) {
+  var loading = $("<div>", {
+    id: "Loading",
+  });
 
-	var loading = $("<div>", {
-		"id" : "Loading",
-	});
+  var spinner = $("<div>", {
+    class: "SpinContainer",
+  }).appendTo(loading);
 
-	var spinner = $("<div>", {
-		"class" : "SpinContainer"
-	}).appendTo(loading);
+  var icon = $("<div>", {
+    class: "icon-svg_piano Icon",
+  }).appendTo(spinner);
 
-	var icon = $("<div>", {
-		"class" : "icon-svg_piano Icon"
-	}).appendTo(spinner);
+  var spinny = $("<div>")
+    .appendTo(spinner)
+    .html(
+      '<svg class="Spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="Circle" fill="none" stroke-width="3" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>'
+    );
 
-	var spinny = $("<div>").appendTo(spinner).html('<svg class="Spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="Circle" fill="none" stroke-width="3" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>');
+  var minTime = 700;
+  var loadStart = Date.now();
 
-	var minTime = 700;
-	var loadStart = Date.now();
+  function removeLoading() {
+    loading.removeClass("Visible");
+    setTimeout(function () {
+      loading.remove();
+    }, 500);
+  }
 
-	function removeLoading(){
-		loading.removeClass("Visible");
-		setTimeout(function(){
-			loading.remove();
-		}, 500);
-	}
-
-	return {
-		load : function(instrument){
-			if (instrument === "piano"){
-				loadStart = Date.now();
-				loading.appendTo("body");
-				setTimeout(function(){
-					loading.addClass("Visible");
-				}, 10);
-			}
-		},
-		resolve : function(){
-			var diff = Date.now() - loadStart;
-			if (diff > minTime){
-				removeLoading();
-			} else {
-				setTimeout(function(){
-					removeLoading();
-				}, minTime - diff);
-			}
-		}
-	};
+  return {
+    load: function (instrument) {
+      if (instrument === "piano") {
+        loadStart = Date.now();
+        loading.appendTo("body");
+        setTimeout(function () {
+          loading.addClass("Visible");
+        }, 10);
+      }
+    },
+    resolve: function () {
+      var diff = Date.now() - loadStart;
+      if (diff > minTime) {
+        removeLoading();
+      } else {
+        setTimeout(function () {
+          removeLoading();
+        }, minTime - diff);
+      }
+    },
+  };
 });

@@ -53,10 +53,10 @@ object setting some of the options listed below. The return value will
 be an abstract syntax tree object as specified by the
 [ESTree spec][estree].
 
-When  encountering   a  syntax   error,  the   parser  will   raise  a
-`SyntaxError` object with a meaningful  message. The error object will
+When encountering a syntax error, the parser will raise a
+`SyntaxError` object with a meaningful message. The error object will
 have a `pos` property that indicates the character offset at which the
-error occurred,  and a `loc`  object that contains a  `{line, column}`
+error occurred, and a `loc` object that contains a `{line, column}`
 object referring to that same position.
 
 [estree]: https://github.com/estree/estree
@@ -183,12 +183,10 @@ object referring to that same position.
 expression in a string, and return its AST. It will not complain if
 there is more of the string left after the expression.
 
-**getLineInfo**`(input, offset)` can be used to get a `{line,
-column}` object for a given program string and character offset.
+**getLineInfo**`(input, offset)` can be used to get a `{line, column}` object for a given program string and character offset.
 
 **tokenizer**`(input, options)` returns an object with a `getToken`
-method that can be called repeatedly to get the next token, a `{start,
-end, type, value}` object (with added `loc` property when the
+method that can be called repeatedly to get the next token, a `{start, end, type, value}` object (with added `loc` property when the
 `locations` option is enabled and `range` property when the `ranges`
 option is enabled). When the token's type is `tokTypes.eof`, you
 should stop calling the method, since it will keep returning that same
@@ -216,28 +214,29 @@ Esprima-specific format. In order to simulate same format in
 Acorn, consider following example:
 
 ```javascript
-var comments = [], tokens = [];
+var comments = [],
+  tokens = [];
 
-var ast = acorn.parse('var x = 42; // answer', {
-	// collect ranges for each node
-	ranges: true,
-	// collect comments in Esprima's format
-	onComment: comments,
-	// collect token ranges
-	onToken: tokens
+var ast = acorn.parse("var x = 42; // answer", {
+  // collect ranges for each node
+  ranges: true,
+  // collect comments in Esprima's format
+  onComment: comments,
+  // collect token ranges
+  onToken: tokens,
 });
 
 // attach comments using collected information
 escodegen.attachComments(ast, comments, tokens);
 
 // generate code
-console.log(escodegen.generate(ast, {comment: true}));
+console.log(escodegen.generate(ast, { comment: true }));
 // > 'var x = 42;    // answer'
 ```
 
 [escodegen]: https://github.com/estools/escodegen
 
-### dist/acorn_loose.js ###
+### dist/acorn_loose.js
 
 This file implements an error-tolerant parser. It exposes a single
 function. The loose parser is accessible in node.js via `require("acorn/dist/acorn_loose")`.
@@ -250,7 +249,7 @@ nodes with name `"✖"` as placeholders in places where it can't make
 sense of the input. Depends on `acorn.js`, because it uses the same
 tokenizer.
 
-### dist/walk.js ###
+### dist/walk.js
 
 Implements an abstract syntax tree walker. Will store its interface in
 `acorn.walk` when loaded without a module system.
@@ -300,7 +299,7 @@ boundaries, the inner one will be preferred.
 the given position.
 
 **findNodeAfter**`(node, pos, test, base, state)` is similar to
-`findNodeAround`, but will match all nodes *after* the given position
+`findNodeAround`, but will match all nodes _after_ the given position
 (testing outer nodes before inner nodes).
 
 ## Command line interface
@@ -367,18 +366,17 @@ A plugin should register itself by adding a property to
 `plugins` option can be passed, holding an object mapping plugin names
 to configuration values (or just `true` for plugins that don't take
 options). After the parser object has been created, the initialization
-functions for the chosen plugins are called with `(parser,
-configValue)` arguments. They are expected to use the `parser.extend`
+functions for the chosen plugins are called with `(parser, configValue)` arguments. They are expected to use the `parser.extend`
 method to extend parser methods. For example, the `readToken` method
 could be extended like this:
 
 ```javascript
-parser.extend("readToken", function(nextMethod) {
-  return function(code) {
-    console.log("Reading a token!")
-    return nextMethod.call(this, code)
-  }
-})
+parser.extend("readToken", function (nextMethod) {
+  return function (code) {
+    console.log("Reading a token!");
+    return nextMethod.call(this, code);
+  };
+});
 ```
 
 The `nextMethod` argument passed to `extend`'s second argument is the
@@ -386,22 +384,22 @@ previous value of this method, and should usually be called through to
 whenever the extended method does not handle the call itself.
 
 Similarly, the loose parser allows plugins to register themselves via
-`acorn.pluginsLoose`.  The extension mechanism is the same as for the
+`acorn.pluginsLoose`. The extension mechanism is the same as for the
 normal parser:
 
 ```javascript
-looseParser.extend("readToken", function(nextMethod) {
-  return function() {
-    console.log("Reading a token in the loose parser!")
-    return nextMethod.call(this)
-  }
-})
+looseParser.extend("readToken", function (nextMethod) {
+  return function () {
+    console.log("Reading a token in the loose parser!");
+    return nextMethod.call(this);
+  };
+});
 ```
 
 ### Existing plugins
 
- - [`acorn-jsx`](https://github.com/RReverser/acorn-jsx): Parse [Facebook JSX syntax extensions](https://github.com/facebook/jsx)
- - [`acorn-es7-plugin`](https://github.com/MatAtBread/acorn-es7-plugin/): Parse [async/await syntax proposal](https://github.com/tc39/ecmascript-asyncawait)
- - [`acorn-object-spread`](https://github.com/UXtemple/acorn-object-spread): Parse [object spread syntax proposal](https://github.com/sebmarkbage/ecmascript-rest-spread)
- - [`acorn-es7`](https://www.npmjs.com/package/acorn-es7): Parse [decorator syntax proposal](https://github.com/wycats/javascript-decorators)
- - [`acorn-objj`](https://www.npmjs.com/package/acorn-objj): [Objective-J](http://www.cappuccino-project.org/learn/objective-j.html) language parser built as Acorn plugin
+- [`acorn-jsx`](https://github.com/RReverser/acorn-jsx): Parse [Facebook JSX syntax extensions](https://github.com/facebook/jsx)
+- [`acorn-es7-plugin`](https://github.com/MatAtBread/acorn-es7-plugin/): Parse [async/await syntax proposal](https://github.com/tc39/ecmascript-asyncawait)
+- [`acorn-object-spread`](https://github.com/UXtemple/acorn-object-spread): Parse [object spread syntax proposal](https://github.com/sebmarkbage/ecmascript-rest-spread)
+- [`acorn-es7`](https://www.npmjs.com/package/acorn-es7): Parse [decorator syntax proposal](https://github.com/wycats/javascript-decorators)
+- [`acorn-objj`](https://www.npmjs.com/package/acorn-objj): [Objective-J](http://www.cappuccino-project.org/learn/objective-j.html) language parser built as Acorn plugin

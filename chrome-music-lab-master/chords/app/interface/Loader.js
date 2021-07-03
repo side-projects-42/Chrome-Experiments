@@ -15,28 +15,27 @@
  */
 
 define(["style/loading.scss"], function (loadingStyle) {
+  var loading = document.createElement("DIV");
+  loading.id = "Loading";
+  document.body.appendChild(loading);
 
-	var loading = document.createElement("DIV");
-	loading.id = "Loading";
-	document.body.appendChild(loading);
+  var minTime = 400;
+  var loadStart = Date.now();
 
-	var minTime = 400;
-	var loadStart = Date.now();
-
-	return {
-		load : function(instrument){
-			loadStart = Date.now();
-			loading.classList.add("Visible");
-		},
-		resolve : function(){
-			var diff = Date.now() - loadStart;
-			if (diff > minTime){
-				loading.classList.remove("Visible");
-			} else {
-				setTimeout(function(){
-					loading.classList.remove("Visible");
-				}, minTime - diff);
-			}
-		}
-	};
+  return {
+    load: function (instrument) {
+      loadStart = Date.now();
+      loading.classList.add("Visible");
+    },
+    resolve: function () {
+      var diff = Date.now() - loadStart;
+      if (diff > minTime) {
+        loading.classList.remove("Visible");
+      } else {
+        setTimeout(function () {
+          loading.classList.remove("Visible");
+        }, minTime - diff);
+      }
+    },
+  };
 });

@@ -6,21 +6,22 @@
  *
  * This class inherited from [[Action]]
  **/
-'use strict';
+"use strict";
 
-var util = require('util');
+var util = require("util");
 
-var ActionStoreConstant = require('./constant');
+var ActionStoreConstant = require("./constant");
 
 /*:nodoc:*
  * new ActionStoreTrue(options)
  * - options (object): options hash see [[Action.new]]
  *
  **/
-var ActionStoreTrue = module.exports = function ActionStoreTrue(options) {
+var ActionStoreTrue = (module.exports = function ActionStoreTrue(options) {
   options = options || {};
   options.constant = true;
-  options.defaultValue = options.defaultValue !== null ? options.defaultValue : false;
+  options.defaultValue =
+    options.defaultValue !== null ? options.defaultValue : false;
   ActionStoreConstant.call(this, options);
-};
+});
 util.inherits(ActionStoreTrue, ActionStoreConstant);

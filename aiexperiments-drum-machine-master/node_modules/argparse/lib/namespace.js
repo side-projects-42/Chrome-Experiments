@@ -8,18 +8,18 @@
  *
  * [1]:http://docs.python.org/dev/library/argparse.html#the-namespace-object
  **/
-'use strict';
+"use strict";
 
-var $$ = require('./utils');
+var $$ = require("./utils");
 
 /**
  * new Namespace(options)
  * - options(object): predefined propertis for result object
  *
  **/
-var Namespace = module.exports = function Namespace(options) {
+var Namespace = (module.exports = function Namespace(options) {
   $$.extend(this, options);
-};
+});
 
 /**
  * Namespace#isset(key) -> Boolean
@@ -40,7 +40,7 @@ Namespace.prototype.isset = function (key) {
  * If key object then set all key properties to namespace object
  **/
 Namespace.prototype.set = function (key, value) {
-  if (typeof (key) === 'object') {
+  if (typeof key === "object") {
     $$.extend(this, key);
   } else {
     this[key] = value;

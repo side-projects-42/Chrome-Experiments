@@ -14,125 +14,163 @@
  * limitations under the License.
  */
 
-define(['data/Colors', 'data/Config', 'tween.js'], function(Colors, Config, TWEEN) {
+define(["data/Colors", "data/Config", "tween.js"], function (
+  Colors,
+  Config,
+  TWEEN
+) {
+  var tileMargin = Config.tileMargin;
 
-	var tileMargin = Config.tileMargin;
+  var AI = function (tile, GRID) {
+    //a refernce to the tile
+    this.tile = tile;
 
-	var AI = function(tile, GRID) {
-		//a refernce to the tile
-		this.tile = tile;
+    this._offsetX = 0;
+    this._offsetY = 0;
 
-		this._offsetX = 0;
-		this._offsetY = 0;
+    this._currentX = 0;
+    this._currentY = 0;
 
-		this._currentX = 0;
-		this._currentY = 0;
+    this._tween = null;
 
-		this._tween = null;
+    this.GRID = GRID;
+  };
 
-		this.GRID = GRID;
+  AI.prototype.draw = function (
+    context,
+    width,
+    height,
+    activeColumn,
+    offset,
+    direction
+  ) {
+    if (this._offsetX !== offset.x || this._offsetY !== offset.y) {
+      this.move(offset.x, offset.y, direction);
+    }
 
-	};
+    var x = (this.tile.x + this._currentX) % Config.gridWidth;
+    var y = (this.tile.y + this._currentY) % Config.gridHeight;
 
-	AI.prototype.draw = function(context, width, height, activeColumn, offset, direction) {
+    this._drawRect(context, x, y, width, height, activeColumn);
 
-		if (this._offsetX !== offset.x || this._offsetY !== offset.y) {
-			this.move(offset.x, offset.y, direction);
-		} 
+    if (
+      this.tile.y + this._currentY > Config.gridHeight - 1 &&
+      this.tile.y + this._currentY < Config.gridHeight
+    ) {
+      //draw another copy
+      var remainerY = this._currentY % 1;
+      remainerY -= 1;
+      this._drawRect(context, x, remainerY, width, height, activeColumn);
+    } else if (
+      this.tile.x + this._currentX > Config.gridWidth - 1 &&
+      this.tile.x + this._currentX < Config.gridWidth
+    ) {
+      var remainerX = this._currentX % 1;
+      remainerX -= 1;
+      this._drawRect(context, remainerX, y, width, height, activeColumn);
+    }
+  };
 
+  AI.prototype._drawRect = function (
+    context,
+    x,
+    y,
+    width,
+    height,
+    activeColumn
+  ) {
+    context.globalAlpha = 0.5;
+    if ((this.tile.x + this._offsetX) % Config.gridWidth === activeColumn) {
+      context.fillStyle = Colors.darkGrey;
+    } else {
+      context.fillStyle = Colors.grey;
+    }
+    context.beginPath();
+    context.fillRect(
+      x * width + tileMargin,
+      y * height + tileMargin,
+      width - tileMargin * 2,
+      height - tileMargin * 2
+    );
+    context.globalAlpha = 1;
+  };
 
-		var x = (this.tile.x + this._currentX) % Config.gridWidth;
-		var y = (this.tile.y + this._currentY) % Config.gridHeight;
+  AI.prototype.move = function (toX, toY, direction) {
+    var xAdder = 0;
+    var yAdder = 0;
 
-		this._drawRect(context, x, y, width, height, activeColumn);
+    var yRemainder = this._currentY % 1;
+    var xRemainder = this._currentX % 1;
 
-		if ((this.tile.y + this._currentY) > Config.gridHeight - 1 && (this.tile.y + this._currentY) < Config.gridHeight) {
-			//draw another copy
-			var remainerY = this._currentY % 1;
-			remainerY -= 1;
-			this._drawRect(context, x, remainerY, width, height, activeColumn);
-		} else if ((this.tile.x + this._currentX) > Config.gridWidth - 1 && (this.tile.x + this._currentX) < Config.gridWidth) {
-			var remainerX = this._currentX % 1;
-			remainerX -= 1;
-			this._drawRect(context, remainerX, y, width, height, activeColumn);
-		}
-	};
+    if (
+      direction === "down" &&
+      this._offsetY === Config.gridHeight - 1 &&
+      toY === 0
+    ) {
+      this._currentY = -1 - yRemainder;
+    } else if (
+      direction === "up" &&
+      this._offsetY === 0 &&
+      toY === Config.gridHeight - 1
+    ) {
+      this._currentY = Config.gridHeight + yRemainder;
+    } else if (direction === "up" && this._offsetY === 0) {
+      this._currentY = Config.gridHeight + yRemainder;
+    } else if (direction === "left" && this._offsetX === 0) {
+      this._currentX = Config.gridWidth + xRemainder;
+    } else if (
+      direction === "right" &&
+      this._offsetX === Config.gridWidth - 1 &&
+      toX === 0
+    ) {
+      this._currentX = -1 - xRemainder;
+    }
 
-	AI.prototype._drawRect = function(context, x, y, width, height, activeColumn) {
-		context.globalAlpha = 0.5;
-		if ((this.tile.x + this._offsetX) % Config.gridWidth === activeColumn) {
-			context.fillStyle = Colors.darkGrey;
-		} else {
-			context.fillStyle = Colors.grey;
-		}
-		context.beginPath();
-		context.fillRect(x * width + tileMargin, y * height + tileMargin, width - tileMargin * 2, height - tileMargin * 2);
-		context.globalAlpha = 1;
-	};
+    if (this._tween) {
+      this._tween.stop();
+    }
 
-	AI.prototype.move = function(toX, toY, direction) {
+    var self = this;
 
-		var xAdder = 0;
-		var yAdder = 0;
+    this._tween = new TWEEN.Tween({
+      x: this._currentX,
+      y: this._currentY,
+    })
+      .to(
+        {
+          x: toX,
+          y: toY,
+        },
+        200
+      )
+      .onUpdate(function () {
+        self._currentX = this.x;
+        self._currentY = this.y;
+        self.GRID._needsUpdate = true;
+      })
+      .start()
+      .easing(TWEEN.Easing.Quintic.InOut);
 
-		var yRemainder = (this._currentY % 1);
-		var xRemainder = (this._currentX % 1);
+    this._offsetX = toX;
+    this._offsetY = toY;
+  };
 
-		if (direction === 'down' && this._offsetY === Config.gridHeight - 1 && toY === 0) {
-			this._currentY = -1 - yRemainder;
-		} else if (direction === 'up' && this._offsetY === 0 && toY === Config.gridHeight - 1) {
-			this._currentY = Config.gridHeight + yRemainder;
-		} else if (direction === 'up' && this._offsetY === 0) {
-			this._currentY = Config.gridHeight + yRemainder;
-		} else if (direction === 'left' && this._offsetX === 0) {
-			this._currentX = Config.gridWidth + xRemainder;
-		} else if (direction === 'right' && this._offsetX === Config.gridWidth - 1 && toX === 0) {
-			this._currentX = -1 - xRemainder;
-		}
+  AI.prototype.isInColumn = function (column) {
+    return (this.tile.x + this._offsetX) % Config.gridWidth === column;
+  };
 
-		if (this._tween) {
-			this._tween.stop();
-		}
+  AI.prototype.getRow = function () {
+    return (this.tile.y + this._offsetY) % Config.gridHeight;
+  };
 
-		var self = this;
+  AI.prototype.dispose = function () {
+    if (this._tween) {
+      this._tween.stop();
+    }
+    this._tween = null;
+    this.tile = null;
+    this.GRID = null;
+  };
 
-		this._tween = new TWEEN.Tween({
-				x: this._currentX,
-				y: this._currentY,
-			})
-			.to({
-				x: toX,
-				y: toY,
-			}, 200)
-			.onUpdate(function() {
-				self._currentX = this.x;
-				self._currentY = this.y;
-				self.GRID._needsUpdate = true;
-			})
-			.start()
-			.easing(TWEEN.Easing.Quintic.InOut);
-
-		this._offsetX = toX;
-		this._offsetY = toY;
-
-	};
-
-	AI.prototype.isInColumn = function(column) {
-		return ((this.tile.x + this._offsetX) % Config.gridWidth) === column;
-	};
-
-	AI.prototype.getRow = function() {
-		return (this.tile.y + this._offsetY) % Config.gridHeight;
-	};
-
-	AI.prototype.dispose = function() {
-		if (this._tween) {
-			this._tween.stop();
-		}
-		this._tween = null;
-		this.tile = null;
-		this.GRID = null;
-	};
-
-	return AI;
+  return AI;
 });

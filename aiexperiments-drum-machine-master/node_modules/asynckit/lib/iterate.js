@@ -1,7 +1,5 @@
-var async = require('./async.js')
-  , abort = require('./abort.js')
-  ;
-
+var async = require("./async.js"),
+  abort = require("./abort.js");
 // API
 module.exports = iterate;
 
@@ -13,32 +11,26 @@ module.exports = iterate;
  * @param {object} state - current job status
  * @param {function} callback - invoked when all elements processed
  */
-function iterate(list, iterator, state, callback)
-{
+function iterate(list, iterator, state, callback) {
   // store current index
-  var key = state['keyedList'] ? state['keyedList'][state.index] : state.index;
+  var key = state["keyedList"] ? state["keyedList"][state.index] : state.index;
 
-  state.jobs[key] = runJob(iterator, key, list[key], function(error, output)
-  {
+  state.jobs[key] = runJob(iterator, key, list[key], function (error, output) {
     // don't repeat yourself
     // skip secondary callbacks
-    if (!(key in state.jobs))
-    {
+    if (!(key in state.jobs)) {
       return;
     }
 
     // clean up jobs
     delete state.jobs[key];
 
-    if (error)
-    {
+    if (error) {
       // don't process rest of the results
       // stop still active jobs
       // and reset the list
       abort(state);
-    }
-    else
-    {
+    } else {
       state.results[key] = output;
     }
 
@@ -56,18 +48,15 @@ function iterate(list, iterator, state, callback)
  * @param   {function} callback - invoked after iterator is done with the job
  * @returns {function|mixed} - job abort function or something else
  */
-function runJob(iterator, key, item, callback)
-{
+function runJob(iterator, key, item, callback) {
   var aborter;
 
   // allow shortcut if iterator expects only two arguments
-  if (iterator.length == 2)
-  {
+  if (iterator.length == 2) {
     aborter = iterator(item, async(callback));
   }
   // otherwise go with full three arguments
-  else
-  {
+  else {
     aborter = iterator(item, key, async(callback));
   }
 

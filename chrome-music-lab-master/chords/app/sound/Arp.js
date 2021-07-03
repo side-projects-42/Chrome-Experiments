@@ -14,50 +14,64 @@
  * limitations under the License.
  */
 
-define(["Tone/event/Sequence", "Tone/core/Transport", "sound/Player"], 
-	function (Sequence, Transport, Player) {
+define([
+  "Tone/event/Sequence",
+  "Tone/core/Transport",
+  "sound/Player",
+], function (Sequence, Transport, Player) {
+  var Arp = function (delayTime, lowestNote, highestNote) {
+    this.delayTime = delayTime;
 
-	var Arp = function(delayTime, lowestNote, highestNote){
+    /**
+     * The notes to play
+     * @type {Array}
+     * @private
+     */
+    this._notes = [];
 
-		this.delayTime = delayTime;
+    this.seq = new Sequence(
+      this._tick.bind(this),
+      [Infinity, 0, 1, 2],
+      delayTime
+    ).start(0);
+    this.seq.loop = false;
 
-		/**
-		 * The notes to play
-		 * @type {Array}
-		 * @private
-		 */
-		this._notes = [];
+    this.player = new Player(
+      "https://gweb-musiclab-site.appspot.com/static/sound/piano",
+      lowestNote,
+      highestNote,
+      3
+    );
+  };
 
-		this.seq = new Sequence(this._tick.bind(this), [Infinity, 0, 1, 2], delayTime).start(0);
-		this.seq.loop = false;
+  Arp.prototype.stop = function () {
+    Transport.stop();
+  };
 
-		this.player = new Player("https://gweb-musiclab-site.appspot.com/static/sound/piano", lowestNote, highestNote, 3);
-	};
+  Arp.prototype.play = function (notes) {
+    if (Transport.state === "started") {
+      Transport.ticks = 0;
+    }
+    this._notes = notes;
+    Transport.start();
+  };
 
-	Arp.prototype.stop = function(){
-		Transport.stop();
-	};
+  Arp.prototype.load = function (cb) {
+    this.player.load();
+    this.player.onload = cb;
+  };
 
-	Arp.prototype.play = function(notes){
-		if (Transport.state === "started"){
-			Transport.ticks = 0;
-		}
-		this._notes = notes;
-		Transport.start();
-	};
+  Arp.prototype._tick = function (time, index) {
+    if (this._notes.length > index) {
+      if (this.player.loaded) {
+        this.player.triggerAttackRelease(
+          this._notes[index],
+          this.delayTime * 2.5,
+          time
+        );
+      }
+    }
+  };
 
-	Arp.prototype.load = function(cb){
-		this.player.load();
-		this.player.onload = cb;
-	};
-
-	Arp.prototype._tick = function(time, index){
-		if (this._notes.length > index){
-			if (this.player.loaded){
-				this.player.triggerAttackRelease(this._notes[index], this.delayTime * 2.5, time);
-			}
-		}
-	};
-
-	return Arp;
+  return Arp;
 });

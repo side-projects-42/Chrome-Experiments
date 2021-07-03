@@ -1,9 +1,9 @@
-var serialOrdered = require('../serialOrdered.js');
+var serialOrdered = require("../serialOrdered.js");
 
 // API
 module.exports = ReadableSerialOrdered;
 // expose sort helpers
-module.exports.ascending  = serialOrdered.ascending;
+module.exports.ascending = serialOrdered.ascending;
 module.exports.descending = serialOrdered.descending;
 
 /**
@@ -15,15 +15,13 @@ module.exports.descending = serialOrdered.descending;
  * @param   {function} callback - invoked when all elements processed
  * @returns {stream.Readable#}
  */
-function ReadableSerialOrdered(list, iterator, sortMethod, callback)
-{
-  if (!(this instanceof ReadableSerialOrdered))
-  {
+function ReadableSerialOrdered(list, iterator, sortMethod, callback) {
+  if (!(this instanceof ReadableSerialOrdered)) {
     return new ReadableSerialOrdered(list, iterator, sortMethod, callback);
   }
 
   // turn on object mode
-  ReadableSerialOrdered.super_.call(this, {objectMode: true});
+  ReadableSerialOrdered.super_.call(this, { objectMode: true });
 
   this._start(serialOrdered, list, iterator, sortMethod, callback);
 }

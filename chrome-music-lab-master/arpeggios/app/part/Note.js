@@ -14,88 +14,119 @@
  * limitations under the License.
  */
 
-define(["jquery", "data/Notes", "teoria", "data/Parts", "Tone/core/Tone", "data/Colors"], 
-	function ($, Notes, teoria, PartsData, Tone, Colors) {
+define([
+  "jquery",
+  "data/Notes",
+  "teoria",
+  "data/Parts",
+  "Tone/core/Tone",
+  "data/Colors",
+], function ($, Notes, teoria, PartsData, Tone, Colors) {
+  /**
+   *  compute the lowest and highest note
+   */
+  var highestNote = -Infinity;
+  var lowestNote = Infinity;
+  for (var chordName in Notes.major) {
+    var chord = Notes.major[chordName];
+    for (var i = 0; i < chord.length; i++) {
+      if (chord[i] > highestNote) {
+        highestNote = chord[i];
+      }
+      if (chord[i] < lowestNote) {
+        lowestNote = chord[i];
+      }
+    }
+  }
 
-	/**
-	 *  compute the lowest and highest note
-	 */
-	var highestNote = -Infinity;
-	var lowestNote = Infinity;
-	for (var chordName in Notes.major){
-		var chord = Notes.major[chordName];
-		for (var i = 0; i < chord.length; i++){
-			if (chord[i] > highestNote){
-				highestNote = chord[i];
-			} 
-			if (chord[i] < lowestNote){
-				lowestNote = chord[i];	
-			}
-		}
-	}
+  var IndexToNote = [
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B",
+  ];
 
-	var IndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  /**
+   *  A Note object
+   */
+  var Note = function (container, time, degree, duration) {
+    this.container = container;
 
-	/**
-	 *  A Note object
-	 */
-	var Note = function(container, time, degree, duration){
+    this.element = $("<div>", {
+      class: "Note",
+    }).appendTo(container);
 
-		this.container = container;
+    this.highlight = $("<div>", {
+      id: "Highlight",
+    }).appendTo(this.element);
 
-		this.element = $("<div>", {
-			"class" : "Note"
-		}).appendTo(container);
+    this.time = time;
 
-		this.highlight = $("<div>", {
-			"id" : "Highlight"
-		}).appendTo(this.element);
+    this.degree = degree;
 
-		this.time = time;
+    this.duration = duration;
 
-		this.degree = degree;
+    var loopDuration = this.toSeconds(PartsData.loopDuration);
 
-		this.duration = duration;
+    this.resize();
+    $(window).resize(this.resize.bind(this));
+  };
 
-		var loopDuration = this.toSeconds(PartsData.loopDuration);
+  Tone.extend(Note);
 
-		this.resize();
-		$(window).resize(this.resize.bind(this));
-	};
+  Note.prototype.setChord = function (chord) {
+    //get this notes degree from the chord
+    var note = chord[this.degree];
+    //set the new position
+    var position = (note - lowestNote + 2) / (highestNote - lowestNote);
+    var height = this.container.height();
+    position *= height;
+    this.element.css("top", height - position);
+    //get the notes color
+    var octaveIndex = teoria.note.fromMIDI(note).chroma();
+    var noteName = IndexToNote[octaveIndex];
+    var color = Colors[noteName];
+    this.element.css("background-color", color);
+  };
 
-	Tone.extend(Note);
+  Note.prototype.resize = function () {
+    setTimeout(
+      function () {
+        var loopDuration = this.toSeconds(PartsData.loopDuration);
+        var width =
+          this.container.width() -
+          parseFloat(this.element.css("margin-left")) -
+          parseFloat(this.element.css("margin-right"));
+        this.element.width(
+          (this.toSeconds(this.duration) / loopDuration) * width
+        );
+        this.element.css(
+          "left",
+          (this.toSeconds(this.time) / loopDuration) * width
+        );
+      }.bind(this),
+      200
+    );
+  };
 
-	Note.prototype.setChord = function(chord) {
-		//get this notes degree from the chord
-		var note = chord[this.degree];
-		//set the new position
-		var position = (note - lowestNote + 2) / (highestNote - lowestNote);
-		var height = this.container.height();
-		position *= height;
-		this.element.css("top", height - position);
-		//get the notes color
-		var octaveIndex = teoria.note.fromMIDI(note).chroma();
-		var noteName = IndexToNote[octaveIndex];
-		var color = Colors[noteName];
-		this.element.css("background-color", color);
-	};
+  Note.prototype.play = function (duration) {
+    //add a class for the duration of the note
+    this.highlight.addClass("Active");
+    setTimeout(
+      function () {
+        this.highlight.removeClass("Active");
+      }.bind(this),
+      duration * 1000
+    );
+  };
 
-	Note.prototype.resize = function() {
-		setTimeout(function(){
-			var loopDuration = this.toSeconds(PartsData.loopDuration);
-			var width = this.container.width() - parseFloat(this.element.css("margin-left")) - parseFloat(this.element.css("margin-right"));
-			this.element.width((this.toSeconds(this.duration) / loopDuration) * width);
-			this.element.css("left", (this.toSeconds(this.time) / loopDuration) * width);
-		}.bind(this), 200);
-	};
-
-	Note.prototype.play = function(duration){
-		//add a class for the duration of the note
-		this.highlight.addClass("Active");
-		setTimeout(function(){
-			this.highlight.removeClass("Active");
-		}.bind(this), duration * 1000);
-	};
-
-	return Note;
+  return Note;
 });

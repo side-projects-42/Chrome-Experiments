@@ -6,8 +6,7 @@ module.exports = abort;
  *
  * @param {object} state - current state object
  */
-function abort(state)
-{
+function abort(state) {
   Object.keys(state.jobs).forEach(clean.bind(state));
 
   // reset leftover jobs
@@ -20,10 +19,8 @@ function abort(state)
  * @this  state
  * @param {string|number} key - job id to abort
  */
-function clean(key)
-{
-  if (typeof this.jobs[key] == 'function')
-  {
+function clean(key) {
+  if (typeof this.jobs[key] == "function") {
     this.jobs[key]();
   }
 }

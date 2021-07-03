@@ -14,49 +14,56 @@
  * limitations under the License.
  */
 
-define(['data/Colors', 'data/Config'], function(Colors, Config) {
+define(["data/Colors", "data/Config"], function (Colors, Config) {
+  var tileMargin = Config.tileMargin;
 
-	var tileMargin = Config.tileMargin;
+  var Tile = function (x, y, hover) {
+    this.x = x;
+    this.y = y;
 
-	var Tile = function(x, y, hover) {
+    this._hovered = hover || false;
+  };
 
-		this.x = x;
-		this.y = y;
+  Tile.prototype.draw = function (context, width, height, activeColumn) {
+    //get the note and color
+    var margin = tileMargin;
+    var note = Config.notes[this.y];
+    context.fillStyle = Colors[note];
+    context.beginPath();
+    context.fillRect(
+      this.x * width + tileMargin,
+      this.y * height + tileMargin,
+      width - tileMargin * 2,
+      height - tileMargin * 2
+    );
+    if (this._hovered || this.x === activeColumn) {
+      context.fillStyle = "rgba(255, 255, 255, 0.4)";
+      context.beginPath();
+      context.fillRect(
+        this.x * width + tileMargin,
+        this.y * height + tileMargin,
+        width - tileMargin * 2,
+        height - tileMargin * 2
+      );
+    }
+  };
 
-		this._hovered = hover || false;
-	};
+  Tile.prototype.setPosition = function (x, y) {
+    this.x = x;
+    this.y = y;
+  };
 
-	Tile.prototype.draw = function(context, width, height, activeColumn) {
+  Tile.prototype.hover = function () {
+    this._hovered = true;
+  };
 
-		//get the note and color
-		var margin = tileMargin;
-		var note = Config.notes[this.y];
-		context.fillStyle = Colors[note];
-		context.beginPath();
-		context.fillRect(this.x * width + tileMargin, this.y * height + tileMargin, width - tileMargin * 2, height - tileMargin * 2);
-		if (this._hovered || this.x === activeColumn) {
-			context.fillStyle = 'rgba(255, 255, 255, 0.4)';
-			context.beginPath();
-			context.fillRect(this.x * width + tileMargin, this.y * height + tileMargin, width - tileMargin * 2, height - tileMargin * 2);
-		}
-	};
+  Tile.prototype.unhover = function () {
+    this._hovered = false;
+  };
 
-	Tile.prototype.setPosition = function(x, y) {
-		this.x = x;
-		this.y = y;
-	};
+  Tile.prototype.isHovered = function () {
+    return this._hovered;
+  };
 
-	Tile.prototype.hover = function() {
-		this._hovered = true;
-	};
-
-	Tile.prototype.unhover = function() {
-		this._hovered = false;
-	};
-
-	Tile.prototype.isHovered = function() {
-		return this._hovered;
-	};
-
-	return Tile;
+  return Tile;
 });
