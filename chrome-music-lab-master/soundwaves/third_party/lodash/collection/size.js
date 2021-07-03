@@ -1,6 +1,6 @@
-var getLength = require('../internal/getLength'),
-    isLength = require('../internal/isLength'),
-    keys = require('../object/keys');
+var getLength = require("../internal/getLength"),
+  isLength = require("../internal/isLength"),
+  keys = require("../object/keys");
 
 /**
  * Gets the size of `collection` by returning its length for array-like

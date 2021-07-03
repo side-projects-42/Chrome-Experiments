@@ -1,6 +1,6 @@
-var assign = require('./assign'),
-    assignDefaults = require('../internal/assignDefaults'),
-    createDefaults = require('../internal/createDefaults');
+var assign = require("./assign"),
+  assignDefaults = require("../internal/assignDefaults"),
+  createDefaults = require("../internal/createDefaults");
 
 /**
  * Assigns own enumerable properties of source object(s) to the destination

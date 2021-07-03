@@ -14,52 +14,58 @@
  * limitations under the License.
  */
 
-define(["Tone/core/Buffer", "interface/Loader", "Tone/core/Transport", "fileplayer/Player"], 
-function (Buffer, Loader, Transport, MultiPlayer) {
+define([
+  "Tone/core/Buffer",
+  "interface/Loader",
+  "Tone/core/Transport",
+  "fileplayer/Player",
+], function (Buffer, Loader, Transport, MultiPlayer) {
+  var Piano = function () {
+    this._piano = new MultiPlayer(
+      "https://gweb-musiclab-site.appspot.com/static/sound/piano",
+      "A0",
+      "C8",
+      3
+    );
 
-	var Piano = function(){
+    this._allLoaded = false;
 
-		this._piano = new MultiPlayer("https://gweb-musiclab-site.appspot.com/static/sound/piano", "A0", "C8", 3);
+    this._transportWasStarted = false;
 
-		this._allLoaded = false;
+    Buffer.on("load", this._onload.bind(this));
 
-		this._transportWasStarted = false;
+    this._loader = null;
+  };
 
-		Buffer.on("load", this._onload.bind(this));
+  Piano.prototype.triggerAttackRelease = function (note, duration, time, vel) {
+    if (this._allLoaded) {
+      this._piano.triggerAttackRelease(note, duration, time, vel);
+    }
+  };
 
-		this._loader = null;
-	};
+  Piano.prototype.releaseAll = function () {
+    this._piano.releaseAll();
+  };
 
-	Piano.prototype.triggerAttackRelease = function(note, duration, time, vel){
-		if (this._allLoaded){
-			this._piano.triggerAttackRelease(note, duration, time, vel);
-		}
-	};
+  Piano.prototype.load = function () {
+    if (!this._allLoaded) {
+      this._loader = new Loader("piano");
+      this._piano.load();
+      this._transportWasStarted = Transport.state === "started";
+      if (this._transportWasStarted) {
+        Transport.pause();
+      }
+    }
+  };
 
-	Piano.prototype.releaseAll = function(){
-		this._piano.releaseAll();
-	};
+  Piano.prototype._onload = function () {
+    this._allLoaded = true;
+    this._loader.resolve();
+    if (this._transportWasStarted) {
+      Transport.start();
+      this._transportWasStarted = false;
+    }
+  };
 
-	Piano.prototype.load = function(){
-		if (!this._allLoaded){
-			this._loader = new Loader("piano");
-			this._piano.load();
-			this._transportWasStarted = Transport.state === "started";
-			if (this._transportWasStarted){
-				Transport.pause();
-			}
-		}
-	};
-
-	Piano.prototype._onload = function(){
-		this._allLoaded = true;
-		this._loader.resolve();
-		if (this._transportWasStarted){
-			Transport.start();
-			this._transportWasStarted = false;
-		}
-	};
-
-	return Piano;
-
+  return Piano;
 });

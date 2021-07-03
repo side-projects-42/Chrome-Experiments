@@ -1,4 +1,4 @@
-var isObject = require('../lang/isObject');
+var isObject = require("../lang/isObject");
 
 /**
  * Checks if `value` is in `cache` mimicking the return signature of
@@ -11,7 +11,10 @@ var isObject = require('../lang/isObject');
  */
 function cacheIndexOf(cache, value) {
   var data = cache.data,
-      result = (typeof value == 'string' || isObject(value)) ? data.set.has(value) : data.hash[value];
+    result =
+      typeof value == "string" || isObject(value)
+        ? data.set.has(value)
+        : data.hash[value];
 
   return result ? 0 : -1;
 }

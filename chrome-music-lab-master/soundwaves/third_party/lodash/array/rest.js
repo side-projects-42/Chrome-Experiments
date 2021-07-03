@@ -1,4 +1,4 @@
-var drop = require('./drop');
+var drop = require("./drop");
 
 /**
  * Gets all but the first element of `array`.

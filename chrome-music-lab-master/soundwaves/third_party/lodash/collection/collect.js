@@ -1,1 +1,1 @@
-module.exports = require('./map');
+module.exports = require("./map");

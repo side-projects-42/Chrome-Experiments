@@ -1,4 +1,4 @@
-var isObject = require('../lang/isObject');
+var isObject = require("../lang/isObject");
 
 /**
  * Adds `value` to the cache.
@@ -10,7 +10,7 @@ var isObject = require('../lang/isObject');
  */
 function cachePush(value) {
   var data = this.data;
-  if (typeof value == 'string' || isObject(value)) {
+  if (typeof value == "string" || isObject(value)) {
     data.set.add(value);
   } else {
     data.hash[value] = true;

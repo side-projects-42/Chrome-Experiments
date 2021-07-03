@@ -1,8 +1,8 @@
-var arrayConcat = require('../internal/arrayConcat'),
-    baseFlatten = require('../internal/baseFlatten'),
-    isArray = require('../lang/isArray'),
-    restParam = require('../function/restParam'),
-    toObject = require('../internal/toObject');
+var arrayConcat = require("../internal/arrayConcat"),
+  baseFlatten = require("../internal/baseFlatten"),
+  isArray = require("../lang/isArray"),
+  restParam = require("../function/restParam"),
+  toObject = require("../internal/toObject");
 
 /**
  * Creates a new array joining a wrapped array with any additional arrays
@@ -24,9 +24,9 @@ var arrayConcat = require('../internal/arrayConcat'),
  * console.log(array);
  * // => [1]
  */
-var wrapperConcat = restParam(function(values) {
+var wrapperConcat = restParam(function (values) {
   values = baseFlatten(values);
-  return this.thru(function(array) {
+  return this.thru(function (array) {
     return arrayConcat(isArray(array) ? array : [toObject(array)], values);
   });
 });

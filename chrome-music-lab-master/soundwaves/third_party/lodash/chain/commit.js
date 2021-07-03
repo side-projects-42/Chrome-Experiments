@@ -1,1 +1,1 @@
-module.exports = require('./wrapperCommit');
+module.exports = require("./wrapperCommit");

@@ -1,6 +1,6 @@
-var baseAt = require('../internal/baseAt'),
-    baseFlatten = require('../internal/baseFlatten'),
-    restParam = require('../function/restParam');
+var baseAt = require("../internal/baseAt"),
+  baseFlatten = require("../internal/baseFlatten"),
+  restParam = require("../function/restParam");
 
 /**
  * Creates an array of elements corresponding to the given keys, or indexes,
@@ -22,7 +22,7 @@ var baseAt = require('../internal/baseAt'),
  * _.at(['barney', 'fred', 'pebbles'], 0, 2);
  * // => ['barney', 'pebbles']
  */
-var at = restParam(function(collection, props) {
+var at = restParam(function (collection, props) {
   return baseAt(collection, baseFlatten(props));
 });
 

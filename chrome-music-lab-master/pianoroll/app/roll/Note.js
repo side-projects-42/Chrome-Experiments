@@ -14,109 +14,120 @@
  * limitations under the License.
  */
 
-define(["Tone/core/Transport", "data/Colors"], function (Transport, Colors){
+define(["Tone/core/Transport", "data/Colors"], function (Transport, Colors) {
+  /**
+   *  Notes manage both the visual element and trigger the synth
+   */
+  var Note = function (noteDescription, displayOptions) {
+    /**
+     *  Note stats
+     */
+    this.noteOn = Transport.toSeconds(noteDescription.time);
+    this.duration = Transport.toSeconds(noteDescription.duration);
+    this.noteOff = this.noteOn + this.duration;
 
-	/**
-	 *  Notes manage both the visual element and trigger the synth
-	 */
-	var Note = function(noteDescription, displayOptions){
+    //parse the name from the octave, and add it as a class
+    var noteName = noteDescription.note.match(
+      /^([a-g]{1}[b|#]{0,1})[0-9]+$/i
+    )[1];
 
-		/**
-		 *  Note stats
-		 */
-		this.noteOn = Transport.toSeconds(noteDescription.time);
-		this.duration = Transport.toSeconds(noteDescription.duration);
-		this.noteOff = this.noteOn + this.duration;
+    /**
+     * The notes color
+     */
+    this.color = Colors[noteName];
 
-		//parse the name from the octave, and add it as a class
-		var noteName = noteDescription.note.match(/^([a-g]{1}[b|#]{0,1})[0-9]+$/i)[1];
+    /**
+     *  the note name
+     */
+    this.note = noteDescription.note;
 
-		/**
-		 * The notes color
-		 */
-		this.color = Colors[noteName];
+    /**
+     *  the note velocity
+     */
+    this.velocity = noteDescription.velocity;
 
-		/**
-		 *  the note name
-		 */
-		this.note = noteDescription.note;
+    /**
+     *  MIDI note number
+     */
+    this.midiNote = noteDescription.midiNote;
 
-		/**
-		 *  the note velocity
-		 */
-		this.velocity = noteDescription.velocity;
+    /**
+     * If the note is triggered or not
+     */
+    this._triggered = false;
 
-		/**
-		 *  MIDI note number
-		 */
-		this.midiNote = noteDescription.midiNote;
+    /**
+     *  place it on the screen
+     */
+    var top =
+      (displayOptions.max - displayOptions.min) *
+      (1 -
+        (this.midiNote - displayOptions.min) /
+          (displayOptions.max - displayOptions.min));
+    top *= displayOptions.noteHeight - 2;
 
-		/**
-		 * If the note is triggered or not
-		 */
-		this._triggered = false;
+    //dimensions
+    this.top = top;
+    this.left = this.noteOn * displayOptions.pixelsPerSecond;
+    this.width = this.duration * displayOptions.pixelsPerSecond - 2;
+    this.width = Math.max(this.width, 3);
+    this.height = displayOptions.noteHeight - 2;
+  };
 
-		/**
-		 *  place it on the screen
-		 */
-		var top =  (displayOptions.max - displayOptions.min) * (1 - (this.midiNote - displayOptions.min) / (displayOptions.max - displayOptions.min));
-		top *=  displayOptions.noteHeight - 2;
+  /**
+   *  trigger the attack
+   */
+  Note.prototype.triggerAttack = function (time) {
+    this._triggered = true;
+  };
 
-		//dimensions
-		this.top = top;
-		this.left = this.noteOn * displayOptions.pixelsPerSecond;
-		this.width = (this.duration * displayOptions.pixelsPerSecond) - 2;
-		this.width = Math.max(this.width, 3);
-		this.height = displayOptions.noteHeight - 2;
-	};
+  /**
+   *  trigger the release
+   */
+  Note.prototype.triggerRelease = function (time) {
+    this._triggered = false;
+  };
 
-	/**
-	 *  trigger the attack
-	 */
-	Note.prototype.triggerAttack = function(time){
-		this._triggered = true;
-	};
+  Note.prototype.triggerAttackRelease = function (duration, time) {
+    duration = Transport.toSeconds(duration);
+    this.needsUpdate = true;
+    this._triggered = true;
+    setTimeout(
+      function () {
+        this._triggered = false;
+        this.needsUpdate = true;
+      }.bind(this),
+      duration * 1000
+    );
+  };
 
-	/**
-	 *  trigger the release
-	 */
-	Note.prototype.triggerRelease = function(time){
-		this._triggered = false;
-	};
+  /**
+   *  Display the element
+   */
+  Note.prototype.draw = function (context) {
+    context.beginPath();
+    if (this._triggered) {
+      context.fillStyle = "black";
+    } else {
+      context.fillStyle = this.color;
+    }
+    context.fillRect(
+      this.left * 2,
+      this.top * 2,
+      this.width * 2,
+      this.height * 2
+    );
+  };
 
-	Note.prototype.triggerAttackRelease = function(duration, time){
-		duration = Transport.toSeconds(duration);
-		this.needsUpdate = true;
-		this._triggered = true;
-		setTimeout(function(){
-			this._triggered = false;
-			this.needsUpdate = true;
-		}.bind(this), duration * 1000);
-	};
+  /**
+   *  trigger the release
+   */
+  Note.prototype.dispose = function (time) {
+    Transport.cancel(this.noteOnId);
+    Transport.cancel(this.noteOffId);
+    this.element.remove();
+    this.element = null;
+  };
 
-
-	/**
-	 *  Display the element
-	 */
-	Note.prototype.draw = function(context){
-		context.beginPath();
-		if (this._triggered){
-			context.fillStyle = "black";
-		} else {
-			context.fillStyle = this.color;
-		}
-		context.fillRect(this.left * 2, this.top * 2, this.width * 2, this.height * 2);
-	};
-
-	/**
-	 *  trigger the release
-	 */
-	Note.prototype.dispose = function(time){
-		Transport.cancel(this.noteOnId);
-		Transport.cancel(this.noteOffId);
-		this.element.remove();
-		this.element = null;
-	};
-
-	return Note;
+  return Note;
 });

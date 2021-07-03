@@ -15,48 +15,60 @@
  */
 
 define(function () {
+  var chromatic = [
+    "C",
+    "Db",
+    "D",
+    "Eb",
+    "E",
+    "F",
+    "Gb",
+    "G",
+    "Ab",
+    "A",
+    "Bb",
+    "B",
+  ];
 
-	var chromatic = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+  var respelling = { Db: "C#", Eb: "D#", Gb: "F#", Ab: "G#", Bb: "A#" };
 
-	var respelling = {"Db" : "C#", "Eb" : "D#", "Gb" : "F#", "Ab" : "G#", "Bb" : "A#"};
+  var splitRegexp = /(-?\d+)/;
 
-	var splitRegexp = /(-?\d+)/;
+  return {
+    getNotes: function (start, end) {
+      var startOctave = parseInt(start.split(splitRegexp)[1]);
+      var startNote = start.split(splitRegexp)[0];
+      startNote = chromatic.indexOf(startNote);
+      var endOctave = parseInt(end.split(splitRegexp)[1]);
+      var endNote = end.split(splitRegexp)[0];
+      endNote = chromatic.indexOf(endNote);
 
-	return {
-		getNotes : function(start, end){
-			var startOctave = parseInt(start.split(splitRegexp)[1]);
-			var startNote = start.split(splitRegexp)[0];
-			startNote = chromatic.indexOf(startNote);
-			var endOctave = parseInt(end.split(splitRegexp)[1]);
-			var endNote = end.split(splitRegexp)[0];
-			endNote = chromatic.indexOf(endNote);
+      var currentNote = startNote;
+      var currentOctave = startOctave;
 
-			var currentNote = startNote;
-			var currentOctave = startOctave;
+      var retNotes = [];
 
-			var retNotes = [];
+      while (!(currentNote === endNote && currentOctave === endOctave)) {
+        retNotes.push(chromatic[currentNote] + currentOctave);
 
-			while(!(currentNote === endNote && currentOctave === endOctave)){
-				retNotes.push(chromatic[currentNote] + currentOctave);
+        currentNote++;
 
-				currentNote++;
+        if (currentNote >= chromatic.length) {
+          currentNote = 0;
+          currentOctave++;
+        }
+      }
 
-				if (currentNote >= chromatic.length){
-					currentNote = 0;
-					currentOctave++;
-				}
-			}
-
-			return retNotes;
-		},
-		getRespelling : function(note){
-			var pitch = note.split(splitRegexp)[0];
-			var octave = parseInt(note.split(splitRegexp)[1]);
-			if (respelling.hasOwnProperty(pitch)){
-				return respelling[pitch] + octave.toString();
-			} else {
-				return null;
-			}
-		}
-	};
+      return retNotes;
+    },
+    getRespelling: function (note) {
+      var pitch = note.split(splitRegexp)[0];
+      var octave = parseInt(note.split(splitRegexp)[1]);
+      if (respelling.hasOwnProperty(pitch)) {
+        return respelling[pitch] + octave.toString();
+      } else {
+        return null;
+      }
+    },
+  };
 });

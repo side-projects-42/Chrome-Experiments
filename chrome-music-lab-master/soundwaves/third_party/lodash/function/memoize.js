@@ -1,7 +1,7 @@
-var MapCache = require('../internal/MapCache');
+var MapCache = require("../internal/MapCache");
 
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /**
  * Creates a function that memoizes the result of `func`. If `resolver` is
@@ -55,13 +55,16 @@ var FUNC_ERROR_TEXT = 'Expected a function';
  * // => { 'user': 'barney' }
  */
 function memoize(func, resolver) {
-  if (typeof func != 'function' || (resolver && typeof resolver != 'function')) {
+  if (
+    typeof func != "function" ||
+    (resolver && typeof resolver != "function")
+  ) {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
-  var memoized = function() {
+  var memoized = function () {
     var args = arguments,
-        key = resolver ? resolver.apply(this, args) : args[0],
-        cache = memoized.cache;
+      key = resolver ? resolver.apply(this, args) : args[0],
+      cache = memoized.cache;
 
     if (cache.has(key)) {
       return cache.get(key);
@@ -70,7 +73,7 @@ function memoize(func, resolver) {
     memoized.cache = cache.set(key, result);
     return result;
   };
-  memoized.cache = new memoize.Cache;
+  memoized.cache = new memoize.Cache();
   return memoized;
 }
 

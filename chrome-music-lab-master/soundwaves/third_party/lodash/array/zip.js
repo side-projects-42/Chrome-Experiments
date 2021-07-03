@@ -1,5 +1,5 @@
-var restParam = require('../function/restParam'),
-    unzip = require('./unzip');
+var restParam = require("../function/restParam"),
+  unzip = require("./unzip");
 
 /**
  * Creates an array of grouped elements, the first of which contains the first

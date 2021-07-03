@@ -1,5 +1,5 @@
-var baseForOwnRight = require('./baseForOwnRight'),
-    createBaseEach = require('./createBaseEach');
+var baseForOwnRight = require("./baseForOwnRight"),
+  createBaseEach = require("./createBaseEach");
 
 /**
  * The base implementation of `_.forEachRight` without support for callback

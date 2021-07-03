@@ -14,42 +14,44 @@
  * limitations under the License.
  */
 
-import domready from 'domready'
-import {supported} from 'Config'
+import domready from "domready";
+import { supported } from "Config";
 
-export function GA(category, action, label, value){
-	if (window.googleAnalytics){
-		if (typeof value !== 'undefined'){
-			window.googleAnalytics('send', 'event', category, action, label, value)
-		} else {
-			window.googleAnalytics('send', 'event', category, action, label)
-		}
-	}
+export function GA(category, action, label, value) {
+  if (window.googleAnalytics) {
+    if (typeof value !== "undefined") {
+      window.googleAnalytics("send", "event", category, action, label, value);
+    } else {
+      window.googleAnalytics("send", "event", category, action, label);
+    }
+  }
 }
 
-
 domready(() => {
-	const scene = document.querySelector('a-scene')
+  const scene = document.querySelector("a-scene");
 
-	let currentArtist = null
-	let songCounter = 0
-	let songEndCounter = 0
+  let currentArtist = null;
+  let songCounter = 0;
+  let songEndCounter = 0;
 
-	//listen for some events
-	scene.addEventListener('menu-selection', e => {
-		currentArtist = e.detail.artist.split(' ').join('-')
-		songCounter++
-		GA(currentArtist, 'select', `order-selected-${songCounter}`)
-	})
+  //listen for some events
+  scene.addEventListener("menu-selection", (e) => {
+    currentArtist = e.detail.artist.split(" ").join("-");
+    songCounter++;
+    GA(currentArtist, "select", `order-selected-${songCounter}`);
+  });
 
+  // song events
+  scene.addEventListener("song-end", (e) => {
+    songEndCounter++;
+    GA(currentArtist, "end", `complete-plays-${songEndCounter}`);
+  });
 
-	// song events
-	scene.addEventListener('song-end', e => {
-		songEndCounter++
-		GA(currentArtist, 'end', `complete-plays-${songEndCounter}`)
-	})
-	
-	scene.addEventListener('sphere-click', e => {
-		GA(currentArtist, e.detail.active ? 'stem-on' : 'stem-off', `position-${e.detail.index}`)
-	})
-})
+  scene.addEventListener("sphere-click", (e) => {
+    GA(
+      currentArtist,
+      e.detail.active ? "stem-on" : "stem-off",
+      `position-${e.detail.index}`
+    );
+  });
+});

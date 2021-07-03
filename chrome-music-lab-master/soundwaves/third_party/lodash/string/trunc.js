@@ -1,11 +1,11 @@
-var baseToString = require('../internal/baseToString'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    isObject = require('../lang/isObject'),
-    isRegExp = require('../lang/isRegExp');
+var baseToString = require("../internal/baseToString"),
+  isIterateeCall = require("../internal/isIterateeCall"),
+  isObject = require("../lang/isObject"),
+  isRegExp = require("../lang/isRegExp");
 
 /** Used as default options for `_.trunc`. */
 var DEFAULT_TRUNC_LENGTH = 30,
-    DEFAULT_TRUNC_OMISSION = '...';
+  DEFAULT_TRUNC_OMISSION = "...";
 
 /** Used to match `RegExp` flags from their coerced string values. */
 var reFlags = /\w*$/;
@@ -55,13 +55,14 @@ function trunc(string, options, guard) {
     options = undefined;
   }
   var length = DEFAULT_TRUNC_LENGTH,
-      omission = DEFAULT_TRUNC_OMISSION;
+    omission = DEFAULT_TRUNC_OMISSION;
 
   if (options != null) {
     if (isObject(options)) {
-      var separator = 'separator' in options ? options.separator : separator;
-      length = 'length' in options ? (+options.length || 0) : length;
-      omission = 'omission' in options ? baseToString(options.omission) : omission;
+      var separator = "separator" in options ? options.separator : separator;
+      length = "length" in options ? +options.length || 0 : length;
+      omission =
+        "omission" in options ? baseToString(options.omission) : omission;
     } else {
       length = +options || 0;
     }
@@ -81,11 +82,14 @@ function trunc(string, options, guard) {
   if (isRegExp(separator)) {
     if (string.slice(end).search(separator)) {
       var match,
-          newEnd,
-          substring = string.slice(0, end);
+        newEnd,
+        substring = string.slice(0, end);
 
       if (!separator.global) {
-        separator = RegExp(separator.source, (reFlags.exec(separator) || '') + 'g');
+        separator = RegExp(
+          separator.source,
+          (reFlags.exec(separator) || "") + "g"
+        );
       }
       separator.lastIndex = 0;
       while ((match = separator.exec(substring))) {

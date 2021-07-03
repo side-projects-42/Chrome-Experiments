@@ -1,4 +1,4 @@
-var createCompounder = require('../internal/createCompounder');
+var createCompounder = require("../internal/createCompounder");
 
 /**
  * Converts `string` to [snake case](https://en.wikipedia.org/wiki/Snake_case).
@@ -19,8 +19,8 @@ var createCompounder = require('../internal/createCompounder');
  * _.snakeCase('--foo-bar');
  * // => 'foo_bar'
  */
-var snakeCase = createCompounder(function(result, word, index) {
-  return result + (index ? '_' : '') + word.toLowerCase();
+var snakeCase = createCompounder(function (result, word, index) {
+  return result + (index ? "_" : "") + word.toLowerCase();
 });
 
 module.exports = snakeCase;

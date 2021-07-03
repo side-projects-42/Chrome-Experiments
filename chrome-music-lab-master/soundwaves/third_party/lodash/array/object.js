@@ -1,1 +1,1 @@
-module.exports = require('./zipObject');
+module.exports = require("./zipObject");

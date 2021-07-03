@@ -1,4 +1,4 @@
-var toObject = require('./toObject');
+var toObject = require("./toObject");
 
 /**
  * The base implementation of `get` without support for string paths
@@ -18,12 +18,12 @@ function baseGet(object, path, pathKey) {
     path = [pathKey];
   }
   var index = 0,
-      length = path.length;
+    length = path.length;
 
   while (object != null && index < length) {
     object = object[path[index++]];
   }
-  return (index && index == length) ? object : undefined;
+  return index && index == length ? object : undefined;
 }
 
 module.exports = baseGet;

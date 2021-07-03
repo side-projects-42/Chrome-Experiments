@@ -1,6 +1,6 @@
-var createDefaults = require('../internal/createDefaults'),
-    merge = require('./merge'),
-    mergeDefaults = require('../internal/mergeDefaults');
+var createDefaults = require("../internal/createDefaults"),
+  merge = require("./merge"),
+  mergeDefaults = require("../internal/mergeDefaults");
 
 /**
  * This method is like `_.defaults` except that it recursively assigns

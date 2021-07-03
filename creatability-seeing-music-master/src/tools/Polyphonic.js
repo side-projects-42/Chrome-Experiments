@@ -1,47 +1,45 @@
+import { Draw } from "tone";
+import TWEEN, { Tween } from "@tweenjs/tween.js";
 
-
-import { Draw } from 'tone'
-import TWEEN, { Tween } from '@tweenjs/tween.js'
-
-function loop(){
-	requestAnimationFrame(loop)
-	TWEEN.update()
+function loop() {
+  requestAnimationFrame(loop);
+  TWEEN.update();
 }
-loop()
+loop();
 
 export class Polyphonic {
-	constructor(){
+  constructor() {
+    this._notes = [];
+  }
 
-		this._notes = []
+  addNote(time, n) {
+    Draw.schedule(() => {
+      const note = { velocity: 0, midi: n.pitch };
 
-	}
+      this._notes.push(note);
 
-	addNote(time, n){
-		
-		Draw.schedule(() => {
-			const note = { velocity : 0, midi : n.pitch }
+      const releaseTween = new Tween(note)
+        .to({ velocity: 0 }, 50)
+        .delay(n.duration * 1000)
+        .onComplete(() => {
+          //remove it on completion
+          const index = this._notes.indexOf(note);
+          this._notes.splice(index, 1);
+        });
+      // .easing(TWEEN.Easing.Quadratic.In)
 
-			this._notes.push(note)
+      const attackTween = new Tween(note)
+        .to({ velocity: n.velocity }, 50)
+        .start();
+      attackTween.chain(releaseTween);
+    }, time);
+  }
 
-			const releaseTween = new Tween(note).to({ velocity : 0 }, 50)
-				.delay(n.duration*1000)
-				.onComplete(() => {
-					//remove it on completion
-					const index = this._notes.indexOf(note)
-					this._notes.splice(index, 1)
-				})
-				// .easing(TWEEN.Easing.Quadratic.In)
+  clear() {
+    this._notes = [];
+  }
 
-			const attackTween = new Tween(note).to({ velocity : n.velocity }, 50).start()
-			attackTween.chain(releaseTween)
-		}, time)
-	}
-
-	clear(){
-		this._notes = []
-	}
-
-	getNotes(){
-		return this._notes
-	}
+  getNotes() {
+    return this._notes;
+  }
 }

@@ -1,5 +1,5 @@
-var baseEachRight = require('../internal/baseEachRight'),
-    createFind = require('../internal/createFind');
+var baseEachRight = require("../internal/baseEachRight"),
+  createFind = require("../internal/createFind");
 
 /**
  * This method is like `_.find` except that it iterates over elements of

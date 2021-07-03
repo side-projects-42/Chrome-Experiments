@@ -1,5 +1,5 @@
-var LazyWrapper = require('./LazyWrapper'),
-    arrayPush = require('./arrayPush');
+var LazyWrapper = require("./LazyWrapper"),
+  arrayPush = require("./arrayPush");
 
 /**
  * The base implementation of `wrapperValue` which returns the result of
@@ -17,11 +17,14 @@ function baseWrapperValue(value, actions) {
     result = result.value();
   }
   var index = -1,
-      length = actions.length;
+    length = actions.length;
 
   while (++index < length) {
     var action = actions[index];
-    result = action.func.apply(action.thisArg, arrayPush([result], action.args));
+    result = action.func.apply(
+      action.thisArg,
+      arrayPush([result], action.args)
+    );
   }
   return result;
 }

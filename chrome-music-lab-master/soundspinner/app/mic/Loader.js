@@ -15,38 +15,43 @@
  */
 
 define(["Tone/core/Buffer"], function (Buffer) {
+  var soundUrls = [
+    {
+      title: "Your voice",
+      url: "audio/useyourvoice.mp3",
+    },
+    {
+      title: "experiment",
+      url: "audio/toexperiment.mp3",
+    },
+    {
+      title: "La Di Da",
+      url: "audio/ladida.mp3",
+    },
+  ];
 
-	var soundUrls = [ {
-		title: 'Your voice',
-		url: 'audio/useyourvoice.mp3'
-	},{
-		title:'experiment',
-		url: 'audio/toexperiment.mp3'
-	},{
-		title:'La Di Da',
-		url: 'audio/ladida.mp3'
-	}];
+  var Loader = function (callback) {
+    //parse the url for "preset" string
+    var str = window.location.search;
+    var objURL = {};
 
-	var Loader = function(callback){
-		//parse the url for "preset" string
-		var str = window.location.search;
-		var objURL = {};
+    str.replace(
+      new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+      function ($0, $1, $2, $3) {
+        objURL[$1] = $3;
+      }
+    );
+    if (objURL === undefined || objURL.preset === undefined) {
+      objURL.preset = 3;
+    }
 
-		str.replace(
-		new RegExp( "([^?=&]+)(=([^&]*))?", "g" ),
-			function( $0, $1, $2, $3 ){ objURL[ $1 ] = $3; }
-		);
-		if(objURL === undefined || objURL.preset === undefined) {
-			objURL.preset = 3;
-		}
+    var sound = soundUrls[objURL.preset - 1];
+    if (sound) {
+      var buffer = new Buffer(sound.url, function () {
+        callback(buffer.get());
+      });
+    }
+  };
 
-		var sound = soundUrls[objURL.preset - 1];
-		if (sound){
-			var buffer = new Buffer(sound.url, function(){
-				callback(buffer.get());
-			});
-		}
-	};
-
-	return Loader;
+  return Loader;
 });

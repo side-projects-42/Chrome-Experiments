@@ -1,4 +1,4 @@
-var createPartial = require('../internal/createPartial');
+var createPartial = require("../internal/createPartial");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var PARTIAL_RIGHT_FLAG = 64;

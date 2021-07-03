@@ -14,140 +14,145 @@
  * limitations under the License.
  */
 
-import vertexShader from '../shaders/basic.vert';
-import fragmentShader from '../shaders/floor.frag';
-import { stringToHex } from 'utils/Helpers';
-
+import vertexShader from "../shaders/basic.vert";
+import fragmentShader from "../shaders/floor.frag";
+import { stringToHex } from "utils/Helpers";
 
 /**
  * shader-floor component
  * the floor of the scene that appears to reflect the activity of the orbs and rings
  */
-AFRAME.registerComponent('shader-floor', {
-
-
-	schema: {
-		color: {
-			default: '#333333',
-			type: 'string'
-		}
-	},
-
-
-    init(){
-		const color = new THREE.Color(stringToHex(this.data.color));
-        const mesh = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(10, 10),
-            new THREE.ShaderMaterial({
-				fog: true,
-                vertexShader,
-                fragmentShader,
-                uniforms: {
-					u_startColor: {
-						type: 'c',
-						value: new THREE.Color(0xff0000)
-					},
-					u_endColor: {
-						type: 'c',
-						value: new THREE.Color(0x00ff00)
-					},
-					u_diffuseColor: {
-						type: 'c',
-						value: color
-					},
-                    u_num: {
-                        type: 'f',
-                        value: 0
-                    },
-					u_active: {
-						type: 'iv',
-						value: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
-					},
-                    u_time: {
-                        type: 'f',
-                        value: 1
-                    },
-                    u_amplitudes: {
-                        type: 'fv',
-                        value: [0, 0, 0, 0, 0, 0]
-                    },
-                    u_fade: {
-                        type: 'f',
-                        value: 0.4
-                    },
-                    u_normalMap: {
-                        type: 't',
-                        value: new THREE.TextureLoader().load('images/textures/saad/NormalMap_4.jpg')
-					},
-					u_specularMap: {
-						type: 't',
-						value: new THREE.TextureLoader().load('images/textures/floor-specular-1.jpg')
-					},
-					fogNear: {
-						type: 'f',
-						value: 0
-					},
-					fogFar: {
-						type: 'f',
-						value: 0
-					},
-					fogColor: {
-						type: 'c',
-						value: new THREE.Color()
-					}
-                }
-            })
-
-
-
-        );
-
-        mesh.rotateX(-Math.PI / 2);
-        this.mesh = mesh;
-        this.el.object3D.add(mesh);
-
-        this.soundRings = [];
-
-
-		this.onTrackComponentChanged = this.onTrackComponentChanged.bind(this);
+AFRAME.registerComponent("shader-floor", {
+  schema: {
+    color: {
+      default: "#333333",
+      type: "string",
     },
+  },
 
-	update(){
+  init() {
+    const color = new THREE.Color(stringToHex(this.data.color));
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry(10, 10),
+      new THREE.ShaderMaterial({
+        fog: true,
+        vertexShader,
+        fragmentShader,
+        uniforms: {
+          u_startColor: {
+            type: "c",
+            value: new THREE.Color(0xff0000),
+          },
+          u_endColor: {
+            type: "c",
+            value: new THREE.Color(0x00ff00),
+          },
+          u_diffuseColor: {
+            type: "c",
+            value: color,
+          },
+          u_num: {
+            type: "f",
+            value: 0,
+          },
+          u_active: {
+            type: "iv",
+            value: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+          u_time: {
+            type: "f",
+            value: 1,
+          },
+          u_amplitudes: {
+            type: "fv",
+            value: [0, 0, 0, 0, 0, 0],
+          },
+          u_fade: {
+            type: "f",
+            value: 0.4,
+          },
+          u_normalMap: {
+            type: "t",
+            value: new THREE.TextureLoader().load(
+              "images/textures/saad/NormalMap_4.jpg"
+            ),
+          },
+          u_specularMap: {
+            type: "t",
+            value: new THREE.TextureLoader().load(
+              "images/textures/floor-specular-1.jpg"
+            ),
+          },
+          fogNear: {
+            type: "f",
+            value: 0,
+          },
+          fogFar: {
+            type: "f",
+            value: 0,
+          },
+          fogColor: {
+            type: "c",
+            value: new THREE.Color(),
+          },
+        },
+      })
+    );
 
-		this.mesh.material.uniforms.u_diffuseColor.value.set(stringToHex(this.data.color));
+    mesh.rotateX(-Math.PI / 2);
+    this.mesh = mesh;
+    this.el.object3D.add(mesh);
 
-	},
+    this.soundRings = [];
 
+    this.onTrackComponentChanged = this.onTrackComponentChanged.bind(this);
+  },
 
-    onTrackComponentChanged(e){
+  update() {
+    this.mesh.material.uniforms.u_diffuseColor.value.set(
+      stringToHex(this.data.color)
+    );
+  },
 
-
-		Array.from(document.querySelectorAll('a-entity[track-index]')).forEach((track, i)=>{
-			if(i==0){
-				this.mesh.material.uniforms.u_startColor.value = track.components['sound-rings'].startColor;
-				this.mesh.material.uniforms.u_endColor.value = track.components['sound-rings'].endColor;
-			}
-			this.mesh.material.uniforms.u_active.value[i] = track.getAttribute('active') ? 1 : 0;
-		});
-
-    },
-
-    tick(elapsed, delta){
-        if(!this.soundRings.length){
-            this.soundRings = Array.from(document.querySelectorAll('a-entity[sound-rings]'));
-            this.mesh.material.uniforms.u_num.value = this.soundRings.length;
-
-            Array.from(document.querySelectorAll('a-entity[track-index]')).forEach(track=>{
-                track.addEventListener('componentchanged', this.onTrackComponentChanged);
-            });
-			return;
+  onTrackComponentChanged(e) {
+    Array.from(document.querySelectorAll("a-entity[track-index]")).forEach(
+      (track, i) => {
+        if (i == 0) {
+          this.mesh.material.uniforms.u_startColor.value =
+            track.components["sound-rings"].startColor;
+          this.mesh.material.uniforms.u_endColor.value =
+            track.components["sound-rings"].endColor;
         }
+        this.mesh.material.uniforms.u_active.value[i] = track.getAttribute(
+          "active"
+        )
+          ? 1
+          : 0;
+      }
+    );
+  },
 
-        this.mesh.material.uniforms.u_amplitudes.value = this.soundRings.map(t=> Number(t.getAttribute('amplitude')));
-        this.mesh.material.uniforms.u_time.value = elapsed / 1000;
+  tick(elapsed, delta) {
+    if (!this.soundRings.length) {
+      this.soundRings = Array.from(
+        document.querySelectorAll("a-entity[sound-rings]")
+      );
+      this.mesh.material.uniforms.u_num.value = this.soundRings.length;
+
+      Array.from(document.querySelectorAll("a-entity[track-index]")).forEach(
+        (track) => {
+          track.addEventListener(
+            "componentchanged",
+            this.onTrackComponentChanged
+          );
+        }
+      );
+      return;
     }
 
-
-})
-
-
+    this.mesh.material.uniforms.u_amplitudes.value = this.soundRings.map((t) =>
+      Number(t.getAttribute("amplitude"))
+    );
+    this.mesh.material.uniforms.u_time.value = elapsed / 1000;
+  },
+});

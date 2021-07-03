@@ -1,7 +1,7 @@
-var arrayMap = require('../internal/arrayMap'),
-    baseCallback = require('../internal/baseCallback'),
-    baseMap = require('../internal/baseMap'),
-    isArray = require('../lang/isArray');
+var arrayMap = require("../internal/arrayMap"),
+  baseCallback = require("../internal/baseCallback"),
+  baseMap = require("../internal/baseMap"),
+  isArray = require("../lang/isArray");
 
 /**
  * Creates an array of values by running each element in `collection` through

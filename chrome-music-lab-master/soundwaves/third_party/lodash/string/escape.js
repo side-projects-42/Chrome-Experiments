@@ -1,9 +1,9 @@
-var baseToString = require('../internal/baseToString'),
-    escapeHtmlChar = require('../internal/escapeHtmlChar');
+var baseToString = require("../internal/baseToString"),
+  escapeHtmlChar = require("../internal/escapeHtmlChar");
 
 /** Used to match HTML entities and HTML characters. */
 var reUnescapedHtml = /[&<>"'`]/g,
-    reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+  reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
 
 /**
  * Converts the characters "&", "<", ">", '"', "'", and "\`", in `string` to
@@ -40,7 +40,7 @@ var reUnescapedHtml = /[&<>"'`]/g,
 function escape(string) {
   // Reset `lastIndex` because in IE < 9 `String#replace` does not.
   string = baseToString(string);
-  return (string && reHasUnescapedHtml.test(string))
+  return string && reHasUnescapedHtml.test(string)
     ? string.replace(reUnescapedHtml, escapeHtmlChar)
     : string;
 }

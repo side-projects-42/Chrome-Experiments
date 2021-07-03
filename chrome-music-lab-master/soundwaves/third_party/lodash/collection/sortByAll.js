@@ -1,7 +1,7 @@
-var baseFlatten = require('../internal/baseFlatten'),
-    baseSortByOrder = require('../internal/baseSortByOrder'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    restParam = require('../function/restParam');
+var baseFlatten = require("../internal/baseFlatten"),
+  baseSortByOrder = require("../internal/baseSortByOrder"),
+  isIterateeCall = require("../internal/isIterateeCall"),
+  restParam = require("../function/restParam");
 
 /**
  * This method is like `_.sortBy` except that it can sort by multiple iteratees
@@ -38,7 +38,7 @@ var baseFlatten = require('../internal/baseFlatten'),
  * }), _.values);
  * // => [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 42]]
  */
-var sortByAll = restParam(function(collection, iteratees) {
+var sortByAll = restParam(function (collection, iteratees) {
   if (collection == null) {
     return [];
   }

@@ -14,57 +14,52 @@
  * limitations under the License.
  */
 
-import 'aframe'
-import Transport from 'Tone/core/Transport'
-import {getTrackData} from 'Config'
-import Master from 'Tone/core/Master'
-import Visibility from 'visibilityjs'
+import "aframe";
+import Transport from "Tone/core/Transport";
+import { getTrackData } from "Config";
+import Master from "Tone/core/Master";
+import Visibility from "visibilityjs";
 
+AFRAME.registerSystem("player", {
+  init() {
+    this.players = [];
 
-AFRAME.registerSystem('player', {
+    this.scheduleId = 0;
 
-	init(){
-		this.players = []
+    // set a timeout when the song ends
+    this.sceneEl.addEventListener("menu-selection", (e) => {
+      Transport.clear(this.scheduleId);
 
-		this.scheduleId = 0
+      const trackData = getTrackData(e.detail.artist);
+      const duration = trackData.duration || 10;
+      this.scheduleId = Transport.schedule(() => {
+        this.sceneEl.emit("song-end");
+      }, duration);
+    });
 
-		// set a timeout when the song ends
-		this.sceneEl.addEventListener('menu-selection', e => {
+    //mute the master when the visibility is hidden
+    Visibility.change((e, state) => {
+      Master.mute = state === "hidden";
+    });
+  },
 
-			Transport.clear(this.scheduleId)
+  loading() {
+    let isLoaded = true;
+    this.players.forEach((p) => (isLoaded = p.isLoaded() && isLoaded));
+    if (isLoaded) {
+      setTimeout(() => this.sceneEl.emit("audio-loaded"), 500);
+    }
+  },
 
-			const trackData = getTrackData(e.detail.artist)
-			const duration = trackData.duration || 10
-			this.scheduleId = Transport.schedule(() => {
-				this.sceneEl.emit('song-end')
-			}, duration)
+  bufferingEnd() {
+    let isBuffering = false;
+    this.players.forEach((p) => (isBuffering = p.isBuffering() || isBuffering));
+    if (!isBuffering) {
+      this.sceneEl.emit("buffering-end");
+    }
+  },
 
-
-		})
-
-		//mute the master when the visibility is hidden
-		Visibility.change((e, state) => {
-			Master.mute = (state === 'hidden')
-		})
-	},
-
-	loading(){
-		let isLoaded = true
-		this.players.forEach(p => isLoaded = p.isLoaded() && isLoaded)
-		if (isLoaded){
-			setTimeout(() => this.sceneEl.emit('audio-loaded'), 500)
-		}
-	},
-
-	bufferingEnd(){
-		let isBuffering = false
-		this.players.forEach(p => isBuffering = p.isBuffering() || isBuffering)
-		if (!isBuffering){
-			this.sceneEl.emit('buffering-end')
-		} 
-	},
-
-	buffering(){
-		this.sceneEl.emit('buffering')
-	},
-})
+  buffering() {
+    this.sceneEl.emit("buffering");
+  },
+});

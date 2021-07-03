@@ -14,54 +14,52 @@
  * limitations under the License.
  */
 
-import 'aframe'
+import "aframe";
 
-AFRAME.registerComponent('animate', {
+AFRAME.registerComponent("animate", {
+  schema: {
+    attribute: {
+      type: "string",
+    },
+    time: {
+      type: "int",
+      default: 1000,
+    },
+    easing: {
+      type: "string",
+      default: "Linear.None",
+    },
+  },
 
-	schema : {
-		attribute : {
-			type : 'string'
-		},
-		time : {
-			type : 'int',
-			default : 1000
-		},
-		easing : {
-			type : 'string',
-			default : 'Linear.None'
-		}
-	},
+  init() {
+    this.tween = null;
 
-	init(){
+    this.el.addEventListener("componentchanged", (e) => {
+      if (!this.tween && e.detail.name === this.data.attribute) {
+        this.startAnimation(e.detail.oldData, e.detail.newData);
+      }
+    });
+  },
 
-		this.tween = null
+  startAnimation(prevData, targetData) {
+    const attribute = this.data.attribute;
 
-		this.el.addEventListener('componentchanged', e => {
-			if (!this.tween && e.detail.name === this.data.attribute){
-				this.startAnimation(e.detail.oldData, e.detail.newData)
-			}
-		})
-	},
+    const el = this.el;
 
-	startAnimation(prevData, targetData){
-		const attribute = this.data.attribute
+    const easingProps = this.data.easing.split(".");
+    const easing = TWEEN.Easing[easingProps[0]][easingProps[1]];
 
-		const el = this.el
+    this.tween = new TWEEN.Tween(prevData)
+      .to(targetData, this.data.time)
+      .onUpdate(function () {
+        el.setAttribute(attribute, this);
+      })
+      .onComplete(() => {
+        this.tween = null;
+      })
+      .easing(easing)
+      .start();
 
-		const easingProps = this.data.easing.split('.')
-		const easing = TWEEN.Easing[easingProps[0]][easingProps[1]]
-
-		this.tween = new TWEEN.Tween(prevData)
-			.to(targetData, this.data.time)
-			.onUpdate(function(){
-				el.setAttribute(attribute, this)
-			})
-			.onComplete(() => {
-				this.tween = null
-			})
-			.easing(easing)
-			.start()
-
-		this.el.setAttribute(attribute, prevData)
-	}
-})
+    this.el.setAttribute(attribute, prevData);
+  },
+});

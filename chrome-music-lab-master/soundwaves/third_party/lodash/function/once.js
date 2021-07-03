@@ -1,4 +1,4 @@
-var before = require('./before');
+var before = require("./before");
 
 /**
  * Creates a function that is restricted to invoking `func` once. Repeat calls

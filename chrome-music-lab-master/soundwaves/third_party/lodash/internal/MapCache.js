@@ -1,7 +1,7 @@
-var mapDelete = require('./mapDelete'),
-    mapGet = require('./mapGet'),
-    mapHas = require('./mapHas'),
-    mapSet = require('./mapSet');
+var mapDelete = require("./mapDelete"),
+  mapGet = require("./mapGet"),
+  mapHas = require("./mapHas"),
+  mapSet = require("./mapSet");
 
 /**
  * Creates a cache object to store key/value pairs.
@@ -16,7 +16,7 @@ function MapCache() {
 }
 
 // Add functions to the `Map` cache.
-MapCache.prototype['delete'] = mapDelete;
+MapCache.prototype["delete"] = mapDelete;
 MapCache.prototype.get = mapGet;
 MapCache.prototype.has = mapHas;
 MapCache.prototype.set = mapSet;

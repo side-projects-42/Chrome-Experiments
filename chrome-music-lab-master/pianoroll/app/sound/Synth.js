@@ -14,35 +14,39 @@
  * limitations under the License.
  */
 
-define(["Tone/core/Tone", "Tone/source/Oscillator", "Tone/instrument/PolySynth", "Tone/instrument/SimpleSynth"], 
-function (Tone, Oscillator, PolySynth, SimpleSynth) {
+define([
+  "Tone/core/Tone",
+  "Tone/source/Oscillator",
+  "Tone/instrument/PolySynth",
+  "Tone/instrument/SimpleSynth",
+], function (Tone, Oscillator, PolySynth, SimpleSynth) {
+  var Synth = function () {
+    this.synth = new PolySynth(8, SimpleSynth)
+      .set({
+        volume: -8,
+        oscillator: {
+          type: "sine6",
+        },
+        envelope: {
+          attack: 0.015,
+          decay: 0.25,
+          sustain: 0.08,
+          release: 0.5,
+        },
+      })
+      .toMaster();
 
-	var Synth = function(){
+    this.synth.stealVoices = true;
+  };
 
-		this.synth = new PolySynth(8, SimpleSynth).set({
-			"volume" : -8,
-			"oscillator" : {
-				"type" : "sine6"
-			}, 
-			"envelope" : {
-				"attack" :  0.015,
-				"decay" :  0.25,
-				"sustain" :  0.08,
-				"release" :  0.5,
-			},
-		}).toMaster();
+  Synth.prototype.triggerAttackRelease = function (note, duration, time, vel) {
+    duration = Math.max(duration, 0.2);
+    this.synth.triggerAttackRelease(note, duration, time, vel * 0.5);
+  };
 
-		this.synth.stealVoices = true;
-	};
+  Synth.prototype.releaseAll = function () {
+    this.synth.releaseAll();
+  };
 
-	Synth.prototype.triggerAttackRelease = function(note, duration, time, vel){
-		duration = Math.max(duration, 0.2);
-		this.synth.triggerAttackRelease(note, duration, time, vel * 0.5);
-	};
-
-	Synth.prototype.releaseAll = function(){
-		this.synth.releaseAll();
-	};
-
-	return Synth;
+  return Synth;
 });

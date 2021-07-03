@@ -1,9 +1,9 @@
-var isArray = require('../lang/isArray'),
-    toObject = require('./toObject');
+var isArray = require("../lang/isArray"),
+  toObject = require("./toObject");
 
 /** Used to match property names within property paths. */
 var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\n\\]|\\.)*?\1)\]/,
-    reIsPlainProp = /^\w*$/;
+  reIsPlainProp = /^\w*$/;
 
 /**
  * Checks if `value` is a property name and not a property path.
@@ -15,7 +15,7 @@ var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\n\\]|\\.)*?\1)\]/,
  */
 function isKey(value, object) {
   var type = typeof value;
-  if ((type == 'string' && reIsPlainProp.test(value)) || type == 'number') {
+  if ((type == "string" && reIsPlainProp.test(value)) || type == "number") {
     return true;
   }
   if (isArray(value)) {

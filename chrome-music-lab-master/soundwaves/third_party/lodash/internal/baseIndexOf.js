@@ -1,4 +1,4 @@
-var indexOfNaN = require('./indexOfNaN');
+var indexOfNaN = require("./indexOfNaN");
 
 /**
  * The base implementation of `_.indexOf` without support for binary searches.
@@ -14,7 +14,7 @@ function baseIndexOf(array, value, fromIndex) {
     return indexOfNaN(array, fromIndex);
   }
   var index = fromIndex - 1,
-      length = array.length;
+    length = array.length;
 
   while (++index < length) {
     if (array[index] === value) {

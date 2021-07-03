@@ -14,170 +14,176 @@
  * limitations under the License.
  */
 
-define(["mic.scss", "./Recorder", "./Waveform", "Tone/instrument/SimpleSynth"], 
-	function (micStyle, Recorder, Waveform, SimpleSynth) {
+define([
+  "mic.scss",
+  "./Recorder",
+  "./Waveform",
+  "Tone/instrument/SimpleSynth",
+], function (micStyle, Recorder, Waveform, SimpleSynth) {
+  var MicOverlay = function (container, meterButton) {
+    this._element = document.createElement("DIV");
+    this._element.id = "MicOverlay";
+    container.appendChild(this._element);
 
-	var MicOverlay = function(container, meterButton){
+    this._closeButton = document.createElement("DIV");
+    this._closeButton.id = "Cancel";
+    this._closeButton.classList.add("Button");
+    this._closeButton.classList.add("icon-svg_close-button");
+    this._element.appendChild(this._closeButton);
+    this._closeButton.addEventListener("click", this.cancel.bind(this));
 
-		this._element = document.createElement("DIV");
-		this._element.id = "MicOverlay";
-		container.appendChild(this._element);
+    /**
+     *  if the thing is recording now
+     *  @type  {Boolean}
+     */
+    this.isRecording = false;
 
-		this._closeButton = document.createElement("DIV");
-		this._closeButton.id = "Cancel";
-		this._closeButton.classList.add("Button");
-		this._closeButton.classList.add("icon-svg_close-button");
-		this._element.appendChild(this._closeButton);
-		this._closeButton.addEventListener("click", this.cancel.bind(this));
+    /**
+     *  the element to scale with the meter
+     */
+    this._meterButton = meterButton;
 
-		/**
-		 *  if the thing is recording now
-		 *  @type  {Boolean}
-		 */
-		this.isRecording = false;
+    /**
+     *  the buffer recorder
+     */
+    this._recorder = new Recorder();
+    this._recorder.onended = this.close.bind(this);
 
-		/**
-		 *  the element to scale with the meter
-		 */
-		this._meterButton = meterButton;
+    /**
+     *  The waveform drawer
+     *  @type  {Waveform}
+     */
+    this._waveform = new Waveform(this._element, this._recorder.audioBuffer);
 
-		/**
-		 *  the buffer recorder
-		 */
-		this._recorder = new Recorder();
-		this._recorder.onended = this.close.bind(this);
+    /**
+     *  the onclose event
+     */
+    this.onclose = function () {};
 
-		/**
-		 *  The waveform drawer
-		 *  @type  {Waveform}
-		 */
-		this._waveform = new Waveform(this._element, this._recorder.audioBuffer);
+    /**
+     *  called when cancel is hit
+     */
+    this.oncancel = function () {};
 
+    /**
+     *  called when the mic is denied
+     */
+    this.ondenied = function () {};
 
-		/**
-		 *  the onclose event
-		 */
-		this.onclose = function(){};
+    /**
+     *  the animation frame id;
+     */
+    this._animationFrame = -1;
 
+    /**
+     *  the duration of the sample
+     */
+    this.duration = 0;
 
-		/**
-		 *  called when cancel is hit
-		 */
-		this.oncancel = function(){};
+    /**
+     *  the recorded buffer
+     */
+    this.buffer = this._recorder.audioBuffer;
 
-		/**
-		 *  called when the mic is denied
-		 */
-		this.ondenied = function(){};
+    /**
+     *  the onset of the start of the recorded buffer
+     */
+    this.onset = 0;
 
-		/**
-		 *  the animation frame id;
-		 */
-		this._animationFrame = -1;
+    /**
+     *  the countdown interval
+     */
+    this._countDownNumber = 0;
 
-		/**
-		 *  the duration of the sample
-		 */
-		this.duration = 0;
+    /**
+     *  metronome tick sound
+     */
+    this._countDownSynth = new SimpleSynth()
+      .toMaster()
+      .set("envelope.release", 0.1);
+  };
 
-		/**
-		 *  the recorded buffer
-		 */
-		this.buffer = this._recorder.audioBuffer;
+  MicOverlay.prototype.activateMicrophone = function () {
+    //start the microphone
+    this._recorder.activate();
+  };
 
-		/**
-		 *  the onset of the start of the recorded buffer
-		 */
-		this.onset = 0;
+  MicOverlay.prototype.open = function () {
+    //start the microphone
+    this._waveform.clear();
+    this._element.classList.add("Visible");
+    this._recorder.open(
+      function () {
+        this.meter();
+        this._countDownNumber = 0;
+        this.countDown();
+      }.bind(this),
+      function () {
+        this.close();
+        this.ondenied();
+      }.bind(this)
+    );
+  };
 
-		/**
-		 *  the countdown interval
-		 */
-		this._countDownNumber = 0;
+  MicOverlay.prototype.countDown = function () {
+    if (this._countDownNumber === 0) {
+      this._countDownSynth.triggerAttackRelease("C5", 0.05);
+      this._countDownSynth.triggerAttackRelease("C6", 0.125, "+0.125");
+      this._countDownTimeout = setTimeout(this.start.bind(this), 500);
+    }
+    this._countDownNumber--;
+  };
 
-		/**
-		 *  metronome tick sound
-		 */
-		this._countDownSynth = new SimpleSynth().toMaster().set("envelope.release", 0.1);
+  MicOverlay.prototype.close = function () {
+    this.stop();
+    this._element.classList.remove("Visible");
+    cancelAnimationFrame(this._animationFrame);
+    clearTimeout(this._countDownTimeout);
+    this._waveform.clear();
+    this.onclose();
+  };
 
-	};
+  MicOverlay.prototype.cancel = function () {
+    this.stop();
+    this._element.classList.remove("Visible");
+    cancelAnimationFrame(this._animationFrame);
+    clearTimeout(this._countDownTimeout);
+    this._waveform.clear();
+    this.oncancel();
+  };
 
-	MicOverlay.prototype.activateMicrophone = function() {
-		//start the microphone
-		this._recorder.activate();
-	};
+  MicOverlay.prototype.meter = function () {
+    this._animationFrame = requestAnimationFrame(this.meter.bind(this));
+    var meterVal = this._recorder.meter;
+    var transformString = "scale(" + (1 + meterVal * 2).toString() + ")";
+    this._meterButton.style.transform = transformString;
+    this._meterButton.style.webkitTransform = transformString;
+    if (this.isRecording) {
+      this._waveform.draw(this._recorder.bufferArray, this._recorder.head);
+    }
+  };
 
-	MicOverlay.prototype.open = function() {
-		//start the microphone
-		this._waveform.clear();
-		this._element.classList.add("Visible");
-		this._recorder.open(function(){
-			this.meter();
-			this._countDownNumber = 0;
-			this.countDown();
-		}.bind(this), function(){
-			this.close();
-			this.ondenied();
-		}.bind(this));
-	};
+  MicOverlay.prototype.start = function () {
+    this.isRecording = true;
+    this._recorder.start(
+      function () {
+        this._waveform.start();
+      }.bind(this)
+    );
+  };
 
-	MicOverlay.prototype.countDown = function(){
-		if (this._countDownNumber === 0){
-			this._countDownSynth.triggerAttackRelease("C5", 0.05);
-			this._countDownSynth.triggerAttackRelease("C6", 0.125, "+0.125");
-			this._countDownTimeout = setTimeout(this.start.bind(this), 500);
-		} 
-		this._countDownNumber--;
-	};
+  MicOverlay.prototype.stop = function () {
+    this.isRecording = false;
+    // this.recordButton.classList.remove("Active");
+    this._recorder.stop();
+    //get the duration
+    this.duration = this._recorder.duration;
+    this.onset = this._recorder.onset;
+  };
 
-	MicOverlay.prototype.close = function() {
-		this.stop();
-		this._element.classList.remove("Visible");
-		cancelAnimationFrame(this._animationFrame);
-		clearTimeout(this._countDownTimeout);
-		this._waveform.clear();
-		this.onclose();
-	};
+  MicOverlay.prototype.closeMic = function () {
+    this._recorder.close();
+  };
 
-	MicOverlay.prototype.cancel = function() {
-		this.stop();
-		this._element.classList.remove("Visible");
-		cancelAnimationFrame(this._animationFrame);
-		clearTimeout(this._countDownTimeout);
-		this._waveform.clear();
-		this.oncancel();
-	};
-
-	MicOverlay.prototype.meter = function() {
-		this._animationFrame = requestAnimationFrame(this.meter.bind(this));
-		var meterVal = this._recorder.meter;
-		var transformString = "scale("+(1 + meterVal * 2).toString()+")";
-		this._meterButton.style.transform = transformString;
-		this._meterButton.style.webkitTransform = transformString;
-		if (this.isRecording){
-			this._waveform.draw(this._recorder.bufferArray, this._recorder.head);
-		}
-	};
-
-	MicOverlay.prototype.start = function() {
-		this.isRecording = true;
-		this._recorder.start(function(){
-			this._waveform.start();
-		}.bind(this));
-	};
-
-	MicOverlay.prototype.stop = function() {
-		this.isRecording = false;
-		// this.recordButton.classList.remove("Active");
-		this._recorder.stop();
-		//get the duration
-		this.duration = this._recorder.duration;
-		this.onset = this._recorder.onset;
-	};
-
-	MicOverlay.prototype.closeMic = function() {
-		this._recorder.close();
-	};
-
-	return MicOverlay;
+  return MicOverlay;
 });

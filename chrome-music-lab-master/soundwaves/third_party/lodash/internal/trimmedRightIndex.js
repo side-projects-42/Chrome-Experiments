@@ -1,4 +1,4 @@
-var isSpace = require('./isSpace');
+var isSpace = require("./isSpace");
 
 /**
  * Used by `_.trim` and `_.trimRight` to get the index of the last non-whitespace

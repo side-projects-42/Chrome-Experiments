@@ -1,7 +1,7 @@
-var arrayFilter = require('../internal/arrayFilter'),
-    baseCallback = require('../internal/baseCallback'),
-    baseFilter = require('../internal/baseFilter'),
-    isArray = require('../lang/isArray');
+var arrayFilter = require("../internal/arrayFilter"),
+  baseCallback = require("../internal/baseCallback"),
+  baseFilter = require("../internal/baseFilter"),
+  isArray = require("../lang/isArray");
 
 /**
  * Iterates over elements of `collection`, returning an array of all elements

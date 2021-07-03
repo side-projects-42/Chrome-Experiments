@@ -14,34 +14,36 @@
  * limitations under the License.
  */
 
-import 'style/fallback.scss'
-import domready from 'domready'
+import "style/fallback.scss";
+import domready from "domready";
 
-function sendEvent(category, action){
-	if (window.googleAnalytics){
-		window.googleAnalytics('send', 'event', category, action)
-	}
+function sendEvent(category, action) {
+  if (window.googleAnalytics) {
+    window.googleAnalytics("send", "event", category, action);
+  }
 }
 
-const supportsWebAudio = ()=>
-	!!(window.webkitAudioContext || window.AudioContext);
+const supportsWebAudio = () =>
+  !!(window.webkitAudioContext || window.AudioContext);
 
-const supportsWebGL = ()=>{
-	const c = document.createElement('canvas');
-	try {
-		return window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'));
-	} catch(e){
-		return false;
-	}
+const supportsWebGL = () => {
+  const c = document.createElement("canvas");
+  try {
+    return (
+      window.WebGLRenderingContext &&
+      (c.getContext("webgl") || c.getContext("experimental-webgl"))
+    );
+  } catch (e) {
+    return false;
+  }
 };
 
 domready(() => {
-	const supported = supportsWebAudio() && supportsWebGL();
-	if (!supported){
-		document.querySelector('#fallback').classList.add('visible');
-		sendEvent('init', 'unsupported');
-	} else {
-		sendEvent('init', 'supported');
-	}
+  const supported = supportsWebAudio() && supportsWebGL();
+  if (!supported) {
+    document.querySelector("#fallback").classList.add("visible");
+    sendEvent("init", "unsupported");
+  } else {
+    sendEvent("init", "supported");
+  }
 });
-

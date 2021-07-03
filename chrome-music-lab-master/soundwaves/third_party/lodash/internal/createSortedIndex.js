@@ -1,6 +1,6 @@
-var baseCallback = require('./baseCallback'),
-    binaryIndex = require('./binaryIndex'),
-    binaryIndexBy = require('./binaryIndexBy');
+var baseCallback = require("./baseCallback"),
+  binaryIndex = require("./binaryIndex"),
+  binaryIndexBy = require("./binaryIndexBy");
 
 /**
  * Creates a `_.sortedIndex` or `_.sortedLastIndex` function.
@@ -10,10 +10,15 @@ var baseCallback = require('./baseCallback'),
  * @returns {Function} Returns the new index function.
  */
 function createSortedIndex(retHighest) {
-  return function(array, value, iteratee, thisArg) {
+  return function (array, value, iteratee, thisArg) {
     return iteratee == null
       ? binaryIndex(array, value, retHighest)
-      : binaryIndexBy(array, value, baseCallback(iteratee, thisArg, 1), retHighest);
+      : binaryIndexBy(
+          array,
+          value,
+          baseCallback(iteratee, thisArg, 1),
+          retHighest
+        );
   };
 }
 

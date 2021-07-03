@@ -1,8 +1,8 @@
-var isObject = require('../lang/isObject'),
-    now = require('../date/now');
+var isObject = require("../lang/isObject"),
+  now = require("../date/now");
 
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -72,27 +72,27 @@ var nativeMax = Math.max;
  */
 function debounce(func, wait, options) {
   var args,
-      maxTimeoutId,
-      result,
-      stamp,
-      thisArg,
-      timeoutId,
-      trailingCall,
-      lastCalled = 0,
-      maxWait = false,
-      trailing = true;
+    maxTimeoutId,
+    result,
+    stamp,
+    thisArg,
+    timeoutId,
+    trailingCall,
+    lastCalled = 0,
+    maxWait = false,
+    trailing = true;
 
-  if (typeof func != 'function') {
+  if (typeof func != "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
-  wait = wait < 0 ? 0 : (+wait || 0);
+  wait = wait < 0 ? 0 : +wait || 0;
   if (options === true) {
     var leading = true;
     trailing = false;
   } else if (isObject(options)) {
     leading = !!options.leading;
-    maxWait = 'maxWait' in options && nativeMax(+options.maxWait || 0, wait);
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
+    maxWait = "maxWait" in options && nativeMax(+options.maxWait || 0, wait);
+    trailing = "trailing" in options ? !!options.trailing : trailing;
   }
 
   function cancel() {
@@ -146,7 +146,7 @@ function debounce(func, wait, options) {
         lastCalled = stamp;
       }
       var remaining = maxWait - (stamp - lastCalled),
-          isCalled = remaining <= 0 || remaining > maxWait;
+        isCalled = remaining <= 0 || remaining > maxWait;
 
       if (isCalled) {
         if (maxTimeoutId) {
@@ -154,15 +154,13 @@ function debounce(func, wait, options) {
         }
         lastCalled = stamp;
         result = func.apply(thisArg, args);
-      }
-      else if (!maxTimeoutId) {
+      } else if (!maxTimeoutId) {
         maxTimeoutId = setTimeout(maxDelayed, remaining);
       }
     }
     if (isCalled && timeoutId) {
       timeoutId = clearTimeout(timeoutId);
-    }
-    else if (!timeoutId && wait !== maxWait) {
+    } else if (!timeoutId && wait !== maxWait) {
       timeoutId = setTimeout(delayed, wait);
     }
     if (leadingCall) {

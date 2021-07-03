@@ -1,5 +1,5 @@
-var baseFlatten = require('../internal/baseFlatten'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseFlatten = require("../internal/baseFlatten"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * Flattens a nested array. If `isDeep` is `true` the array is recursively

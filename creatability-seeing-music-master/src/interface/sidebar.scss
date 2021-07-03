@@ -1,68 +1,66 @@
 @import "../style.scss";
 
 acc-side-panel {
+  #uploadedFile {
+    overflow: hidden;
+    width: 100%;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    display: block;
+    margin-top: -5px;
+    -webkit-select: none;
+    -moz-select: none;
+    select: none;
+    pointer-events: none;
 
-	#uploadedFile {
-		overflow: hidden;
-		width: 100%;
-		font-size: 14px;
-		text-overflow: ellipsis;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		border: none;
-		background-color: transparent;
-		text-align: left;
-		display: block;
-		margin-top: -5px;
-		-webkit-select: none;
-		-moz-select: none;
-		select: none;
-		pointer-events: none;
+    &[disabled] {
+      pointer-events: none;
+      opacity: 0.25;
+    }
 
-		&[disabled] {
-			pointer-events: none;
-			opacity: 0.25;
-		}
+    &:not(.nofile) {
+      cursor: pointer;
+      color: var(--accent-color);
+      pointer-events: initial;
 
+      &:hover {
+        color: white;
+      }
 
-		&:not(.nofile){
-			cursor: pointer;
-			color: var(--accent-color);
-			pointer-events: initial;
+      &:before {
+        content: "×";
+        margin-right: 10px;
+      }
+    }
 
-			&:hover {
-				color: white;
-			}
+    &.nofile {
+      font-style: italic;
+      color: var(--color-gray);
+    }
+  }
 
-			&:before {
-				content: '×';
-				margin-right: 10px;
-			}
-		}
+  acc-select {
+    display: block;
+    margin-top: 20px;
+  }
 
-		&.nofile {
-			font-style: italic;
-			color: var(--color-gray);
-		}
-	}
+  .blurb {
+    font-size: 12px;
+    padding: 10px;
 
-	acc-select {
-		display: block;
-		margin-top: 20px;
-	}
+    a {
+      color: var(--accent-color);
+    }
+  }
 
-	.blurb {
-		font-size: 12px;
-	    padding: 10px;
-
-	    a {
-	    	color: var(--accent-color);
-	    }
-	}
-
-	#audioInput{
-		acc-button {
-			margin-top: 30px;
-		}
-	}
+  #audioInput {
+    acc-button {
+      margin-top: 30px;
+    }
+  }
 }

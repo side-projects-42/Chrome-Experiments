@@ -12,7 +12,7 @@
  */
 function arrayReduce(array, iteratee, accumulator, initFromArray) {
   var index = -1,
-      length = array.length;
+    length = array.length;
 
   if (initFromArray && length) {
     accumulator = array[++index];

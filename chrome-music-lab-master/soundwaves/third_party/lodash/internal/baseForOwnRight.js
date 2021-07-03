@@ -1,5 +1,5 @@
-var baseForRight = require('./baseForRight'),
-    keys = require('../object/keys');
+var baseForRight = require("./baseForRight"),
+  keys = require("../object/keys");
 
 /**
  * The base implementation of `_.forOwnRight` without support for callback

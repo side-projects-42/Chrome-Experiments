@@ -1,5 +1,5 @@
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /**
  * Creates a function that invokes `func`, with the `this` binding and arguments
@@ -19,8 +19,8 @@ var FUNC_ERROR_TEXT = 'Expected a function';
  */
 function before(n, func) {
   var result;
-  if (typeof func != 'function') {
-    if (typeof n == 'function') {
+  if (typeof func != "function") {
+    if (typeof n == "function") {
       var temp = n;
       n = func;
       func = temp;
@@ -28,7 +28,7 @@ function before(n, func) {
       throw new TypeError(FUNC_ERROR_TEXT);
     }
   }
-  return function() {
+  return function () {
     if (--n > 0) {
       result = func.apply(this, arguments);
     }

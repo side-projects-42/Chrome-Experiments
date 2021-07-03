@@ -1,4 +1,4 @@
-var isFunction = require('../lang/isFunction');
+var isFunction = require("../lang/isFunction");
 
 /**
  * The base implementation of `_.functions` which creates an array of
@@ -11,9 +11,9 @@ var isFunction = require('../lang/isFunction');
  */
 function baseFunctions(object, props) {
   var index = -1,
-      length = props.length,
-      resIndex = -1,
-      result = [];
+    length = props.length,
+    resIndex = -1,
+    result = [];
 
   while (++index < length) {
     var key = props[index];

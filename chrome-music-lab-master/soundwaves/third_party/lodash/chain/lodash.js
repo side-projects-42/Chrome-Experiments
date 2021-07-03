@@ -1,9 +1,9 @@
-var LazyWrapper = require('../internal/LazyWrapper'),
-    LodashWrapper = require('../internal/LodashWrapper'),
-    baseLodash = require('../internal/baseLodash'),
-    isArray = require('../lang/isArray'),
-    isObjectLike = require('../internal/isObjectLike'),
-    wrapperClone = require('../internal/wrapperClone');
+var LazyWrapper = require("../internal/LazyWrapper"),
+  LodashWrapper = require("../internal/LodashWrapper"),
+  baseLodash = require("../internal/baseLodash"),
+  isArray = require("../lang/isArray"),
+  isObjectLike = require("../internal/isObjectLike"),
+  wrapperClone = require("../internal/wrapperClone");
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -108,11 +108,18 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * // => true
  */
 function lodash(value) {
-  if (isObjectLike(value) && !isArray(value) && !(value instanceof LazyWrapper)) {
+  if (
+    isObjectLike(value) &&
+    !isArray(value) &&
+    !(value instanceof LazyWrapper)
+  ) {
     if (value instanceof LodashWrapper) {
       return value;
     }
-    if (hasOwnProperty.call(value, '__chain__') && hasOwnProperty.call(value, '__wrapped__')) {
+    if (
+      hasOwnProperty.call(value, "__chain__") &&
+      hasOwnProperty.call(value, "__wrapped__")
+    ) {
       return wrapperClone(value);
     }
   }

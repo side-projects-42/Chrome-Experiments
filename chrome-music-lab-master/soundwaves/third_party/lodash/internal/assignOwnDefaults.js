@@ -18,7 +18,7 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * @returns {*} Returns the value to assign to the destination object.
  */
 function assignOwnDefaults(objectValue, sourceValue, key, object) {
-  return (objectValue === undefined || !hasOwnProperty.call(object, key))
+  return objectValue === undefined || !hasOwnProperty.call(object, key)
     ? sourceValue
     : objectValue;
 }

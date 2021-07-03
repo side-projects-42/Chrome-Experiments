@@ -1,7 +1,7 @@
-var baseCallback = require('./baseCallback'),
-    baseFind = require('./baseFind'),
-    baseFindIndex = require('./baseFindIndex'),
-    isArray = require('../lang/isArray');
+var baseCallback = require("./baseCallback"),
+  baseFind = require("./baseFind"),
+  baseFindIndex = require("./baseFindIndex"),
+  isArray = require("../lang/isArray");
 
 /**
  * Creates a `_.find` or `_.findLast` function.
@@ -12,7 +12,7 @@ var baseCallback = require('./baseCallback'),
  * @returns {Function} Returns the new find function.
  */
 function createFind(eachFunc, fromRight) {
-  return function(collection, predicate, thisArg) {
+  return function (collection, predicate, thisArg) {
     predicate = baseCallback(predicate, thisArg, 3);
     if (isArray(collection)) {
       var index = baseFindIndex(collection, predicate, fromRight);

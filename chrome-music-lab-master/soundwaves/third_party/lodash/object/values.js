@@ -1,5 +1,5 @@
-var baseValues = require('../internal/baseValues'),
-    keys = require('./keys');
+var baseValues = require("../internal/baseValues"),
+  keys = require("./keys");
 
 /**
  * Creates an array of the own enumerable property values of `object`.

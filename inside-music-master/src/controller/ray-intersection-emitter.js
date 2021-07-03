@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import 'aframe'
-import './Cursor'
-import './Retical'
-import './ray-controls'
-import 'aframe-auto-detect-controllers-component'
+import "aframe";
+import "./Cursor";
+import "./Retical";
+import "./ray-controls";
+import "aframe-auto-detect-controllers-component";
 
 /**
  * ray-intersection-emitter component,
@@ -28,122 +28,133 @@ import 'aframe-auto-detect-controllers-component'
  * @event `'intersection-start'`
  * @event `'intersection-end'`
  */
-AFRAME.registerComponent('ray-intersection-emitter', {
+AFRAME.registerComponent("ray-intersection-emitter", {
+  dependencies: ["raycaster"],
 
-	dependencies: ['raycaster'],
+  schema: {
+    front: {
+      type: "string",
+    },
+    back: {
+      type: "string",
+    },
+    updatePositions: {
+      type: "boolean",
+      default: false,
+    },
+    touch: {
+      type: "boolean",
+      default: false,
+    },
+  },
 
-	schema : {
-		front : {
-			type : 'string'
-		},
-		back : {
-			type : 'string'
-		},
-        updatePositions: {
-			type: 'boolean',
-			default: false
-		},
-		touch : {
-			type : 'boolean',
-			default : false
-		}
-	},
+  init() {
+    // bind All
+    [
+      "onClick",
+      "onRaycasterIntersection",
+      "onRaycasterIntersectionCleared",
+      "onTouchEnd",
+      "onTouchStart",
+      "onTouchClick",
+    ].forEach((fnStr) => (this[fnStr] = this[fnStr].bind(this)));
 
-	init(){
-        // bind All
-        [
-            'onClick',
-            'onRaycasterIntersection',
-            'onRaycasterIntersectionCleared',
-            'onTouchEnd',
-            'onTouchStart',
-            'onTouchClick'
-        ].forEach(fnStr=> this[fnStr] = this[fnStr].bind(this));
+    this.el.setAttribute("cursor", "fuse : false");
+    this.el.setAttribute(
+      "raycaster",
+      "far: 5; objects: .selectable; interval: 60"
+    );
 
-		this.el.setAttribute('cursor', 'fuse : false')
-		this.el.setAttribute('raycaster', 'far: 5; objects: .selectable; interval: 60')
+    this.el.addEventListener(
+      "raycaster-intersection",
+      this.onRaycasterIntersection
+    );
+    this.el.addEventListener(
+      "raycaster-intersection-cleared",
+      this.onRaycasterIntersectionCleared
+    );
+  },
 
-		this.el.addEventListener('raycaster-intersection', this.onRaycasterIntersection);
-		this.el.addEventListener('raycaster-intersection-cleared', this.onRaycasterIntersectionCleared);
-	},
+  /**
+   * when an intersection has occurred
+   * @param {CustomEvent} event
+   */
+  onRaycasterIntersection(event) {
+    //`back` is the resolved Group / Object3D specified as `data.back` attribute
+    if (this.back) {
+      const intersected = this.el.components.raycaster.intersectedEls[0];
+      document
+        .querySelector(this.data.back)
+        .emit("intersection-start", intersected);
+    }
+  },
 
-	/**
-	 * when an intersection has occurred
-	 * @param {CustomEvent} event
-	 */
-	onRaycasterIntersection(event){
-		//`back` is the resolved Group / Object3D specified as `data.back` attribute
-		if (this.back){
-			const intersected = this.el.components.raycaster.intersectedEls[0]
-			document.querySelector(this.data.back).emit('intersection-start', intersected)
-		}
-	},
+  /**
+   * when an intersection has cleared
+   * @param {CustomEvent} event
+   */
+  onRaycasterIntersectionCleared(event) {
+    if (this.back) {
+      document.querySelector(this.data.back).emit("intersection-end");
+    }
+  },
 
-	/**
-	 * when an intersection has cleared
-	 * @param {CustomEvent} event
-	 */
-	onRaycasterIntersectionCleared(event){
-		if (this.back){
-			document.querySelector(this.data.back).emit('intersection-end')
-		}
-	},
+  onClick() {
+    const intersected = this.el.components.raycaster.intersectedEls[0];
+    if (intersected) {
+      intersected.emit("click");
+    }
+  },
 
-	onClick(){
-		const intersected = this.el.components.raycaster.intersectedEls[0]
-		if (intersected){
-			intersected.emit('click')
-		}
-	},
+  onTouchEnd() {
+    if (this.data.touch) {
+      this.el.setAttribute("raycaster", "far", 0);
+    }
+  },
 
-	onTouchEnd(){
-		if (this.data.touch){
-			this.el.setAttribute('raycaster', 'far', 0)
-		}
-	},
+  onTouchClick() {
+    if (this.data.touch) {
+      this.onClick();
+    }
+  },
 
-	onTouchClick(){
-		if (this.data.touch){
-			this.onClick()
-		}
-	},
+  onTouchStart() {
+    if (this.data.touch) {
+      this.el.setAttribute("raycaster", "far", 5);
+    }
+  },
 
-	onTouchStart(){
-		if (this.data.touch){
-			this.el.setAttribute('raycaster', 'far', 5)
-		}
-	},
+  update() {
+    //get the front and back components
+    if (this.data.front) {
+      this.frontEl = document.querySelector(this.data.front);
+      this.front = this.frontEl.object3D;
 
-	update(){
-		//get the front and back components
-		if (this.data.front){
-			this.frontEl = document.querySelector(this.data.front);
-            this.front = this.frontEl.object3D;
+      this.frontEl.addEventListener("touch-end", this.onTouchEnd);
+      this.frontEl.addEventListener("touch-click", this.onTouchClick);
+      this.frontEl.addEventListener("touch-start", this.onTouchStart);
+    }
 
-			this.frontEl.addEventListener('touch-end', this.onTouchEnd);
-			this.frontEl.addEventListener('touch-click', this.onTouchClick);
-			this.frontEl.addEventListener('touch-start', this.onTouchStart);
-		}
+    if (this.data.back) {
+      this.back = document.querySelector(this.data.back).object3D;
 
-		if (this.data.back){
-			this.back = document.querySelector(this.data.back).object3D
+      document
+        .querySelector(this.data.back)
+        .addEventListener("controller-click", this.onClick);
+    }
 
-			document.querySelector(this.data.back).addEventListener('controller-click', this.onClick);
-		}
+    if (this.data.touch) {
+      this.el.setAttribute("raycaster", "far", 0);
+    }
+  },
 
-		if (this.data.touch){
-			this.el.setAttribute('raycaster', 'far', 0)
-		}
-	},
-
-	tick(){
-		// set the position of the back item
-		if (this.data.updatePositions && this.back && this.front){
-			const frontPosition = this.front.getWorldPosition()
-			const backPosition = this.back.getWorldPosition()
-			this.el.object3D.position.copy(frontPosition)
-			this.el.object3D.lookAt(backPosition)
-		}
-	}
-
-})
+  tick() {
+    // set the position of the back item
+    if (this.data.updatePositions && this.back && this.front) {
+      const frontPosition = this.front.getWorldPosition();
+      const backPosition = this.back.getWorldPosition();
+      this.el.object3D.position.copy(frontPosition);
+      this.el.object3D.lookAt(backPosition);
+    }
+  },
+});

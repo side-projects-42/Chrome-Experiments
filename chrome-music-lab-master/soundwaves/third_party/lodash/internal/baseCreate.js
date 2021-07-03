@@ -1,4 +1,4 @@
-var isObject = require('../lang/isObject');
+var isObject = require("../lang/isObject");
 
 /**
  * The base implementation of `_.create` without support for assigning
@@ -8,16 +8,16 @@ var isObject = require('../lang/isObject');
  * @param {Object} prototype The object to inherit from.
  * @returns {Object} Returns the new object.
  */
-var baseCreate = (function() {
+var baseCreate = (function () {
   function object() {}
-  return function(prototype) {
+  return function (prototype) {
     if (isObject(prototype)) {
       object.prototype = prototype;
-      var result = new object;
+      var result = new object();
       object.prototype = undefined;
     }
     return result || {};
   };
-}());
+})();
 
 module.exports = baseCreate;

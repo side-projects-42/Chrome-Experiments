@@ -1,6 +1,6 @@
-var baseFlatten = require('../internal/baseFlatten'),
-    baseUniq = require('../internal/baseUniq'),
-    restParam = require('../function/restParam');
+var baseFlatten = require("../internal/baseFlatten"),
+  baseUniq = require("../internal/baseUniq"),
+  restParam = require("../function/restParam");
 
 /**
  * Creates an array of unique values, in order, from all of the provided arrays
@@ -17,7 +17,7 @@ var baseFlatten = require('../internal/baseFlatten'),
  * _.union([1, 2], [4, 2], [2, 1]);
  * // => [1, 2, 4]
  */
-var union = restParam(function(arrays) {
+var union = restParam(function (arrays) {
   return baseUniq(baseFlatten(arrays, false, true));
 });
 

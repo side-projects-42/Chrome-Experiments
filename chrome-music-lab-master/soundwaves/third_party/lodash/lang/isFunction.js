@@ -1,7 +1,7 @@
-var isObject = require('./isObject');
+var isObject = require("./isObject");
 
 /** `Object#toString` result references. */
-var funcTag = '[object Function]';
+var funcTag = "[object Function]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;

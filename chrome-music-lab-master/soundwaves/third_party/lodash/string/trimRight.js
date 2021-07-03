@@ -1,7 +1,7 @@
-var baseToString = require('../internal/baseToString'),
-    charsRightIndex = require('../internal/charsRightIndex'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    trimmedRightIndex = require('../internal/trimmedRightIndex');
+var baseToString = require("../internal/baseToString"),
+  charsRightIndex = require("../internal/charsRightIndex"),
+  isIterateeCall = require("../internal/isIterateeCall"),
+  trimmedRightIndex = require("../internal/trimmedRightIndex");
 
 /**
  * Removes trailing whitespace or specified characters from `string`.
@@ -30,7 +30,7 @@ function trimRight(string, chars, guard) {
   if (guard ? isIterateeCall(value, chars, guard) : chars == null) {
     return string.slice(0, trimmedRightIndex(string) + 1);
   }
-  return string.slice(0, charsRightIndex(string, (chars + '')) + 1);
+  return string.slice(0, charsRightIndex(string, chars + "") + 1);
 }
 
 module.exports = trimRight;

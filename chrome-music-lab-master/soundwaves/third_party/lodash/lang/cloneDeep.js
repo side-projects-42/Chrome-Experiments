@@ -1,5 +1,5 @@
-var baseClone = require('../internal/baseClone'),
-    bindCallback = require('../internal/bindCallback');
+var baseClone = require("../internal/baseClone"),
+  bindCallback = require("../internal/bindCallback");
 
 /**
  * Creates a deep clone of `value`. If `customizer` is provided it's invoked
@@ -47,7 +47,7 @@ var baseClone = require('../internal/baseClone'),
  * // => 20
  */
 function cloneDeep(value, customizer, thisArg) {
-  return typeof customizer == 'function'
+  return typeof customizer == "function"
     ? baseClone(value, true, bindCallback(customizer, thisArg, 3))
     : baseClone(value, true);
 }

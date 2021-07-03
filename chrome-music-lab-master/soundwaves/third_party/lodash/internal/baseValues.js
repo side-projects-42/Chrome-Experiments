@@ -10,8 +10,8 @@
  */
 function baseValues(object, props) {
   var index = -1,
-      length = props.length,
-      result = Array(length);
+    length = props.length,
+    result = Array(length);
 
   while (++index < length) {
     result[index] = object[props[index]];

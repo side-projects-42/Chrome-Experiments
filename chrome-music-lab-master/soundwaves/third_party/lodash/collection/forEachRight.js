@@ -1,6 +1,6 @@
-var arrayEachRight = require('../internal/arrayEachRight'),
-    baseEachRight = require('../internal/baseEachRight'),
-    createForEach = require('../internal/createForEach');
+var arrayEachRight = require("../internal/arrayEachRight"),
+  baseEachRight = require("../internal/baseEachRight"),
+  createForEach = require("../internal/createForEach");
 
 /**
  * This method is like `_.forEach` except that it iterates over elements of

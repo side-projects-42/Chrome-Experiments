@@ -1,7 +1,7 @@
-var isObjectLike = require('../internal/isObjectLike');
+var isObjectLike = require("../internal/isObjectLike");
 
 /** `Object#toString` result references. */
-var dateTag = '[object Date]';
+var dateTag = "[object Date]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;

@@ -1,4 +1,4 @@
-var baseForIn = require('./baseForIn');
+var baseForIn = require("./baseForIn");
 
 /**
  * A specialized version of `_.pick` which picks `object` properties `predicate`
@@ -11,7 +11,7 @@ var baseForIn = require('./baseForIn');
  */
 function pickByCallback(object, predicate) {
   var result = {};
-  baseForIn(object, function(value, key, object) {
+  baseForIn(object, function (value, key, object) {
     if (predicate(value, key, object)) {
       result[key] = value;
     }

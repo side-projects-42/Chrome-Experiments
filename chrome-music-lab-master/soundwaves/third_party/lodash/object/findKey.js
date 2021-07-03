@@ -1,5 +1,5 @@
-var baseForOwn = require('../internal/baseForOwn'),
-    createFindKey = require('../internal/createFindKey');
+var baseForOwn = require("../internal/baseForOwn"),
+  createFindKey = require("../internal/createFindKey");
 
 /**
  * This method is like `_.find` except that it returns the key of the first

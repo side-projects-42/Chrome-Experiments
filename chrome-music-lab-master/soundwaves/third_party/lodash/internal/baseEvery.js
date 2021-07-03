@@ -1,4 +1,4 @@
-var baseEach = require('./baseEach');
+var baseEach = require("./baseEach");
 
 /**
  * The base implementation of `_.every` without support for callback
@@ -12,7 +12,7 @@ var baseEach = require('./baseEach');
  */
 function baseEvery(collection, predicate) {
   var result = true;
-  baseEach(collection, function(value, index, collection) {
+  baseEach(collection, function (value, index, collection) {
     result = !!predicate(value, index, collection);
     return result;
   });

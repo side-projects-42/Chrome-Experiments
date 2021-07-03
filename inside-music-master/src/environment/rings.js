@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-import { lerp } from 'utils/Helpers';
-import vertexShader from '../shaders/rings.vert';
-import fragmentShader from '../shaders/rings.frag';
-
+import { lerp } from "utils/Helpers";
+import vertexShader from "../shaders/rings.vert";
+import fragmentShader from "../shaders/rings.frag";
 
 /**
  * RingPointMaterial
@@ -34,78 +33,78 @@ import fragmentShader from '../shaders/rings.frag';
  * @param {Number} [options.radius=1.0]
  */
 class RingPointMaterial extends THREE.RawShaderMaterial {
+  constructor(options = {}) {
+    options.resolution = options.resolution || 128;
+    options.color = options.color || new THREE.Color(1, 1, 1);
+    options.opacity =
+      typeof options.opacity !== "undefined" ? options.opacity : 1.0;
+    options.size = options.size || 1.0;
+    options.blending = options.blending || THREE.NormalBlending;
+    options.shape = options.shape || "circle";
+    options.radius = options.radius || 1.0;
 
-	constructor(options={}){
-
-		options.resolution = options.resolution || 128;
-		options.color = options.color || new THREE.Color(1,1,1);
-		options.opacity = typeof options.opacity !== 'undefined' ? options.opacity : 1.0;
-		options.size = options.size || 1.0;
-		options.blending = options.blending || THREE.NormalBlending;
-		options.shape = options.shape || 'circle';
-		options.radius = options.radius || 1.0;
-
-		const waveform = new Float32Array(options.resolution);
-		for(let i=0; i<options.resolution; i++){
-			waveform[i] = 0;
-		}
-		super({
-			fog: true,
-			blending: options.blending,
-			defines: {
-				'WAVEFORM_RESOLUTION': options.resolution
-			},
-			vertexShader,
-			fragmentShader,
-			// depthWrite: false,
-			//depthTest: false,
-			transparent: true, //options.opacity === 1 ? false : true,
-			uniforms: {
-				shape: {
-					type: 't',
-					value: new THREE.TextureLoader().load(`images/textures/${options.shape}.png`)
-				},
-				radius: {
-					type: 'f',
-					value: options.radius
-				},
-				size: {
-					type: 'f',
-					value: options.size
-				},
-				color: {
-					type: 'c',
-					value: options.color
-				},
-				opacity: {
-					type: 'f',
-					value: options.opacity
-				},
-				waveform: {
-					type: 'fv1',
-					value: waveform
-				},
-				amplitude: {
-					type: 'f',
-					value: 1.0
-				},
-				fogNear: {
-					type: 'f',
-					value: 0
-				},
-				fogFar: {
-					type: 'f',
-					value: 0
-				},
-				fogColor: {
-					type: 'c',
-					value: new THREE.Color()
-				}
-			}
-		});
-	}
-};
-
+    const waveform = new Float32Array(options.resolution);
+    for (let i = 0; i < options.resolution; i++) {
+      waveform[i] = 0;
+    }
+    super({
+      fog: true,
+      blending: options.blending,
+      defines: {
+        WAVEFORM_RESOLUTION: options.resolution,
+      },
+      vertexShader,
+      fragmentShader,
+      // depthWrite: false,
+      //depthTest: false,
+      transparent: true, //options.opacity === 1 ? false : true,
+      uniforms: {
+        shape: {
+          type: "t",
+          value: new THREE.TextureLoader().load(
+            `images/textures/${options.shape}.png`
+          ),
+        },
+        radius: {
+          type: "f",
+          value: options.radius,
+        },
+        size: {
+          type: "f",
+          value: options.size,
+        },
+        color: {
+          type: "c",
+          value: options.color,
+        },
+        opacity: {
+          type: "f",
+          value: options.opacity,
+        },
+        waveform: {
+          type: "fv1",
+          value: waveform,
+        },
+        amplitude: {
+          type: "f",
+          value: 1.0,
+        },
+        fogNear: {
+          type: "f",
+          value: 0,
+        },
+        fogFar: {
+          type: "f",
+          value: 0,
+        },
+        fogColor: {
+          type: "c",
+          value: new THREE.Color(),
+        },
+      },
+    });
+  }
+}
 
 /**
  * RingBufferGeometry
@@ -116,80 +115,71 @@ class RingPointMaterial extends THREE.RawShaderMaterial {
  * @param {Number} [resolution=128]
  */
 class RingBufferGeometry extends THREE.BufferGeometry {
-    constructor(resolution=128){
-		super(new THREE.BufferGeometry());
-		// console.log(`new geometry ${resolution}`)
+  constructor(resolution = 128) {
+    super(new THREE.BufferGeometry());
+    // console.log(`new geometry ${resolution}`)
 
-        this.resolution = resolution;
+    this.resolution = resolution;
 
+    //position attribute, needs to be there,
+    //but its calculated in the vertex shader
+    const positions = new Float32Array(resolution * 3);
 
-		//position attribute, needs to be there,
-		//but its calculated in the vertex shader
-        const positions = new Float32Array(resolution * 3);
+    // for(let i=0; i<resolution; i++){
 
-        // for(let i=0; i<resolution; i++){
+    //     const angle = (i+1)/resolution * Math.PI * 2;
+    //     const x = Math.cos(angle);
+    //     const y = 0;
+    //     const z = Math.sin(angle);
 
-        //     const angle = (i+1)/resolution * Math.PI * 2;
-        //     const x = Math.cos(angle);
-        //     const y = 0;
-        //     const z = Math.sin(angle);
+    //     positions[i * 3] = x;
+    //     positions[i * 3 +1] = y;
+    //     positions[i * 3 +2] = z;
 
+    // }
 
-        //     positions[i * 3] = x;
-        //     positions[i * 3 +1] = y;
-        //     positions[i * 3 +2] = z;
+    const posAttribute = new THREE.BufferAttribute(positions, 3);
+    this.addAttribute("position", posAttribute);
 
-        // }
-
-
-        const posAttribute = new THREE.BufferAttribute(positions, 3);
-        this.addAttribute('position', posAttribute);
-
-
-		//index attribute, each point gets an index for reference on the waveform uniform
-		const reference = new Float32Array(resolution);
-		for(let i=0; i<resolution; i++){
-			reference[i] = i/resolution;
-		}
-
-		const referenceAttribute = new THREE.BufferAttribute(reference, 1);
-		this.addAttribute('reference', referenceAttribute);
-
-		//since the positions are set in shader,
-		//we need a custom boundingSphere to a void erroneous culling
-		this.boundingSphere = new THREE.Sphere(new THREE.Vector3(0,0,0), 0.52);
+    //index attribute, each point gets an index for reference on the waveform uniform
+    const reference = new Float32Array(resolution);
+    for (let i = 0; i < resolution; i++) {
+      reference[i] = i / resolution;
     }
 
-}
+    const referenceAttribute = new THREE.BufferAttribute(reference, 1);
+    this.addAttribute("reference", referenceAttribute);
 
+    //since the positions are set in shader,
+    //we need a custom boundingSphere to a void erroneous culling
+    this.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 0.52);
+  }
+}
 
 /**
  * geometryPool
  * re-use the same geometry for multiple objects with the same parameters
  * @type {{get, clear}}
  */
-export const geometryPool = (function(){
-	let pool = {};
+export const geometryPool = (function () {
+  let pool = {};
 
-    function get(resolution){
-        //only make one geometry for any series of same parameters
-        const key = `${resolution}`;
-        pool[key] = pool[key] || [];
-        while(pool[key].length < 2 ){
-            pool[key].push(new RingBufferGeometry(1, resolution));
-        }
-        return pool[key][1];
+  function get(resolution) {
+    //only make one geometry for any series of same parameters
+    const key = `${resolution}`;
+    pool[key] = pool[key] || [];
+    while (pool[key].length < 2) {
+      pool[key].push(new RingBufferGeometry(1, resolution));
     }
+    return pool[key][1];
+  }
 
-    function clear(){
-        pool = {};
-    }
+  function clear() {
+    pool = {};
+  }
 
-
-    return { get, clear };
-
+  return { get, clear };
 })();
-
 
 /**
  * RingPoints
@@ -199,36 +189,31 @@ export const geometryPool = (function(){
  * @param {Object} [options] check `RingPointMaterial` for properties
  */
 export class RingPoints extends THREE.Points {
-	constructor(options={}){
-		if(typeof options.useCache === 'undefined'){
-			options.useCache = true;
-		}
+  constructor(options = {}) {
+    if (typeof options.useCache === "undefined") {
+      options.useCache = true;
+    }
 
-		if(typeof options.useCache !== 'undefined'){
-			delete options.useCache;
-		}
+    if (typeof options.useCache !== "undefined") {
+      delete options.useCache;
+    }
 
-		const geom = new RingBufferGeometry(options.resolution);//geometryPool.get(options.resolution);
+    const geom = new RingBufferGeometry(options.resolution); //geometryPool.get(options.resolution);
 
-		super(
-			geom,
-			new RingPointMaterial(options)
-		);
+    super(geom, new RingPointMaterial(options));
 
-		this.renderOrder = 2;
+    this.renderOrder = 2;
 
+    this.__goalProperties = {
+      radius: this.material.uniforms.radius.value,
+      opacity: this.material.uniforms.opacity.value,
+    };
+  }
 
-		this.__goalProperties = {
-			radius: this.material.uniforms.radius.value,
-			opacity: this.material.uniforms.opacity.value
-		};
-	}
-
-	transitionStep( t ){
-	    for(let prop in this.__goalProperties){
-	        const uni = this.material.uniforms[prop];
-	        uni.value = lerp(0, this.__goalProperties[prop], t);
-        }
-	}
-
+  transitionStep(t) {
+    for (let prop in this.__goalProperties) {
+      const uni = this.material.uniforms[prop];
+      uni.value = lerp(0, this.__goalProperties[prop], t);
+    }
+  }
 }

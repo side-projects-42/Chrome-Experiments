@@ -1,4 +1,4 @@
-var toObject = require('./toObject');
+var toObject = require("./toObject");
 
 /**
  * A specialized version of `_.pick` which picks `object` properties specified
@@ -13,8 +13,8 @@ function pickByArray(object, props) {
   object = toObject(object);
 
   var index = -1,
-      length = props.length,
-      result = {};
+    length = props.length,
+    result = {};
 
   while (++index < length) {
     var key = props[index];

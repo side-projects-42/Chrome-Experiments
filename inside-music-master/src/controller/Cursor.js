@@ -14,83 +14,82 @@
  * limitations under the License.
  */
 
-import 'aframe'
-import eventMap from 'event-map';
-
+import "aframe";
+import eventMap from "event-map";
 
 /**
  * mouse-cursor component
  * allows you to use your mouse to select menu items
  */
-AFRAME.registerComponent('mouse-cursor', {
+AFRAME.registerComponent("mouse-cursor", {
+  init() {
+    // let touchmoved = false
+    this.mousePosition = new THREE.Vector2();
+    this.camera = document.querySelector("a-scene").camera;
+    // update the position of the mouse
+    this.__vector = new THREE.Vector3();
 
-	init(){
-		// let touchmoved = false
-        this.mousePosition = new THREE.Vector2();
-        this.camera = document.querySelector('a-scene').camera;
-        // update the position of the mouse
-        this.__vector = new THREE.Vector3()
+    this.__removeListeners = eventMap({
+      mousemove: (e) => {
+        this.mousePosition.x = e.clientX;
+        this.mousePosition.y = e.clientY;
+      },
+      touchmove: (e) => {
+        if (e.touches) {
+          // touchmoved = true
+          const touch = e.touches[0];
+          this.mousePosition.x = touch.clientX;
+          this.mousePosition.y = touch.clientY;
+        }
+      },
+      touchstart: (e) => {
+        if (e.touches) {
+          // touchmoved = false
+          const touch = e.touches[0];
+          this.mousePosition.x = touch.clientX;
+          this.mousePosition.y = touch.clientY;
+          this.el.emit("touch-start");
+        }
+        this.tick();
+      },
+      touchend: (e) => {
+        this.el.emit("touch-end");
+      },
+    });
 
-        this.__removeListeners = eventMap({
-            'mousemove': e=>{
-                this.mousePosition.x = e.clientX;
-                this.mousePosition.y = e.clientY;
-            },
-            'touchmove': e=>{
-                if (e.touches){
-                    // touchmoved = true
-                    const touch = e.touches[0];
-                    this.mousePosition.x = touch.clientX;
-                    this.mousePosition.y = touch.clientY;
-                }
-            },
-            'touchstart': e=>{
-                if (e.touches){
-                    // touchmoved = false
-                    const touch = e.touches[0];
-                    this.mousePosition.x = touch.clientX;
-                    this.mousePosition.y = touch.clientY;
-                    this.el.emit('touch-start')
-                }
-                this.tick();
-            },
-            'touchend': e=>{
-                this.el.emit('touch-end');
-            }
-        });
+    this.onContextMenu = this.onContextMenu.bind(this);
+    window.addEventListener("contextmenu", this.onContextMenu);
+  },
 
-        this.onContextMenu = this.onContextMenu.bind(this);
-        window.addEventListener('contextmenu', this.onContextMenu);
-	},
+  onContextMenu(e) {
+    //stop the context menu
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  },
 
-    onContextMenu(e){
-        //stop the context menu
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    },
+  remove() {
+    this.__removeListeners();
+    window.removeEventListener("contextmenu", this.onContextMenu);
+  },
 
-    remove(){
-        this.__removeListeners();
-        window.removeEventListener('contextmenu', this.onContextMenu);
-    },
+  tick() {
+    this.__vector.set(
+      (this.mousePosition.x / window.innerWidth) * 2 - 1,
+      -(this.mousePosition.y / window.innerHeight) * 2 + 1,
+      0.5
+    );
 
-	tick(){
-        this.__vector.set(
-            (this.mousePosition.x/window.innerWidth) * 2 - 1,
-            -(this.mousePosition.y/window.innerHeight) * 2 + 1,
-            0.5);
+    this.__vector.unproject(this.camera);
 
-        this.__vector.unproject(this.camera);
+    const cameraPosition = this.camera.getWorldPosition();
+    const dir = this.__vector.sub(cameraPosition).normalize();
 
-        const cameraPosition = this.camera.getWorldPosition();
-        const dir = this.__vector.sub(cameraPosition).normalize();
+    const distance = 0.1;
 
-        const distance = 0.1;
+    const pos = cameraPosition.clone().add(dir.multiplyScalar(distance));
 
-        const pos = cameraPosition.clone().add(dir.multiplyScalar(distance));
-
-        //this.el.object3D.position.set(pos.x, pos.y, pos.z)
-        this.el.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`)
-	}
-})
+    //this.el.object3D.position.set(pos.x, pos.y, pos.z)
+    this.el.setAttribute("position", `${pos.x} ${pos.y} ${pos.z}`);
+  },
+});

@@ -1,5 +1,5 @@
-var baseValues = require('../internal/baseValues'),
-    keysIn = require('./keysIn');
+var baseValues = require("../internal/baseValues"),
+  keysIn = require("./keysIn");
 
 /**
  * Creates an array of the own and inherited enumerable property values

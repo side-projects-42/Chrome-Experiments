@@ -1,8 +1,8 @@
-var baseMatches = require('./baseMatches'),
-    baseMatchesProperty = require('./baseMatchesProperty'),
-    bindCallback = require('./bindCallback'),
-    identity = require('../utility/identity'),
-    property = require('../utility/property');
+var baseMatches = require("./baseMatches"),
+  baseMatchesProperty = require("./baseMatchesProperty"),
+  bindCallback = require("./bindCallback"),
+  identity = require("../utility/identity"),
+  property = require("../utility/property");
 
 /**
  * The base implementation of `_.callback` which supports specifying the
@@ -16,15 +16,13 @@ var baseMatches = require('./baseMatches'),
  */
 function baseCallback(func, thisArg, argCount) {
   var type = typeof func;
-  if (type == 'function') {
-    return thisArg === undefined
-      ? func
-      : bindCallback(func, thisArg, argCount);
+  if (type == "function") {
+    return thisArg === undefined ? func : bindCallback(func, thisArg, argCount);
   }
   if (func == null) {
     return identity;
   }
-  if (type == 'object') {
+  if (type == "object") {
     return baseMatches(func);
   }
   return thisArg === undefined

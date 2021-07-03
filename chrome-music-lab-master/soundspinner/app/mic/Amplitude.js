@@ -15,29 +15,28 @@
  */
 
 define(function () {
+  var Amplitude = function () {
+    this._level = 0;
+  };
 
-	var Amplitude = function(){
-		this._level = 0;
-	};
+  Amplitude.prototype.draw = function (context, centerX, centerY, height) {
+    // context.lineTo
+    context.strokeStyle = "rgb(214, 110, 28)";
+    context.lineCap = "square";
 
-	Amplitude.prototype.draw = function(context, centerX, centerY, height){
-		// context.lineTo
-		context.strokeStyle = "rgb(214, 110, 28)";
-		context.lineCap = "square";
+    var lineSize = Math.pow(this._level, 0.5) * height + height * 0.6;
+    lineSize = Math.min(lineSize, height);
 
-		var lineSize = Math.pow(this._level, 0.5) * height + height * 0.6;
-		lineSize = Math.min(lineSize, height);
+    context.beginPath();
+    context.lineWidth = 10;
+    context.moveTo(centerX, centerY - lineSize);
+    context.lineTo(centerX, centerY + lineSize);
+    context.stroke();
+  };
 
-		context.beginPath();
-		context.lineWidth = 10;
-		context.moveTo(centerX, centerY - lineSize);
-		context.lineTo(centerX, centerY + lineSize);
-		context.stroke();
-	};
+  Amplitude.prototype.setRMS = function (rms) {
+    this._level = Math.max(rms, this._level * 0.3);
+  };
 
-	Amplitude.prototype.setRMS = function(rms){
-		this._level = Math.max(rms, this._level * 0.3);
-	};
-
-	return new Amplitude();
+  return new Amplitude();
 });

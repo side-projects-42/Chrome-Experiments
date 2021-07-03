@@ -1,6 +1,6 @@
-var baseIndexOf = require('./baseIndexOf'),
-    cacheIndexOf = require('./cacheIndexOf'),
-    createCache = require('./createCache');
+var baseIndexOf = require("./baseIndexOf"),
+  cacheIndexOf = require("./cacheIndexOf"),
+  createCache = require("./createCache");
 
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
@@ -16,12 +16,12 @@ var LARGE_ARRAY_SIZE = 200;
  */
 function baseUniq(array, iteratee) {
   var index = -1,
-      indexOf = baseIndexOf,
-      length = array.length,
-      isCommon = true,
-      isLarge = isCommon && length >= LARGE_ARRAY_SIZE,
-      seen = isLarge ? createCache() : null,
-      result = [];
+    indexOf = baseIndexOf,
+    length = array.length,
+    isCommon = true,
+    isLarge = isCommon && length >= LARGE_ARRAY_SIZE,
+    seen = isLarge ? createCache() : null,
+    result = [];
 
   if (seen) {
     indexOf = cacheIndexOf;
@@ -30,10 +30,9 @@ function baseUniq(array, iteratee) {
     isLarge = false;
     seen = iteratee ? [] : result;
   }
-  outer:
-  while (++index < length) {
+  outer: while (++index < length) {
     var value = array[index],
-        computed = iteratee ? iteratee(value, index, array) : value;
+      computed = iteratee ? iteratee(value, index, array) : value;
 
     if (isCommon && value === value) {
       var seenIndex = seen.length;
@@ -46,8 +45,7 @@ function baseUniq(array, iteratee) {
         seen.push(computed);
       }
       result.push(value);
-    }
-    else if (indexOf(seen, computed, 0) < 0) {
+    } else if (indexOf(seen, computed, 0) < 0) {
       if (iteratee || isLarge) {
         seen.push(computed);
       }

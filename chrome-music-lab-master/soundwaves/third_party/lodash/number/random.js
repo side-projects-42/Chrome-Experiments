@@ -1,9 +1,9 @@
-var baseRandom = require('../internal/baseRandom'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseRandom = require("../internal/baseRandom"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeMin = Math.min,
-    nativeRandom = Math.random;
+  nativeRandom = Math.random;
 
 /**
  * Produces a random number between `min` and `max` (inclusive). If only one
@@ -37,14 +37,13 @@ function random(min, max, floating) {
     max = floating = undefined;
   }
   var noMin = min == null,
-      noMax = max == null;
+    noMax = max == null;
 
   if (floating == null) {
-    if (noMax && typeof min == 'boolean') {
+    if (noMax && typeof min == "boolean") {
       floating = min;
       min = 1;
-    }
-    else if (typeof max == 'boolean') {
+    } else if (typeof max == "boolean") {
       floating = max;
       noMax = true;
     }
@@ -62,7 +61,10 @@ function random(min, max, floating) {
   }
   if (floating || min % 1 || max % 1) {
     var rand = nativeRandom();
-    return nativeMin(min + (rand * (max - min + parseFloat('1e-' + ((rand + '').length - 1)))), max);
+    return nativeMin(
+      min + rand * (max - min + parseFloat("1e-" + ((rand + "").length - 1))),
+      max
+    );
   }
   return baseRandom(min, max);
 }

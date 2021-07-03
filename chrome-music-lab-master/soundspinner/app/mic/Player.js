@@ -14,92 +14,102 @@
  * limitations under the License.
  */
 
-define(["Tone/core/Tone", "util/MathUtils", "mic/Amplitude"], function (Tone, MathUtils, Amplitude) {
+define(["Tone/core/Tone", "util/MathUtils", "mic/Amplitude"], function (
+  Tone,
+  MathUtils,
+  Amplitude
+) {
+  var Player = function (bufferDuration) {
+    /**
+     *  @private
+     *  @type {ScriptProcessorNode}
+     */
+    this._jsNode = Tone.context.createScriptProcessor(2048, 0, 1);
+    //so it doesn't get garbage collected
+    this._jsNode.toMaster();
+    this._jsNode.onaudioprocess = this._process.bind(this);
 
-	var Player = function(bufferDuration){
+    this._buffer = Tone.context.createBuffer(
+      1,
+      Tone.context.sampleRate * bufferDuration,
+      Tone.context.sampleRate
+    );
 
-		/** 
-		 *  @private
-		 *  @type {ScriptProcessorNode}
-		 */
-		this._jsNode = Tone.context.createScriptProcessor(2048, 0, 1);
-		//so it doesn't get garbage collected
-		this._jsNode.toMaster();
-		this._jsNode.onaudioprocess = this._process.bind(this);
+    this._playbackPosition = 0;
 
-		this._buffer = Tone.context.createBuffer(1, Tone.context.sampleRate * bufferDuration, Tone.context.sampleRate);
+    this.speed = 0;
 
-		this._playbackPosition = 0;
+    this.position = 0;
+  };
 
-		this.speed = 0;
+  Player.prototype.setBuffer = function (buffer) {
+    this._buffer = Tone.context.createBuffer(
+      1,
+      Tone.context.sampleRate * buffer.duration,
+      Tone.context.sampleRate
+    );
+    var targetArray = this._buffer.getChannelData(0);
+    var copyArray = buffer.getChannelData(0);
+    for (var i = 0; i < copyArray.length; i++) {
+      targetArray[i] = copyArray[i];
+    }
+    this._playbackPosition = 0;
+    this.position = 0;
+  };
 
-		this.position = 0;
-	};
+  Player.prototype._process = function (e) {
+    var outputBuffer = e.outputBuffer.getChannelData(0);
+    var frameLength = outputBuffer.length;
 
-	Player.prototype.setBuffer = function(buffer){
-		this._buffer = Tone.context.createBuffer(1, Tone.context.sampleRate * buffer.duration, Tone.context.sampleRate);
-		var targetArray = this._buffer.getChannelData(0);
-		var copyArray = buffer.getChannelData(0);
-		for (var i = 0; i < copyArray.length; i++){
-			targetArray[i] = copyArray[i];
-		}
-		this._playbackPosition = 0;
-		this.position = 0;
-	};
+    var sum = 0;
 
-	Player.prototype._process = function(e){
+    if (Math.abs(this.speed) > 0.08) {
+      var samples = this._buffer.getChannelData(0);
+      var sampleLen = samples.length;
 
-		var outputBuffer = e.outputBuffer.getChannelData(0);
-		var frameLength = outputBuffer.length;
+      var startSamples = this._playbackPosition;
+      var endSamples = this.speed * outputBuffer.length + startSamples;
+      this._playbackPosition = endSamples;
 
-		var sum = 0;
+      this.position = this._playbackPosition / sampleLen;
 
-		if (Math.abs(this.speed) > 0.08){
+      for (var i = 0, len = outputBuffer.length; i < len; i++) {
+        var pos = MathUtils.lerp(startSamples, endSamples, i / len);
+        var lowPos = Math.floor(pos) % sampleLen;
+        if (lowPos < 0) {
+          lowPos = sampleLen + lowPos;
+        }
 
-			var samples = this._buffer.getChannelData(0);
-			var sampleLen = samples.length;
+        var highPos = Math.ceil(pos) % sampleLen;
+        if (highPos < 0) {
+          highPos = sampleLen + highPos;
+        }
 
-			var startSamples = this._playbackPosition;
-			var endSamples = this.speed * outputBuffer.length + startSamples;
-			this._playbackPosition = endSamples;
+        pos = pos % sampleLen;
+        if (pos < 0) {
+          pos = sampleLen + pos;
+        }
 
-			this.position = (this._playbackPosition / sampleLen);
+        //lerp the sample if between samples
+        sample = MathUtils.lerp(
+          samples[lowPos],
+          samples[highPos],
+          pos - lowPos
+        );
 
-			for (var i = 0, len = outputBuffer.length; i < len; i++){
+        sum += sample * sample;
 
-				var pos = MathUtils.lerp(startSamples, endSamples, i / len);
-				var lowPos = Math.floor(pos) % sampleLen;
-				if (lowPos < 0){
-					lowPos = sampleLen + lowPos;
-				}
+        //set the sample
+        outputBuffer[i] = sample;
+      }
+    } else {
+      //all 0s
+      for (var j = 0; j < frameLength; j++) {
+        outputBuffer[j] = 0;
+      }
+    }
+    Amplitude.setRMS(sum / frameLength);
+  };
 
-				var highPos = Math.ceil(pos) % sampleLen;
-				if (highPos < 0){
-					highPos = sampleLen + highPos;
-				}
-
-				pos = pos % sampleLen;
-				if (pos < 0){
-					pos = sampleLen + pos;
-				}
-
-				//lerp the sample if between samples
-				sample = MathUtils.lerp(samples[lowPos], samples[highPos], pos - lowPos);
-
-				sum += sample * sample;
-
-				//set the sample
-				outputBuffer[i] = sample;
-			}
-
-		} else {
-			//all 0s
-			for (var j = 0; j < frameLength; j++){
-				outputBuffer[j] = 0;
-			}
-		}
-		Amplitude.setRMS(sum / frameLength);
-	};
-
-	return Player;
+  return Player;
 });

@@ -1,8 +1,8 @@
-var arrayEvery = require('../internal/arrayEvery'),
-    baseCallback = require('../internal/baseCallback'),
-    baseEvery = require('../internal/baseEvery'),
-    isArray = require('../lang/isArray'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var arrayEvery = require("../internal/arrayEvery"),
+  baseCallback = require("../internal/baseCallback"),
+  baseEvery = require("../internal/baseEvery"),
+  isArray = require("../lang/isArray"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * Checks if `predicate` returns truthy for **all** elements of `collection`.
@@ -57,7 +57,7 @@ function every(collection, predicate, thisArg) {
   if (thisArg && isIterateeCall(collection, predicate, thisArg)) {
     predicate = undefined;
   }
-  if (typeof predicate != 'function' || thisArg !== undefined) {
+  if (typeof predicate != "function" || thisArg !== undefined) {
     predicate = baseCallback(predicate, thisArg, 3);
   }
   return func(collection, predicate);

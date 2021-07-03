@@ -1,6 +1,6 @@
-var bindCallback = require('./bindCallback'),
-    isIterateeCall = require('./isIterateeCall'),
-    restParam = require('../function/restParam');
+var bindCallback = require("./bindCallback"),
+  isIterateeCall = require("./isIterateeCall"),
+  restParam = require("../function/restParam");
 
 /**
  * Creates a `_.assign`, `_.defaults`, or `_.merge` function.
@@ -10,19 +10,19 @@ var bindCallback = require('./bindCallback'),
  * @returns {Function} Returns the new assigner function.
  */
 function createAssigner(assigner) {
-  return restParam(function(object, sources) {
+  return restParam(function (object, sources) {
     var index = -1,
-        length = object == null ? 0 : sources.length,
-        customizer = length > 2 ? sources[length - 2] : undefined,
-        guard = length > 2 ? sources[2] : undefined,
-        thisArg = length > 1 ? sources[length - 1] : undefined;
+      length = object == null ? 0 : sources.length,
+      customizer = length > 2 ? sources[length - 2] : undefined,
+      guard = length > 2 ? sources[2] : undefined,
+      thisArg = length > 1 ? sources[length - 1] : undefined;
 
-    if (typeof customizer == 'function') {
+    if (typeof customizer == "function") {
       customizer = bindCallback(customizer, thisArg, 5);
       length -= 2;
     } else {
-      customizer = typeof thisArg == 'function' ? thisArg : undefined;
-      length -= (customizer ? 1 : 0);
+      customizer = typeof thisArg == "function" ? thisArg : undefined;
+      length -= customizer ? 1 : 0;
     }
     if (guard && isIterateeCall(sources[0], sources[1], guard)) {
       customizer = length < 3 ? undefined : customizer;

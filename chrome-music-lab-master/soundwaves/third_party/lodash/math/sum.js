@@ -1,9 +1,9 @@
-var arraySum = require('../internal/arraySum'),
-    baseCallback = require('../internal/baseCallback'),
-    baseSum = require('../internal/baseSum'),
-    isArray = require('../lang/isArray'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    toIterable = require('../internal/toIterable');
+var arraySum = require("../internal/arraySum"),
+  baseCallback = require("../internal/baseCallback"),
+  baseSum = require("../internal/baseSum"),
+  isArray = require("../lang/isArray"),
+  isIterateeCall = require("../internal/isIterateeCall"),
+  toIterable = require("../internal/toIterable");
 
 /**
  * Gets the sum of the values in `collection`.
@@ -43,7 +43,10 @@ function sum(collection, iteratee, thisArg) {
   }
   iteratee = baseCallback(iteratee, thisArg, 3);
   return iteratee.length == 1
-    ? arraySum(isArray(collection) ? collection : toIterable(collection), iteratee)
+    ? arraySum(
+        isArray(collection) ? collection : toIterable(collection),
+        iteratee
+      )
     : baseSum(collection, iteratee);
 }
 

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import 'style/insert_headset.scss'
+import "style/insert_headset.scss";
 
 export class InsertHeadset {
-	constructor(){
-		const element = this.element = document.querySelector('#insertHeadset')
+  constructor() {
+    const element = (this.element = document.querySelector("#insertHeadset"));
 
-		element.addEventListener('click', () => {
-			this.emit('click')
-			this.hide()
-		})
+    element.addEventListener("click", () => {
+      this.emit("click");
+      this.hide();
+    });
 
-		const scene = document.querySelector('a-scene')
-		scene.addEventListener('enter-vr', () => {
-			if (scene.isMobile){
-				element.classList.add('visible')
-			}
-		})
-	}
+    const scene = document.querySelector("a-scene");
+    scene.addEventListener("enter-vr", () => {
+      if (scene.isMobile) {
+        element.classList.add("visible");
+      }
+    });
+  }
 }

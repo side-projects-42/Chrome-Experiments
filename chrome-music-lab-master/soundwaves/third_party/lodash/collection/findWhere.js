@@ -1,5 +1,5 @@
-var baseMatches = require('../internal/baseMatches'),
-    find = require('./find');
+var baseMatches = require("../internal/baseMatches"),
+  find = require("./find");
 
 /**
  * Performs a deep comparison between each element in `collection` and the

@@ -1,4 +1,4 @@
-var isArray = require('../lang/isArray');
+var isArray = require("../lang/isArray");
 
 /**
  * The inverse of `_.pairs`; this method returns an object composed from arrays
@@ -23,8 +23,8 @@ var isArray = require('../lang/isArray');
  */
 function zipObject(props, values) {
   var index = -1,
-      length = props ? props.length : 0,
-      result = {};
+    length = props ? props.length : 0,
+    result = {};
 
   if (length && !values && !isArray(props[0])) {
     values = [];

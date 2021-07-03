@@ -1,5 +1,5 @@
-var getLength = require('./getLength'),
-    isLength = require('./isLength');
+var getLength = require("./getLength"),
+  isLength = require("./isLength");
 
 /**
  * Checks if `value` is array-like.

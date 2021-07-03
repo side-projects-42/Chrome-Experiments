@@ -1,17 +1,17 @@
-var arrayCopy = require('./arrayCopy'),
-    composeArgs = require('./composeArgs'),
-    composeArgsRight = require('./composeArgsRight'),
-    replaceHolders = require('./replaceHolders');
+var arrayCopy = require("./arrayCopy"),
+  composeArgs = require("./composeArgs"),
+  composeArgsRight = require("./composeArgsRight"),
+  replaceHolders = require("./replaceHolders");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var BIND_FLAG = 1,
-    CURRY_BOUND_FLAG = 4,
-    CURRY_FLAG = 8,
-    ARY_FLAG = 128,
-    REARG_FLAG = 256;
+  CURRY_BOUND_FLAG = 4,
+  CURRY_FLAG = 8,
+  ARY_FLAG = 128,
+  REARG_FLAG = 256;
 
 /** Used as the internal argument placeholder. */
-var PLACEHOLDER = '__lodash_placeholder__';
+var PLACEHOLDER = "__lodash_placeholder__";
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeMin = Math.min;
@@ -33,13 +33,15 @@ var nativeMin = Math.min;
  */
 function mergeData(data, source) {
   var bitmask = data[1],
-      srcBitmask = source[1],
-      newBitmask = bitmask | srcBitmask,
-      isCommon = newBitmask < ARY_FLAG;
+    srcBitmask = source[1],
+    newBitmask = bitmask | srcBitmask,
+    isCommon = newBitmask < ARY_FLAG;
 
   var isCombo =
     (srcBitmask == ARY_FLAG && bitmask == CURRY_FLAG) ||
-    (srcBitmask == ARY_FLAG && bitmask == REARG_FLAG && data[7].length <= source[8]) ||
+    (srcBitmask == ARY_FLAG &&
+      bitmask == REARG_FLAG &&
+      data[7].length <= source[8]) ||
     (srcBitmask == (ARY_FLAG | REARG_FLAG) && bitmask == CURRY_FLAG);
 
   // Exit early if metadata can't be merged.
@@ -50,21 +52,29 @@ function mergeData(data, source) {
   if (srcBitmask & BIND_FLAG) {
     data[2] = source[2];
     // Set when currying a bound function.
-    newBitmask |= (bitmask & BIND_FLAG) ? 0 : CURRY_BOUND_FLAG;
+    newBitmask |= bitmask & BIND_FLAG ? 0 : CURRY_BOUND_FLAG;
   }
   // Compose partial arguments.
   var value = source[3];
   if (value) {
     var partials = data[3];
-    data[3] = partials ? composeArgs(partials, value, source[4]) : arrayCopy(value);
-    data[4] = partials ? replaceHolders(data[3], PLACEHOLDER) : arrayCopy(source[4]);
+    data[3] = partials
+      ? composeArgs(partials, value, source[4])
+      : arrayCopy(value);
+    data[4] = partials
+      ? replaceHolders(data[3], PLACEHOLDER)
+      : arrayCopy(source[4]);
   }
   // Compose partial right arguments.
   value = source[5];
   if (value) {
     partials = data[5];
-    data[5] = partials ? composeArgsRight(partials, value, source[6]) : arrayCopy(value);
-    data[6] = partials ? replaceHolders(data[5], PLACEHOLDER) : arrayCopy(source[6]);
+    data[5] = partials
+      ? composeArgsRight(partials, value, source[6])
+      : arrayCopy(value);
+    data[6] = partials
+      ? replaceHolders(data[5], PLACEHOLDER)
+      : arrayCopy(source[6]);
   }
   // Use source `argPos` if available.
   value = source[7];

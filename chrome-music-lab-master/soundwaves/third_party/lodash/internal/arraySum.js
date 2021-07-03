@@ -9,7 +9,7 @@
  */
 function arraySum(array, iteratee) {
   var length = array.length,
-      result = 0;
+    result = 0;
 
   while (length--) {
     result += +iteratee(array[length]) || 0;

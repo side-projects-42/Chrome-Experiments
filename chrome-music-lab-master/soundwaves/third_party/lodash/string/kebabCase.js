@@ -1,4 +1,4 @@
-var createCompounder = require('../internal/createCompounder');
+var createCompounder = require("../internal/createCompounder");
 
 /**
  * Converts `string` to [kebab case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles).
@@ -19,8 +19,8 @@ var createCompounder = require('../internal/createCompounder');
  * _.kebabCase('__foo_bar__');
  * // => 'foo-bar'
  */
-var kebabCase = createCompounder(function(result, word, index) {
-  return result + (index ? '-' : '') + word.toLowerCase();
+var kebabCase = createCompounder(function (result, word, index) {
+  return result + (index ? "-" : "") + word.toLowerCase();
 });
 
 module.exports = kebabCase;

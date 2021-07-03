@@ -1,9 +1,9 @@
-var baseGet = require('../internal/baseGet'),
-    baseSlice = require('../internal/baseSlice'),
-    isFunction = require('../lang/isFunction'),
-    isKey = require('../internal/isKey'),
-    last = require('../array/last'),
-    toPath = require('../internal/toPath');
+var baseGet = require("../internal/baseGet"),
+  baseSlice = require("../internal/baseSlice"),
+  isFunction = require("../lang/isFunction"),
+  isKey = require("../internal/isKey"),
+  last = require("../array/last"),
+  toPath = require("../internal/toPath");
 
 /**
  * This method is like `_.get` except that if the resolved value is a function
@@ -38,7 +38,8 @@ function result(object, path, defaultValue) {
   if (result === undefined) {
     if (object != null && !isKey(path, object)) {
       path = toPath(path);
-      object = path.length == 1 ? object : baseGet(object, baseSlice(path, 0, -1));
+      object =
+        path.length == 1 ? object : baseGet(object, baseSlice(path, 0, -1));
       result = object == null ? undefined : object[last(path)];
     }
     result = result === undefined ? defaultValue : result;

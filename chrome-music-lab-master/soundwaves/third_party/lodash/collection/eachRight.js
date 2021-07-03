@@ -1,1 +1,1 @@
-module.exports = require('./forEachRight');
+module.exports = require("./forEachRight");

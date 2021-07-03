@@ -1,4 +1,4 @@
-var keys = require('../object/keys');
+var keys = require("../object/keys");
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -20,11 +20,19 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * @param {Array} [stackB] Tracks traversed `other` objects.
  * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
  */
-function equalObjects(object, other, equalFunc, customizer, isLoose, stackA, stackB) {
+function equalObjects(
+  object,
+  other,
+  equalFunc,
+  customizer,
+  isLoose,
+  stackA,
+  stackB
+) {
   var objProps = keys(object),
-      objLength = objProps.length,
-      othProps = keys(other),
-      othLength = othProps.length;
+    objLength = objProps.length,
+    othProps = keys(other),
+    othLength = othProps.length;
 
   if (objLength != othLength && !isLoose) {
     return false;
@@ -40,24 +48,41 @@ function equalObjects(object, other, equalFunc, customizer, isLoose, stackA, sta
   while (++index < objLength) {
     key = objProps[index];
     var objValue = object[key],
-        othValue = other[key],
-        result = customizer ? customizer(isLoose ? othValue : objValue, isLoose? objValue : othValue, key) : undefined;
+      othValue = other[key],
+      result = customizer
+        ? customizer(
+            isLoose ? othValue : objValue,
+            isLoose ? objValue : othValue,
+            key
+          )
+        : undefined;
 
     // Recursively compare objects (susceptible to call stack limits).
-    if (!(result === undefined ? equalFunc(objValue, othValue, customizer, isLoose, stackA, stackB) : result)) {
+    if (
+      !(result === undefined
+        ? equalFunc(objValue, othValue, customizer, isLoose, stackA, stackB)
+        : result)
+    ) {
       return false;
     }
-    skipCtor || (skipCtor = key == 'constructor');
+    skipCtor || (skipCtor = key == "constructor");
   }
   if (!skipCtor) {
     var objCtor = object.constructor,
-        othCtor = other.constructor;
+      othCtor = other.constructor;
 
     // Non `Object` object instances with different constructors are not equal.
-    if (objCtor != othCtor &&
-        ('constructor' in object && 'constructor' in other) &&
-        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+    if (
+      objCtor != othCtor &&
+      "constructor" in object &&
+      "constructor" in other &&
+      !(
+        typeof objCtor == "function" &&
+        objCtor instanceof objCtor &&
+        typeof othCtor == "function" &&
+        othCtor instanceof othCtor
+      )
+    ) {
       return false;
     }
   }

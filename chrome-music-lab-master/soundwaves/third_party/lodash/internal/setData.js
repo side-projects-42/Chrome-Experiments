@@ -1,9 +1,9 @@
-var baseSetData = require('./baseSetData'),
-    now = require('../date/now');
+var baseSetData = require("./baseSetData"),
+  now = require("../date/now");
 
 /** Used to detect when a function becomes hot. */
 var HOT_COUNT = 150,
-    HOT_SPAN = 16;
+  HOT_SPAN = 16;
 
 /**
  * Sets metadata for `func`.
@@ -18,13 +18,13 @@ var HOT_COUNT = 150,
  * @param {*} data The metadata.
  * @returns {Function} Returns `func`.
  */
-var setData = (function() {
+var setData = (function () {
   var count = 0,
-      lastCalled = 0;
+    lastCalled = 0;
 
-  return function(key, value) {
+  return function (key, value) {
     var stamp = now(),
-        remaining = HOT_SPAN - (stamp - lastCalled);
+      remaining = HOT_SPAN - (stamp - lastCalled);
 
     lastCalled = stamp;
     if (remaining > 0) {
@@ -36,6 +36,6 @@ var setData = (function() {
     }
     return baseSetData(key, value);
   };
-}());
+})();
 
 module.exports = setData;

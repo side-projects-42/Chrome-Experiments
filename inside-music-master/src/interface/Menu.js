@@ -14,98 +14,100 @@
  * limitations under the License.
  */
 
-import 'aframe'
-import {trackConfig, supported} from 'Config'
-import 'interface/Item'
+import "aframe";
+import { trackConfig, supported } from "Config";
+import "interface/Item";
 
-AFRAME.registerComponent('menu', {
+AFRAME.registerComponent("menu", {
+  schema: {
+    shrink: {
+      type: "boolean",
+      default: false,
+    },
+  },
 
-	schema : {
-		shrink : {
-			type : 'boolean',
-			default : false
-		}
-	},
+  init() {
+    if (!supported) {
+      return;
+    }
 
-	init(){
+    this.el.id = "menu";
 
-		if (!supported){
-			return
-		}
+    this._itemWidth = 200;
+    this._itemHeight = 200;
 
-		this.el.id = 'menu'
+    let currentSelection = null;
 
-		this._itemWidth = 200
-		this._itemHeight = 200
+    let lastClick = Date.now();
 
-		let currentSelection = null
+    trackConfig.forEach((track, i) => {
+      const plane = document.createElement("a-entity");
+      plane.setAttribute("menu-item", {
+        artist: track.artist,
+        track: track.track,
+        color: track.color,
+        image: track.image,
+      });
+      this.el.appendChild(plane);
 
-		let lastClick = Date.now()
+      const rotated = i !== 1 && i !== 4;
+      const moveForward = 0.07;
 
-		trackConfig.forEach((track, i) => {
-			const plane = document.createElement('a-entity')
-			plane.setAttribute('menu-item', {
-				artist : track.artist,
-				track : track.track,
-				color : track.color,
-				image : track.image
-			})
-			this.el.appendChild(plane)
+      if (i < 3) {
+        //top row
+        plane.setAttribute(
+          "position",
+          `${i - 1} 0 ${rotated ? moveForward : 0}`
+        );
+      } else {
+        //bottom row
+        plane.setAttribute(
+          "position",
+          `${i - 4} -0.76 ${rotated ? moveForward : 0}`
+        );
+      }
 
+      const angle = 8;
+      if (i === 0 || i === 3) {
+        plane.setAttribute("rotation", `0 ${angle} 0`);
+      } else if (i === 2 || i === 5) {
+        plane.setAttribute("rotation", `0 ${-angle} 0`);
+      }
 
-			const rotated = i !== 1 && i !== 4
-			const moveForward = 0.07
+      //unselect the previous track
+      plane.addEventListener("click", () => {
+        if (Date.now() - lastClick > 500) {
+          lastClick = Date.now();
+        } else {
+          return;
+        }
 
-			if (i < 3){
-				//top row
-				plane.setAttribute('position', `${(i-1)} 0 ${rotated ? moveForward : 0}`)
-			} else {
-				//bottom row
-				plane.setAttribute('position', `${(i-4)} -0.76 ${rotated ? moveForward : 0}`)
-			}
+        this.el.setAttribute("menu", "shrink", true);
 
-			const angle = 8
-			if (i === 0 || i === 3){
-				plane.setAttribute('rotation', `0 ${angle} 0`)	
-			} else if (i === 2 || i === 5){
-				plane.setAttribute('rotation', `0 ${-angle} 0`)	
-			}
+        if (!plane.getAttribute("menu-item").selected) {
+          const trackClone = {};
+          Object.assign(trackClone, track);
+          this.el.emit("select", trackClone);
+          this.el.sceneEl.emit("menu-selection", trackClone);
+          if (currentSelection) {
+            currentSelection.setAttribute("menu-item", "selected", false);
+          }
+          plane.setAttribute("menu-item", "selected", true);
+          currentSelection = plane;
+        }
+      });
+    });
 
-			//unselect the previous track
-			plane.addEventListener('click', () => {
+    this.el.sceneEl.addEventListener("song-end", () => {
+      this.el.setAttribute("menu", "shrink", false);
+    });
+  },
 
-				if (Date.now() - lastClick > 500){
-					lastClick = Date.now()
-				} else {
-					return
-				}
-
-				this.el.setAttribute('menu', 'shrink', true)
-
-				if (!plane.getAttribute('menu-item').selected){
-					const trackClone = {}
-					Object.assign(trackClone, track)
-					this.el.emit('select', trackClone)
-					this.el.sceneEl.emit('menu-selection', trackClone)
-					if (currentSelection){
-						currentSelection.setAttribute('menu-item', 'selected', false)
-					}
-					plane.setAttribute('menu-item', 'selected', true)
-					currentSelection = plane
-				}
-			})
-		})
-
-		this.el.sceneEl.addEventListener('song-end', () => {
-			this.el.setAttribute('menu', 'shrink', false)
-		})
-	},
-
-	update(){
-		if (this.data.shrink){
-			this.el.emit('shrink')
-		} else {
-			this.el.emit('grow')
-		}
-	}
-})
+  update() {
+    if (this.data.shrink) {
+      this.el.emit("shrink");
+    } else {
+      this.el.emit("grow");
+    }
+  },
+});

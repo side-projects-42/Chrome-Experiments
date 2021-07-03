@@ -1,4 +1,4 @@
-var createCtorWrapper = require('./createCtorWrapper');
+var createCtorWrapper = require("./createCtorWrapper");
 
 /**
  * Creates a function that wraps `func` and invokes it with the `this`
@@ -13,7 +13,7 @@ function createBindWrapper(func, thisArg) {
   var Ctor = createCtorWrapper(func);
 
   function wrapper() {
-    var fn = (this && this !== global && this instanceof wrapper) ? Ctor : func;
+    var fn = this && this !== global && this instanceof wrapper ? Ctor : func;
     return fn.apply(thisArg, arguments);
   }
   return wrapper;

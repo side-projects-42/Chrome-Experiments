@@ -1,6 +1,6 @@
-var createWrapper = require('./createWrapper'),
-    replaceHolders = require('./replaceHolders'),
-    restParam = require('../function/restParam');
+var createWrapper = require("./createWrapper"),
+  replaceHolders = require("./replaceHolders"),
+  restParam = require("../function/restParam");
 
 /**
  * Creates a `_.partial` or `_.partialRight` function.
@@ -10,7 +10,7 @@ var createWrapper = require('./createWrapper'),
  * @returns {Function} Returns the new partial function.
  */
 function createPartial(flag) {
-  var partialFunc = restParam(function(func, partials) {
+  var partialFunc = restParam(function (func, partials) {
     var holders = replaceHolders(partials, partialFunc.placeholder);
     return createWrapper(func, flag, undefined, partials, holders);
   });

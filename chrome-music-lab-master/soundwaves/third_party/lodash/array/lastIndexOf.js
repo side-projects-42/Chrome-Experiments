@@ -1,9 +1,9 @@
-var binaryIndex = require('../internal/binaryIndex'),
-    indexOfNaN = require('../internal/indexOfNaN');
+var binaryIndex = require("../internal/binaryIndex"),
+  indexOfNaN = require("../internal/indexOfNaN");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max,
-    nativeMin = Math.min;
+  nativeMin = Math.min;
 
 /**
  * This method is like `_.indexOf` except that it iterates over elements of
@@ -36,12 +36,15 @@ function lastIndexOf(array, value, fromIndex) {
     return -1;
   }
   var index = length;
-  if (typeof fromIndex == 'number') {
-    index = (fromIndex < 0 ? nativeMax(length + fromIndex, 0) : nativeMin(fromIndex || 0, length - 1)) + 1;
+  if (typeof fromIndex == "number") {
+    index =
+      (fromIndex < 0
+        ? nativeMax(length + fromIndex, 0)
+        : nativeMin(fromIndex || 0, length - 1)) + 1;
   } else if (fromIndex) {
     index = binaryIndex(array, value, true) - 1;
     var other = array[index];
-    if (value === value ? (value === other) : (other !== other)) {
+    if (value === value ? value === other : other !== other) {
       return index;
     }
     return -1;

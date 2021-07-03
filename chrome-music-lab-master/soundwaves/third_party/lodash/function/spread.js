@@ -1,5 +1,5 @@
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /**
  * Creates a function that invokes `func` with the `this` binding of the created
@@ -33,10 +33,10 @@ var FUNC_ERROR_TEXT = 'Expected a function';
  * // => a Promise of 76
  */
 function spread(func) {
-  if (typeof func != 'function') {
+  if (typeof func != "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
-  return function(array) {
+  return function (array) {
     return func.apply(this, array);
   };
 }

@@ -1,10 +1,10 @@
-var arrayCopy = require('./arrayCopy'),
-    isArguments = require('../lang/isArguments'),
-    isArray = require('../lang/isArray'),
-    isArrayLike = require('./isArrayLike'),
-    isPlainObject = require('../lang/isPlainObject'),
-    isTypedArray = require('../lang/isTypedArray'),
-    toPlainObject = require('../lang/toPlainObject');
+var arrayCopy = require("./arrayCopy"),
+  isArguments = require("../lang/isArguments"),
+  isArray = require("../lang/isArray"),
+  isArrayLike = require("./isArrayLike"),
+  isPlainObject = require("../lang/isPlainObject"),
+  isTypedArray = require("../lang/isTypedArray"),
+  toPlainObject = require("../lang/toPlainObject");
 
 /**
  * A specialized version of `baseMerge` for arrays and objects which performs
@@ -21,9 +21,17 @@ var arrayCopy = require('./arrayCopy'),
  * @param {Array} [stackB=[]] Associates values with source counterparts.
  * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
  */
-function baseMergeDeep(object, source, key, mergeFunc, customizer, stackA, stackB) {
+function baseMergeDeep(
+  object,
+  source,
+  key,
+  mergeFunc,
+  customizer,
+  stackA,
+  stackB
+) {
   var length = stackA.length,
-      srcValue = source[key];
+    srcValue = source[key];
 
   while (length--) {
     if (stackA[length] == srcValue) {
@@ -32,22 +40,29 @@ function baseMergeDeep(object, source, key, mergeFunc, customizer, stackA, stack
     }
   }
   var value = object[key],
-      result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
-      isCommon = result === undefined;
+    result = customizer
+      ? customizer(value, srcValue, key, object, source)
+      : undefined,
+    isCommon = result === undefined;
 
   if (isCommon) {
     result = srcValue;
-    if (isArrayLike(srcValue) && (isArray(srcValue) || isTypedArray(srcValue))) {
+    if (
+      isArrayLike(srcValue) &&
+      (isArray(srcValue) || isTypedArray(srcValue))
+    ) {
       result = isArray(value)
         ? value
-        : (isArrayLike(value) ? arrayCopy(value) : []);
-    }
-    else if (isPlainObject(srcValue) || isArguments(srcValue)) {
+        : isArrayLike(value)
+        ? arrayCopy(value)
+        : [];
+    } else if (isPlainObject(srcValue) || isArguments(srcValue)) {
       result = isArguments(value)
         ? toPlainObject(value)
-        : (isPlainObject(value) ? value : {});
-    }
-    else {
+        : isPlainObject(value)
+        ? value
+        : {};
+    } else {
       isCommon = false;
     }
   }
@@ -59,7 +74,7 @@ function baseMergeDeep(object, source, key, mergeFunc, customizer, stackA, stack
   if (isCommon) {
     // Recursively merge objects and arrays (susceptible to call stack limits).
     object[key] = mergeFunc(result, srcValue, customizer, stackA, stackB);
-  } else if (result === result ? (result !== value) : (value === value)) {
+  } else if (result === result ? result !== value : value === value) {
     object[key] = result;
   }
 }

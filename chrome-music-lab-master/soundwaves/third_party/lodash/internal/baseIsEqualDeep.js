@@ -1,13 +1,13 @@
-var equalArrays = require('./equalArrays'),
-    equalByTag = require('./equalByTag'),
-    equalObjects = require('./equalObjects'),
-    isArray = require('../lang/isArray'),
-    isTypedArray = require('../lang/isTypedArray');
+var equalArrays = require("./equalArrays"),
+  equalByTag = require("./equalByTag"),
+  equalObjects = require("./equalObjects"),
+  isArray = require("../lang/isArray"),
+  isTypedArray = require("../lang/isTypedArray");
 
 /** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    objectTag = '[object Object]';
+var argsTag = "[object Arguments]",
+  arrayTag = "[object Array]",
+  objectTag = "[object Object]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -36,11 +36,19 @@ var objToString = objectProto.toString;
  * @param {Array} [stackB=[]] Tracks traversed `other` objects.
  * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
  */
-function baseIsEqualDeep(object, other, equalFunc, customizer, isLoose, stackA, stackB) {
+function baseIsEqualDeep(
+  object,
+  other,
+  equalFunc,
+  customizer,
+  isLoose,
+  stackA,
+  stackB
+) {
   var objIsArr = isArray(object),
-      othIsArr = isArray(other),
-      objTag = arrayTag,
-      othTag = arrayTag;
+    othIsArr = isArray(other),
+    objTag = arrayTag,
+    othTag = arrayTag;
 
   if (!objIsArr) {
     objTag = objToString.call(object);
@@ -59,18 +67,25 @@ function baseIsEqualDeep(object, other, equalFunc, customizer, isLoose, stackA, 
     }
   }
   var objIsObj = objTag == objectTag,
-      othIsObj = othTag == objectTag,
-      isSameTag = objTag == othTag;
+    othIsObj = othTag == objectTag,
+    isSameTag = objTag == othTag;
 
   if (isSameTag && !(objIsArr || objIsObj)) {
     return equalByTag(object, other, objTag);
   }
   if (!isLoose) {
-    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+    var objIsWrapped = objIsObj && hasOwnProperty.call(object, "__wrapped__"),
+      othIsWrapped = othIsObj && hasOwnProperty.call(other, "__wrapped__");
 
     if (objIsWrapped || othIsWrapped) {
-      return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, isLoose, stackA, stackB);
+      return equalFunc(
+        objIsWrapped ? object.value() : object,
+        othIsWrapped ? other.value() : other,
+        customizer,
+        isLoose,
+        stackA,
+        stackB
+      );
     }
   }
   if (!isSameTag) {
@@ -91,7 +106,15 @@ function baseIsEqualDeep(object, other, equalFunc, customizer, isLoose, stackA, 
   stackA.push(object);
   stackB.push(other);
 
-  var result = (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, isLoose, stackA, stackB);
+  var result = (objIsArr ? equalArrays : equalObjects)(
+    object,
+    other,
+    equalFunc,
+    customizer,
+    isLoose,
+    stackA,
+    stackB
+  );
 
   stackA.pop();
   stackB.pop();

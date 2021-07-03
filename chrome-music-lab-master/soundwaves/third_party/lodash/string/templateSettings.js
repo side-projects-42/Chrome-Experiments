@@ -1,7 +1,7 @@
-var escape = require('./escape'),
-    reEscape = require('../internal/reEscape'),
-    reEvaluate = require('../internal/reEvaluate'),
-    reInterpolate = require('../internal/reInterpolate');
+var escape = require("./escape"),
+  reEscape = require("../internal/reEscape"),
+  reEvaluate = require("../internal/reEvaluate"),
+  reInterpolate = require("../internal/reInterpolate");
 
 /**
  * By default, the template delimiters used by lodash are like those in
@@ -13,14 +13,13 @@ var escape = require('./escape'),
  * @type Object
  */
 var templateSettings = {
-
   /**
    * Used to detect `data` property values to be HTML-escaped.
    *
    * @memberOf _.templateSettings
    * @type RegExp
    */
-  'escape': reEscape,
+  escape: reEscape,
 
   /**
    * Used to detect code to be evaluated.
@@ -28,7 +27,7 @@ var templateSettings = {
    * @memberOf _.templateSettings
    * @type RegExp
    */
-  'evaluate': reEvaluate,
+  evaluate: reEvaluate,
 
   /**
    * Used to detect `data` property values to inject.
@@ -36,7 +35,7 @@ var templateSettings = {
    * @memberOf _.templateSettings
    * @type RegExp
    */
-  'interpolate': reInterpolate,
+  interpolate: reInterpolate,
 
   /**
    * Used to reference the data object in the template text.
@@ -44,7 +43,7 @@ var templateSettings = {
    * @memberOf _.templateSettings
    * @type string
    */
-  'variable': '',
+  variable: "",
 
   /**
    * Used to import variables into the compiled template.
@@ -52,16 +51,15 @@ var templateSettings = {
    * @memberOf _.templateSettings
    * @type Object
    */
-  'imports': {
-
+  imports: {
     /**
      * A reference to the `lodash` function.
      *
      * @memberOf _.templateSettings.imports
      * @type Function
      */
-    '_': { 'escape': escape }
-  }
+    _: { escape: escape },
+  },
 };
 
 module.exports = templateSettings;

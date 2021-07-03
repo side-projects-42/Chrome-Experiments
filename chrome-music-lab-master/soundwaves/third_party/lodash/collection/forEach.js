@@ -1,6 +1,6 @@
-var arrayEach = require('../internal/arrayEach'),
-    baseEach = require('../internal/baseEach'),
-    createForEach = require('../internal/createForEach');
+var arrayEach = require("../internal/arrayEach"),
+  baseEach = require("../internal/baseEach"),
+  createForEach = require("../internal/createForEach");
 
 /**
  * Iterates over elements of `collection` invoking `iteratee` for each element.

@@ -1,7 +1,7 @@
-var baseFlatten = require('../internal/baseFlatten'),
-    createWrapper = require('../internal/createWrapper'),
-    functions = require('../object/functions'),
-    restParam = require('./restParam');
+var baseFlatten = require("../internal/baseFlatten"),
+  createWrapper = require("../internal/createWrapper"),
+  functions = require("../object/functions"),
+  restParam = require("./restParam");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var BIND_FLAG = 1;
@@ -34,11 +34,13 @@ var BIND_FLAG = 1;
  * jQuery('#docs').on('click', view.onClick);
  * // => logs 'clicked docs' when the element is clicked
  */
-var bindAll = restParam(function(object, methodNames) {
-  methodNames = methodNames.length ? baseFlatten(methodNames) : functions(object);
+var bindAll = restParam(function (object, methodNames) {
+  methodNames = methodNames.length
+    ? baseFlatten(methodNames)
+    : functions(object);
 
   var index = -1,
-      length = methodNames.length;
+    length = methodNames.length;
 
   while (++index < length) {
     var key = methodNames[index];

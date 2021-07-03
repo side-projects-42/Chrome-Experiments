@@ -1,4 +1,4 @@
-var sample = require('./sample');
+var sample = require("./sample");
 
 /** Used as references for `-Infinity` and `Infinity`. */
 var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;

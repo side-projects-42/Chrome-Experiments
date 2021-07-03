@@ -1,5 +1,5 @@
-var baseSlice = require('../internal/baseSlice'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseSlice = require("../internal/baseSlice"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * Creates a slice of `array` from `start` up to, but not including, `end`.
@@ -20,7 +20,7 @@ function slice(array, start, end) {
   if (!length) {
     return [];
   }
-  if (end && typeof end != 'number' && isIterateeCall(array, start, end)) {
+  if (end && typeof end != "number" && isIterateeCall(array, start, end)) {
     start = 0;
     end = length;
   }

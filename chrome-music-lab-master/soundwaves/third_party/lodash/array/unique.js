@@ -1,1 +1,1 @@
-module.exports = require('./uniq');
+module.exports = require("./uniq");

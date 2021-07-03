@@ -1,10 +1,10 @@
-var baseSlice = require('../internal/baseSlice'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseSlice = require("../internal/baseSlice"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeCeil = Math.ceil,
-    nativeFloor = Math.floor,
-    nativeMax = Math.max;
+  nativeFloor = Math.floor,
+  nativeMax = Math.max;
 
 /**
  * Creates an array of elements split into groups the length of `size`.
@@ -33,9 +33,9 @@ function chunk(array, size, guard) {
     size = nativeMax(nativeFloor(size) || 1, 1);
   }
   var index = 0,
-      length = array ? array.length : 0,
-      resIndex = -1,
-      result = Array(nativeCeil(length / size));
+    length = array ? array.length : 0,
+    resIndex = -1,
+    result = Array(nativeCeil(length / size));
 
   while (index < length) {
     result[++resIndex] = baseSlice(array, index, (index += size));

@@ -14,69 +14,69 @@
  * limitations under the License.
  */
 
-import 'aframe'
+import "aframe";
 
 /**
  * ray-controls component
  * applies to a single 3 DOF or 6 DOF controller
  * it renders the cylinder protruding from the controller
  */
-AFRAME.registerComponent('ray-controls', {
+AFRAME.registerComponent("ray-controls", {
+  schema: {
+    hand: {
+      type: "string",
+      default: "right",
+    },
+    use: {
+      type: "boolean",
+      default: false,
+    },
+  },
 
-	schema : {
-		hand: {
-			type: 'string',
-			default: 'right'
-		},
-		use : {
-			type : 'boolean',
-			default : false
-		}
-	},
+  init() {
+    const len = 1;
 
-	init(){
+    const frontEl = document.createElementWithAttributes("a-entity", {
+      position: `0 0 -0.05`,
+      class: `tracked-ray-front-${this.data.hand}`,
+    });
 
-		const len = 1
+    const cylinder = document.createElementWithAttributes("a-cylinder", {
+      material: "color: white; transparent: true; opacity: 0.2",
+      radius: "0.001",
+      scale: `1 ${len} 1`,
+      position: `0 0 -${len / 2}`,
+      rotation: "-90 0 0",
+    });
 
-		const frontEl = document.createElementWithAttributes('a-entity', {
-			position: `0 0 -0.05`,
-			'class': `tracked-ray-front-${this.data.hand}`
-		})
+    this.frontEl = frontEl;
 
-		const cylinder = document.createElementWithAttributes('a-cylinder', {
-			material : 'color: white; transparent: true; opacity: 0.2',
-			radius : '0.001',
-			scale : `1 ${len} 1`,
-			position: `0 0 -${len/2}`,
-			rotation : '-90 0 0',
-		})
+    this.el.appendChild(frontEl);
+    frontEl.appendChild(cylinder);
 
-		this.frontEl = frontEl;
+    this.el.addEventListener("triggerdown", () => {
+      this.el.emit("controller-click");
+    });
 
-		this.el.appendChild(frontEl)
-		frontEl.appendChild(cylinder)
+    this.el.addEventListener("intersection-start", (e) => {
+      cylinder.setAttribute("material", "shader: flat; opacity: 0.8");
+      const dist = e.detail.object3D
+        .getWorldPosition()
+        .distanceTo(frontEl.object3D.getWorldPosition());
+      // adjust the length of the cylinder to the distance between the elements
+      cylinder.setAttribute("position", `0 0 -${dist / 2}`);
+      cylinder.setAttribute("scale", `1 ${dist} 1`);
+    });
 
-		this.el.addEventListener('triggerdown', () => {
-			this.el.emit('controller-click')
-		})
+    this.el.addEventListener("intersection-end", () => {
+      cylinder.setAttribute("material", "opacity", 0.2);
+      cylinder.setAttribute("position", `0 0 -${len / 2}`);
+      cylinder.setAttribute("scale", `1 ${len} 1`);
+    });
+  },
 
-		this.el.addEventListener('intersection-start', (e) => {
-			cylinder.setAttribute('material', 'shader: flat; opacity: 0.8')
-			const dist = e.detail.object3D.getWorldPosition().distanceTo(frontEl.object3D.getWorldPosition())
-			// adjust the length of the cylinder to the distance between the elements
-			cylinder.setAttribute('position', `0 0 -${dist/2}`)
-			cylinder.setAttribute('scale', `1 ${dist} 1`)
-		})
-
-		this.el.addEventListener('intersection-end', () => {
-			cylinder.setAttribute('material', 'opacity', 0.2)
-			cylinder.setAttribute('position', `0 0 -${len/2}`)
-			cylinder.setAttribute('scale', `1 ${len} 1`)
-		})
-	},
-
-	update(){
-	    this.frontEl.setAttribute('class', `tracked-ray-front-${this.data.hand}`);
-		this.el.setAttribute('visible', this.data.use)
-	}
-})
+  update() {
+    this.frontEl.setAttribute("class", `tracked-ray-front-${this.data.hand}`);
+    this.el.setAttribute("visible", this.data.use);
+  },
+});

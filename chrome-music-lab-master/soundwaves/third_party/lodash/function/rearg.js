@@ -1,6 +1,6 @@
-var baseFlatten = require('../internal/baseFlatten'),
-    createWrapper = require('../internal/createWrapper'),
-    restParam = require('./restParam');
+var baseFlatten = require("../internal/baseFlatten"),
+  createWrapper = require("../internal/createWrapper"),
+  restParam = require("./restParam");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var REARG_FLAG = 256;
@@ -33,8 +33,15 @@ var REARG_FLAG = 256;
  * }, [1, 2, 3]);
  * // => [3, 6, 9]
  */
-var rearg = restParam(function(func, indexes) {
-  return createWrapper(func, REARG_FLAG, undefined, undefined, undefined, baseFlatten(indexes));
+var rearg = restParam(function (func, indexes) {
+  return createWrapper(
+    func,
+    REARG_FLAG,
+    undefined,
+    undefined,
+    undefined,
+    baseFlatten(indexes)
+  );
 });
 
 module.exports = rearg;

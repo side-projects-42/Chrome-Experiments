@@ -1,8 +1,8 @@
-var debounce = require('./debounce'),
-    isObject = require('../lang/isObject');
+var debounce = require("./debounce"),
+  isObject = require("../lang/isObject");
 
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /**
  * Creates a throttled function that only invokes `func` at most once per
@@ -45,18 +45,22 @@ var FUNC_ERROR_TEXT = 'Expected a function';
  */
 function throttle(func, wait, options) {
   var leading = true,
-      trailing = true;
+    trailing = true;
 
-  if (typeof func != 'function') {
+  if (typeof func != "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   if (options === false) {
     leading = false;
   } else if (isObject(options)) {
-    leading = 'leading' in options ? !!options.leading : leading;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
+    leading = "leading" in options ? !!options.leading : leading;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
   }
-  return debounce(func, wait, { 'leading': leading, 'maxWait': +wait, 'trailing': trailing });
+  return debounce(func, wait, {
+    leading: leading,
+    maxWait: +wait,
+    trailing: trailing,
+  });
 }
 
 module.exports = throttle;

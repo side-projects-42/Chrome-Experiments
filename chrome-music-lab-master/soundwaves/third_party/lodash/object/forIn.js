@@ -1,5 +1,5 @@
-var baseFor = require('../internal/baseFor'),
-    createForIn = require('../internal/createForIn');
+var baseFor = require("../internal/baseFor"),
+  createForIn = require("../internal/createForIn");
 
 /**
  * Iterates over own and inherited enumerable properties of an object invoking

@@ -1,5 +1,5 @@
-var isIterateeCall = require('../internal/isIterateeCall'),
-    keys = require('./keys');
+var isIterateeCall = require("../internal/isIterateeCall"),
+  keys = require("./keys");
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -35,13 +35,13 @@ function invert(object, multiValue, guard) {
     multiValue = undefined;
   }
   var index = -1,
-      props = keys(object),
-      length = props.length,
-      result = {};
+    props = keys(object),
+    length = props.length,
+    result = {};
 
   while (++index < length) {
     var key = props[index],
-        value = object[key];
+      value = object[key];
 
     if (multiValue) {
       if (hasOwnProperty.call(result, value)) {
@@ -49,8 +49,7 @@ function invert(object, multiValue, guard) {
       } else {
         result[value] = [key];
       }
-    }
-    else {
+    } else {
       result[value] = key;
     }
   }

@@ -1,4 +1,4 @@
-var merge = require('../object/merge');
+var merge = require("../object/merge");
 
 /**
  * Used by `_.defaultsDeep` to customize its `_.merge` use.
@@ -9,7 +9,9 @@ var merge = require('../object/merge');
  * @returns {*} Returns the value to assign to the destination object.
  */
 function mergeDefaults(objectValue, sourceValue) {
-  return objectValue === undefined ? sourceValue : merge(objectValue, sourceValue, mergeDefaults);
+  return objectValue === undefined
+    ? sourceValue
+    : merge(objectValue, sourceValue, mergeDefaults);
 }
 
 module.exports = mergeDefaults;

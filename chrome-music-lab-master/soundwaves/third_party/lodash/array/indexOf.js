@@ -1,5 +1,5 @@
-var baseIndexOf = require('../internal/baseIndexOf'),
-    binaryIndex = require('../internal/binaryIndex');
+var baseIndexOf = require("../internal/baseIndexOf"),
+  binaryIndex = require("../internal/binaryIndex");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -37,12 +37,14 @@ function indexOf(array, value, fromIndex) {
   if (!length) {
     return -1;
   }
-  if (typeof fromIndex == 'number') {
+  if (typeof fromIndex == "number") {
     fromIndex = fromIndex < 0 ? nativeMax(length + fromIndex, 0) : fromIndex;
   } else if (fromIndex) {
     var index = binaryIndex(array, value);
-    if (index < length &&
-        (value === value ? (value === array[index]) : (array[index] !== array[index]))) {
+    if (
+      index < length &&
+      (value === value ? value === array[index] : array[index] !== array[index])
+    ) {
       return index;
     }
     return -1;

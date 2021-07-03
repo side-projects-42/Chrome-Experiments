@@ -1,6 +1,6 @@
 /** Native method references. */
 var ArrayBuffer = global.ArrayBuffer,
-    Uint8Array = global.Uint8Array;
+  Uint8Array = global.Uint8Array;
 
 /**
  * Creates a clone of the given array buffer.
@@ -11,7 +11,7 @@ var ArrayBuffer = global.ArrayBuffer,
  */
 function bufferClone(buffer) {
   var result = new ArrayBuffer(buffer.byteLength),
-      view = new Uint8Array(result);
+    view = new Uint8Array(result);
 
   view.set(new Uint8Array(buffer));
   return result;

@@ -14,140 +14,161 @@
  * limitations under the License.
  */
 
-require(["domready", "interface/UserInterface", "main.scss", "mic/Waveform", "mic/Recorder", "mic/Player", 
-	"mic/Loader", "StartAudioContext", "Tone/core/Tone", "Tone/source/Microphone"], 
-	function(domReady, UserInterface, mainStyle, Waveform, Recorder, Player, Loader, StartAudioContext, Tone, Microphone){
+require([
+  "domready",
+  "interface/UserInterface",
+  "main.scss",
+  "mic/Waveform",
+  "mic/Recorder",
+  "mic/Player",
+  "mic/Loader",
+  "StartAudioContext",
+  "Tone/core/Tone",
+  "Tone/source/Microphone",
+], function (
+  domReady,
+  UserInterface,
+  mainStyle,
+  Waveform,
+  Recorder,
+  Player,
+  Loader,
+  StartAudioContext,
+  Tone,
+  Microphone
+) {
+  domReady(function () {
+    var recordTime = 3;
 
-	domReady(function(){
-		var recordTime = 3;
+    var buttonTimeout = -1;
+    var currentRotation = 0;
+    var rotationSpeed = 0;
+    var isDragging = false;
+    var dragSpeed = 0;
+    var computedSpeed = 0;
 
-		var buttonTimeout  = -1;
-		var currentRotation = 0;
-		var rotationSpeed = 0;
-		var isDragging = false;
-		var dragSpeed = 0;
-		var computedSpeed = 0;
+    //INTERFACE////////////////////////////////////////////////
 
-		//INTERFACE////////////////////////////////////////////////
+    var interface = new UserInterface(recordTime * 1000, document.body);
 
-		var interface = new UserInterface(recordTime * 1000, document.body);
+    interface.on("SpeedControllUpdate", function (speed) {
+      rotationSpeed = speed;
+    });
 
-		interface.on("SpeedControllUpdate", function(speed){
-			rotationSpeed = speed;
-		});
+    interface.on("dragRateUpdate", function (drag) {
+      dragSpeed = drag * 10;
+      // currentRotation += drag;
+    });
 
-		interface.on("dragRateUpdate", function(drag){
-			dragSpeed = (drag * 10);
-			// currentRotation += drag;
-		});
+    interface.on("StartWaveDrag", function () {
+      isDragging = true;
+    });
 
-		interface.on("StartWaveDrag", function(){
-			isDragging = true;
-		});
+    interface.on("EndWaveDrag", function () {
+      dragSpeed = 0;
+      isDragging = false;
+    });
 
-		interface.on("EndWaveDrag", function(){
-			dragSpeed = 0;
-			isDragging = false;
-		});
+    interface.on("StartRecord", function (drag) {
+      player.speed = 0;
+      player.position = 0;
+      recorder.open(
+        function () {
+          recorder.start();
+          buttonTimeout = setTimeout(function () {
+            interface.stopRecording();
+            player.setBuffer(recorder.audioBuffer);
+          }, recordTime * 1000);
+        },
+        function (e) {
+          //denied
+          window.parent.postMessage("error3", "*");
+        }
+      );
+    });
 
-		interface.on("StartRecord", function(drag){
-			player.speed = 0;
-			player.position = 0;
-			recorder.open(function(){
-				recorder.start();
-				buttonTimeout = setTimeout(function(){
-					interface.stopRecording();
-					player.setBuffer(recorder.audioBuffer);
-				}, recordTime * 1000);
-			}, function(e){
-				//denied
-				window.parent.postMessage("error3","*");
-			});
-		});
+    interface.on("StopRecord", function (drag) {
+      recorder.stop();
+      player.setBuffer(recorder.audioBuffer);
+      clearTimeout(buttonTimeout);
+    });
 
-		interface.on("StopRecord", function(drag){
-			recorder.stop();
-			player.setBuffer(recorder.audioBuffer);
-			clearTimeout(buttonTimeout);
-		});
+    if (!Microphone.supported) {
+      interface.disableRecording(function () {
+        //unsupported
+        console.log("unsupported");
+        window.parent.postMessage("error2", "*");
+      });
+    }
 
-		if (!Microphone.supported){
-			interface.disableRecording(function(){
-				//unsupported
-				console.log("unsupported");
-				window.parent.postMessage("error2","*");
-			});
-		}
+    //AUDIO////////////////////////////////////////////////
 
+    var recorder = new Recorder(recordTime);
 
-		//AUDIO////////////////////////////////////////////////
+    var twoPI = Math.PI * 2;
 
-		var recorder = new Recorder(recordTime);
+    var player = new Player(recordTime);
 
-		var twoPI = Math.PI * 2;
+    var waveform = new Waveform(interface.waveDisplay, recorder);
 
-		var player = new Player(recordTime);
+    function animateIn() {
+      //bring everything in
+      setTimeout(function () {
+        interface.animateIn();
+        waveform.animateIn(750);
+      }, 100);
+    }
 
-		var waveform = new Waveform(interface.waveDisplay, recorder);
+    var loader = new Loader(function (buffer) {
+      recorder.setBuffer(buffer);
+      player.setBuffer(buffer);
 
-		function animateIn(){
-			//bring everything in
-			setTimeout(function(){
-				interface.animateIn();
-				waveform.animateIn(750);
-			}, 100);
-		}
+      window.parent.postMessage("loaded", "*");
 
-		var loader = new Loader(function(buffer){
-			recorder.setBuffer(buffer);
-			player.setBuffer(buffer);
+      //send the ready message to the parent
+      var isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-			window.parent.postMessage("loaded", "*");
+      //full screen button on iOS
+      if (isIOS) {
+        //make a full screen element and put it in front
+        var iOSTapper = document.createElement("div");
+        iOSTapper.id = "iOSTap";
+        document.body.appendChild(iOSTapper);
+        new StartAudioContext(Tone.context, iOSTapper).then(function () {
+          iOSTapper.remove();
+          window.parent.postMessage("ready", "*");
+        });
+      } else {
+        animateIn();
+        window.parent.postMessage("ready", "*");
+      }
+    });
 
-			//send the ready message to the parent
-			var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    //LOOOOOOOOOP////////////////////////////////////////////////
+    var lastFrame = -1;
 
-			//full screen button on iOS
-			if (isIOS){
-				//make a full screen element and put it in front
-				var iOSTapper = document.createElement("div");
-				iOSTapper.id = "iOSTap";
-				document.body.appendChild(iOSTapper);
-				new StartAudioContext(Tone.context, iOSTapper).then(function() {
-					iOSTapper.remove();
-					window.parent.postMessage("ready","*");
-				});
-			} else {
-				animateIn();
-				window.parent.postMessage("ready","*");
-			}
-		});
+    var rotationQuotient = (Math.PI * 2) / 1000;
 
-		//LOOOOOOOOOP////////////////////////////////////////////////
-		var lastFrame = -1;
+    function loop() {
+      requestAnimationFrame(loop);
+      var speed = rotationSpeed;
+      if (isDragging) {
+        speed = dragSpeed;
+      }
+      var alpha = 0.05;
 
-		var rotationQuotient = (Math.PI * 2 / 1000);
+      computedSpeed = alpha * speed + (1 - alpha) * computedSpeed;
 
-		function loop(){
-			requestAnimationFrame(loop);
-			var speed = rotationSpeed;
-			if (isDragging){
-				speed = dragSpeed;
-			} 
-			var alpha = 0.05;
+      player.speed = computedSpeed;
 
-			computedSpeed = alpha * speed + (1 - alpha) * computedSpeed;
-
-			player.speed = computedSpeed;
-
-			if (!recorder.isRecording){
-				waveform.setRotation(player.position * Math.PI * 2);
-			} else {
-				player.speed = 0;
-				waveform.setRotation(0);
-			}
-		}
-		loop();
-
-	});
+      if (!recorder.isRecording) {
+        waveform.setRotation(player.position * Math.PI * 2);
+      } else {
+        player.speed = 0;
+        waveform.setRotation(0);
+      }
+    }
+    loop();
+  });
 });

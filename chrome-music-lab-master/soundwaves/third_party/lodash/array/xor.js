@@ -1,7 +1,7 @@
-var arrayPush = require('../internal/arrayPush'),
-    baseDifference = require('../internal/baseDifference'),
-    baseUniq = require('../internal/baseUniq'),
-    isArrayLike = require('../internal/isArrayLike');
+var arrayPush = require("../internal/arrayPush"),
+  baseDifference = require("../internal/baseDifference"),
+  baseUniq = require("../internal/baseUniq"),
+  isArrayLike = require("../internal/isArrayLike");
 
 /**
  * Creates an array of unique values that is the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference)
@@ -19,13 +19,16 @@ var arrayPush = require('../internal/arrayPush'),
  */
 function xor() {
   var index = -1,
-      length = arguments.length;
+    length = arguments.length;
 
   while (++index < length) {
     var array = arguments[index];
     if (isArrayLike(array)) {
       var result = result
-        ? arrayPush(baseDifference(result, array), baseDifference(array, result))
+        ? arrayPush(
+            baseDifference(result, array),
+            baseDifference(array, result)
+          )
         : array;
     }
   }

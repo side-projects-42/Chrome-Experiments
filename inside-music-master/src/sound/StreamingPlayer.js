@@ -14,145 +14,147 @@
  * limitations under the License.
  */
 
-import BufferSource from 'Tone/source/BufferSource'
-import Transport from 'Tone/core/Transport'
-import Buffer from 'Tone/core/Buffer'
-import Tone from 'Tone/core/Tone'
-import Gain from 'Tone/core/Gain'
-import events from 'events'
+import BufferSource from "Tone/source/BufferSource";
+import Transport from "Tone/core/Transport";
+import Buffer from "Tone/core/Buffer";
+import Tone from "Tone/core/Tone";
+import Gain from "Tone/core/Gain";
+import events from "events";
 
 //each segment is 30 seconds
-const SEG_TIME = 30
+const SEG_TIME = 30;
 
 export class StreamingPlayer extends events.EventEmitter {
-	constructor(folder, track, segments){
+  constructor(folder, track, segments) {
+    super();
 
-		super()
+    this.segment = 0;
+    this.folder = folder;
+    this.track = track;
+    this.totalSegments = segments;
 
-		this.segment = 0
-		this.folder = folder
-		this.track = track
-		this.totalSegments = segments
+    this.output = new Gain();
 
-		this.output = new Gain()
+    this.playingSource = null;
 
-		this.playingSource = null
+    this.id = Transport.scheduleRepeat(
+      (time) => {
+        // remove the previous source
+        this.playSegment(this.segment, time, 0);
+        //load the next one
+        this.segment++;
+        this.loadNext();
+      },
+      30,
+      0
+    );
 
-		this.id = Transport.scheduleRepeat((time) => {
-			// remove the previous source
-			this.playSegment(this.segment, time, 0)
-			//load the next one
-			this.segment++
-			this.loadNext()
-		}, 30, 0)
+    this.started = false;
 
-		this.started = false
+    this._startMethod = (time, offset) => {
+      //it was paused and restated
+      if (this.started) {
+        // get the buffer segment
+        const seg = Math.floor(offset / SEG_TIME);
+        this.playSegment(seg, time, offset - seg * SEG_TIME);
+      }
+      this.started = true;
+    };
 
-		this._startMethod = (time, offset) => {
-			//it was paused and restated
-			if (this.started){
-				// get the buffer segment
-				const seg = Math.floor(offset / SEG_TIME)
-				this.playSegment(seg, time, offset - seg * SEG_TIME)
-			}
-			this.started = true
-		}
+    this._pauseMethod = (time) => {
+      if (this.playingSource) {
+        this.playingSource.stop(time, 0.1);
+      }
+    };
 
-		this._pauseMethod = (time) => {
-			if (this.playingSource){
-				this.playingSource.stop(time, 0.1)
-			}
-		}
+    this._stopMethod = (time) => {
+      // clear all of the buffers
+      this.buffers = [];
+    };
 
-		this._stopMethod = (time) => {
-			// clear all of the buffers
-			this.buffers = []
-		}
+    Transport.on("start", this._startMethod);
+    Transport.on("pause stop", this._pauseMethod);
+    Transport.on("stop", this._stopMethod);
 
-		Transport.on('start', this._startMethod)
-		Transport.on('pause stop', this._pauseMethod)
-		Transport.on('stop', this._stopMethod)
+    this.buffers = [];
+    this.buffering = false;
+    this.loaded = false;
 
-		this.buffers = []
-		this.buffering = false
-		this.loaded = false
+    // load the first buffer and emit 'loaded event on first one'
+    const firstBuffer = new Buffer(this.trackName(), () => {
+      this.buffers[0] = firstBuffer;
+      this.loaded = true;
+      this.emit("loaded");
+    });
+  }
 
-		// load the first buffer and emit 'loaded event on first one'
-		const firstBuffer = new Buffer(this.trackName(), () => {
-			this.buffers[0] = firstBuffer
-			this.loaded = true
-			this.emit('loaded')
-		})
-	}
+  loadNext() {
+    if (!this.buffers[this.segment]) {
+      const seg = this.segment;
+      if (seg <= this.totalSegments) {
+        setTimeout(() => {
+          const nextBuffer = new Buffer(this.trackName(), () => {
+            if (this.buffering) {
+              this.buffering = false;
+              this.emit("bufferingEnd");
+            }
+            //remove the previous one
+            if (this.buffers[seg - 2]) {
+              this.buffers[seg - 2] = null;
+            }
+            this.buffers[seg] = nextBuffer;
+          });
+        }, Math.random() * 5000 + 1000);
+      }
+    }
+  }
 
-	loadNext(){
-		if (!this.buffers[this.segment]){
-			const seg = this.segment
-			if (seg <= this.totalSegments){
-				setTimeout(() => {
-					const nextBuffer = new Buffer(this.trackName(), () => {
-						if (this.buffering){
-							this.buffering = false
-							this.emit('bufferingEnd')
-						}
-						//remove the previous one
-						if (this.buffers[seg-2]){
-							this.buffers[seg-2] = null
-						}
-						this.buffers[seg] = nextBuffer
-					})
-				}, Math.random() * 5000 + 1000)
-			}
-		}
-	}
+  playSegment(seg, time, offset) {
+    if (this.buffers[seg]) {
+      //make the source
+      const source = new BufferSource(this.buffers[seg]);
+      source.connect(this.output);
+      source.start(time, offset);
+      this.playingSource = source;
+    } else {
+      this.emit("buffering");
+      this.buffering = true;
+    }
+  }
 
-	playSegment(seg, time, offset){
-		if (this.buffers[seg]){
-			//make the source 
-			const source = new BufferSource(this.buffers[seg])
-			source.connect(this.output)
-			source.start(time, offset)
-			this.playingSource = source
+  trackName() {
+    return `./audio/${this.folder}/${this.track}-${this.segment}.[mp3|ogg]`;
+  }
 
-		} else {
-			this.emit('buffering')
-			this.buffering = true
-		}
-	}
+  getWaveform(array) {
+    //the current segment
+    if (Transport.seconds === 0) {
+      //everything is 0
+      //typed-arrays dont have forEach in some old browsers (lookin at you ios9)
+      for (let i = 0; i < array.length; i++) {
+        array[i] = 0;
+      }
+    } else {
+      const segNum = Math.floor(Transport.seconds / SEG_TIME);
+      const offset = Transport.seconds - segNum * SEG_TIME;
+      const sample = Math.floor(offset * Transport.context.sampleRate);
+      const buffer = this.buffers[segNum];
+      if (buffer && sample < buffer.length) {
+        buffer.get().copyFromChannel(array, 0, sample);
+      }
+    }
+  }
 
-	trackName(){
-		return `./audio/${this.folder}/${this.track}-${this.segment}.[mp3|ogg]`
-	}
-
-	getWaveform(array){
-		//the current segment
-		if (Transport.seconds === 0){
-			//everything is 0
-			//typed-arrays dont have forEach in some old browsers (lookin at you ios9)
-			for(let i=0; i<array.length; i++){
-				array[i] = 0;
-			}
-		} else {
-			const segNum = Math.floor(Transport.seconds / SEG_TIME)
-			const offset = Transport.seconds - segNum * SEG_TIME
-			const sample = Math.floor(offset * Transport.context.sampleRate)
-			const buffer = this.buffers[segNum]
-			if (buffer && sample < buffer.length){
-				buffer.get().copyFromChannel(array, 0, sample)
-			}
-		}
-	}
-
-	dispose(){
-		Transport.off('start', this._startMethod)
-		Transport.off('pause stop', this._pauseMethod)
-		Transport.off('stop', this._stopMethod)
-		Transport.clear(this.id)
-		this.removeAllListeners('buffering')
-		this.removeAllListeners('bufferingEnd')
-		this.removeAllListeners('loaded')
-		setTimeout(() => {
-			this.output.dispose()
-		}, 500)
-	}
+  dispose() {
+    Transport.off("start", this._startMethod);
+    Transport.off("pause stop", this._pauseMethod);
+    Transport.off("stop", this._stopMethod);
+    Transport.clear(this.id);
+    this.removeAllListeners("buffering");
+    this.removeAllListeners("bufferingEnd");
+    this.removeAllListeners("loaded");
+    setTimeout(() => {
+      this.output.dispose();
+    }, 500);
+  }
 }

@@ -14,52 +14,63 @@
  * limitations under the License.
  */
 
-define(["sound/Piano", "sound/Sampler", "sound/Synth"], 
-function (Piano, Sampler, Synth) {
+define(["sound/Piano", "sound/Sampler", "sound/Synth"], function (
+  Piano,
+  Sampler,
+  Synth
+) {
+  var Player = function () {
+    //instances of all three instruments
+    this._synth = new Synth();
 
-	var Player = function(){
+    this._piano = new Piano();
 
-		//instances of all three instruments
-		this._synth = new Synth();
+    this._sampler = new Sampler();
 
-		this._piano = new Piano();
+    this._currentInstrument = this._synth;
+  };
 
-		this._sampler = new Sampler();
+  Player.prototype.setInstrument = function (inst, buffer) {
+    this.releaseAll();
+    switch (inst) {
+      case "piano":
+        this._piano.load();
+        this._currentInstrument = this._piano;
+        break;
+      case "synth":
+        this._currentInstrument = this._synth;
+        break;
+      case "sampler":
+        this._currentInstrument = this._sampler;
+        break;
+    }
+  };
 
-		this._currentInstrument = this._synth;
-	};
+  Player.prototype.setBuffer = function (buffer, duration, onset) {
+    this._sampler.setBuffer(buffer, duration, onset);
+  };
 
-	Player.prototype.setInstrument = function(inst, buffer){
-		this.releaseAll();
-		switch(inst){
-			case "piano" : 
-				this._piano.load();
-				this._currentInstrument = this._piano;
-				break;
-			case "synth" : 
-				this._currentInstrument = this._synth;
-				break;
-			case "sampler" : 
-				this._currentInstrument = this._sampler;
-				break;
-		}
-	};
+  Player.prototype.triggerAttackRelease = function (
+    note,
+    duration,
+    time,
+    velocity
+  ) {
+    //make it quieter and randomize the velocity slightly
+    velocity = velocity * 0.5 + Math.random() * 0.5;
+    velocity *= 0.5;
+    this._currentInstrument.triggerAttackRelease(
+      note,
+      duration,
+      time,
+      velocity
+    );
+  };
 
-	Player.prototype.setBuffer = function(buffer, duration, onset){
-		this._sampler.setBuffer(buffer, duration, onset);
-	};
+  Player.prototype.releaseAll = function () {
+    //release all
+    this._currentInstrument.releaseAll();
+  };
 
-	Player.prototype.triggerAttackRelease = function(note, duration, time, velocity){
-		//make it quieter and randomize the velocity slightly
-		velocity = velocity * 0.5 + Math.random() * 0.5;
-		velocity *= 0.5;
-		this._currentInstrument.triggerAttackRelease(note, duration, time, velocity);
-	};
-
-	Player.prototype.releaseAll = function(){
-		//release all
-		this._currentInstrument.releaseAll();
-	};
-
-	return Player;
+  return Player;
 });

@@ -1,7 +1,7 @@
-var isObject = require('./isObject');
+var isObject = require("./isObject");
 
 /** `Object#toString` result references. */
-var regexpTag = '[object RegExp]';
+var regexpTag = "[object RegExp]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;

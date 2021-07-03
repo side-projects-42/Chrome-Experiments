@@ -1,11 +1,11 @@
-var cachePush = require('./cachePush'),
-    getNative = require('./getNative');
+var cachePush = require("./cachePush"),
+  getNative = require("./getNative");
 
 /** Native method references. */
-var Set = getNative(global, 'Set');
+var Set = getNative(global, "Set");
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeCreate = getNative(Object, 'create');
+var nativeCreate = getNative(Object, "create");
 
 /**
  *
@@ -17,7 +17,7 @@ var nativeCreate = getNative(Object, 'create');
 function SetCache(values) {
   var length = values ? values.length : 0;
 
-  this.data = { 'hash': nativeCreate(null), 'set': new Set };
+  this.data = { hash: nativeCreate(null), set: new Set() };
   while (length--) {
     this.push(values[length]);
   }

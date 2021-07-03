@@ -1,9 +1,9 @@
-var getNative = require('../internal/getNative'),
-    isLength = require('../internal/isLength'),
-    isObjectLike = require('../internal/isObjectLike');
+var getNative = require("../internal/getNative"),
+  isLength = require("../internal/isLength"),
+  isObjectLike = require("../internal/isObjectLike");
 
 /** `Object#toString` result references. */
-var arrayTag = '[object Array]';
+var arrayTag = "[object Array]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -15,7 +15,7 @@ var objectProto = Object.prototype;
 var objToString = objectProto.toString;
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeIsArray = getNative(Array, 'isArray');
+var nativeIsArray = getNative(Array, "isArray");
 
 /**
  * Checks if `value` is classified as an `Array` object.
@@ -33,8 +33,14 @@ var nativeIsArray = getNative(Array, 'isArray');
  * _.isArray(function() { return arguments; }());
  * // => false
  */
-var isArray = nativeIsArray || function(value) {
-  return isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag;
-};
+var isArray =
+  nativeIsArray ||
+  function (value) {
+    return (
+      isObjectLike(value) &&
+      isLength(value.length) &&
+      objToString.call(value) == arrayTag
+    );
+  };
 
 module.exports = isArray;

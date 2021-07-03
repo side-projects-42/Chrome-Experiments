@@ -1,5 +1,5 @@
-var LazyWrapper = require('./LazyWrapper'),
-    arrayCopy = require('./arrayCopy');
+var LazyWrapper = require("./LazyWrapper"),
+  arrayCopy = require("./arrayCopy");
 
 /**
  * Creates a clone of the lazy wrapper object.

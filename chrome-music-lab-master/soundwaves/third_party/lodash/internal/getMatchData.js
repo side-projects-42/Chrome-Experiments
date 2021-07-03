@@ -1,5 +1,5 @@
-var isStrictComparable = require('./isStrictComparable'),
-    pairs = require('../object/pairs');
+var isStrictComparable = require("./isStrictComparable"),
+  pairs = require("../object/pairs");
 
 /**
  * Gets the propery names, values, and compare flags of `object`.
@@ -10,7 +10,7 @@ var isStrictComparable = require('./isStrictComparable'),
  */
 function getMatchData(object) {
   var result = pairs(object),
-      length = result.length;
+    length = result.length;
 
   while (length--) {
     result[length][2] = isStrictComparable(result[length][1]);

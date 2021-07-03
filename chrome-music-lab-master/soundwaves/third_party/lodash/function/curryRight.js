@@ -1,4 +1,4 @@
-var createCurry = require('../internal/createCurry');
+var createCurry = require("../internal/createCurry");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var CURRY_RIGHT_FLAG = 16;

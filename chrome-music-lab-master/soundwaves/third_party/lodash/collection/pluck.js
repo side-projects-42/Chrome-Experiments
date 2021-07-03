@@ -1,5 +1,5 @@
-var map = require('./map'),
-    property = require('../utility/property');
+var map = require("./map"),
+  property = require("../utility/property");
 
 /**
  * Gets the property value of `path` from all elements in `collection`.

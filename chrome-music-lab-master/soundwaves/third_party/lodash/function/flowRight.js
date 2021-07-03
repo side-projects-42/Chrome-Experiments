@@ -1,4 +1,4 @@
-var createFlow = require('../internal/createFlow');
+var createFlow = require("../internal/createFlow");
 
 /**
  * This method is like `_.flow` except that it creates a function that

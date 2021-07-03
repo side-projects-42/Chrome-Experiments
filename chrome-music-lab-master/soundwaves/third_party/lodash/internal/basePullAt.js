@@ -1,4 +1,4 @@
-var isIndex = require('./isIndex');
+var isIndex = require("./isIndex");
 
 /** Used for native method references. */
 var arrayProto = Array.prototype;

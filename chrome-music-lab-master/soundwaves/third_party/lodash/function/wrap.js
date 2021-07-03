@@ -1,5 +1,5 @@
-var createWrapper = require('../internal/createWrapper'),
-    identity = require('../utility/identity');
+var createWrapper = require("../internal/createWrapper"),
+  identity = require("../utility/identity");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var PARTIAL_FLAG = 32;

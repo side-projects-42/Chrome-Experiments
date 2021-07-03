@@ -15,83 +15,84 @@
  */
 
 define(["style/interface.scss"], function (interfaceStyle) {
+  var SoundSelection = function (container) {
+    this._buttons = document.createElement("DIV");
+    this._buttons.id = "SynthControls";
+    container.appendChild(this._buttons);
 
-	var SoundSelection = function(container){
+    this._piano = document.createElement("DIV");
+    this._piano.id = "Piano";
+    this._piano.classList.add("Button");
+    this._piano.classList.add("icon-svg_piano");
+    this._piano.addEventListener("click", this._clicked.bind(this, "piano"));
+    this._buttons.appendChild(this._piano);
 
-		this._buttons = document.createElement("DIV");
-		this._buttons.id = "SynthControls";
-		container.appendChild(this._buttons);
+    this._synth = document.createElement("DIV");
+    this._synth.id = "Synth";
+    this._synth.classList.add("Button");
+    this._synth.classList.add("icon-svg_wave_form");
+    this._synth.addEventListener("click", this._clicked.bind(this, "synth"));
+    this._buttons.appendChild(this._synth);
 
-		this._piano = document.createElement("DIV");
-		this._piano.id = "Piano";
-		this._piano.classList.add("Button");
-		this._piano.classList.add("icon-svg_piano");
-		this._piano.addEventListener("click", this._clicked.bind(this, "piano"));
-		this._buttons.appendChild(this._piano);
+    this.microphone = document.createElement("DIV");
+    this.microphone.id = "Sampler";
+    this.microphone.classList.add("Button");
+    this.microphone.classList.add("icon-svg_record");
+    this.microphone.addEventListener(
+      "click",
+      this._clicked.bind(this, "sampler")
+    );
+    this._buttons.appendChild(this.microphone);
 
-		this._synth = document.createElement("DIV");
-		this._synth.id = "Synth";
-		this._synth.classList.add("Button");
-		this._synth.classList.add("icon-svg_wave_form");
-		this._synth.addEventListener("click", this._clicked.bind(this, "synth"));
-		this._buttons.appendChild(this._synth);
+    //the currently active element
+    this._currentInstrument = "synth";
+    this.setInstrument(this._currentInstrument);
 
-		this.microphone = document.createElement("DIV");
-		this.microphone.id = "Sampler";
-		this.microphone.classList.add("Button");
-		this.microphone.classList.add("icon-svg_record");
-		this.microphone.addEventListener("click", this._clicked.bind(this, "sampler"));
-		this._buttons.appendChild(this.microphone);
+    this._lastInstrument = null;
 
-		//the currently active element
-		this._currentInstrument = "synth";
-		this.setInstrument(this._currentInstrument);
+    this.onSelect = function () {};
+  };
 
-		this._lastInstrument = null;
+  SoundSelection.prototype._clicked = function (which, e) {
+    this.onSelect(which);
+    this.setInstrument(which);
+  };
 
-		this.onSelect = function(){};
-	};
+  SoundSelection.prototype.recording = function (isRec) {
+    if (isRec) {
+      this._buttons.classList.add("Recording");
+    } else {
+      this._buttons.classList.remove("Recording");
+    }
+  };
 
-	SoundSelection.prototype._clicked = function(which, e){
-		this.onSelect(which);
-		this.setInstrument(which);
-	};
+  //return to the previously selected button
+  SoundSelection.prototype.previous = function () {
+    if (this._lastInstrument) {
+      this._clicked(this._lastInstrument);
+    }
+  };
 
-	SoundSelection.prototype.recording = function(isRec){
-		if (isRec){
-			this._buttons.classList.add("Recording");
-		} else {
-			this._buttons.classList.remove("Recording");
-		}
-	};
+  SoundSelection.prototype.setInstrument = function (inst) {
+    this._lastInstrument = this._currentInstrument;
+    this._currentInstrument = inst;
+    //remove the currently active element
+    var activeEl = this._buttons.querySelector(".Active");
+    if (activeEl) {
+      activeEl.classList.remove("Active");
+    }
+    switch (inst) {
+      case "synth":
+        this._synth.classList.add("Active");
+        break;
+      case "piano":
+        this._piano.classList.add("Active");
+        break;
+      case "sampler":
+        this.microphone.classList.add("Active");
+        break;
+    }
+  };
 
-	//return to the previously selected button
-	SoundSelection.prototype.previous = function(){
-		if (this._lastInstrument){
-			this._clicked(this._lastInstrument);
-		}
-	};
-
-	SoundSelection.prototype.setInstrument = function(inst){
-		this._lastInstrument = this._currentInstrument;
-		this._currentInstrument = inst;
-		//remove the currently active element
-		var activeEl = this._buttons.querySelector(".Active");
-		if (activeEl){
-			activeEl.classList.remove("Active");
-		}
-		switch(inst){
-			case "synth" :
-				this._synth.classList.add("Active");
-				break;
-			case "piano" :
-				this._piano.classList.add("Active");
-				break;
-			case "sampler" :
-				this.microphone.classList.add("Active");
-				break;
-		}
-	};
-
-	return SoundSelection;
+  return SoundSelection;
 });

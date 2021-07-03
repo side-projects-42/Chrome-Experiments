@@ -1,5 +1,5 @@
-var baseGet = require('../internal/baseGet'),
-    toPath = require('../internal/toPath');
+var baseGet = require("../internal/baseGet"),
+  toPath = require("../internal/toPath");
 
 /**
  * The opposite of `_.property`; this method creates a function that returns
@@ -22,8 +22,8 @@ var baseGet = require('../internal/baseGet'),
  * // => [2, 0]
  */
 function propertyOf(object) {
-  return function(path) {
-    return baseGet(object, toPath(path), (path + ''));
+  return function (path) {
+    return baseGet(object, toPath(path), path + "");
   };
 }
 

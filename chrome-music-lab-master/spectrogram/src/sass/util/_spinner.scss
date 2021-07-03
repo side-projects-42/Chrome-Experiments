@@ -1,17 +1,9 @@
-
-
-
-
-
-.spinner
-{
+.spinner {
   animation: rotation 1.4s linear infinite;
-  stroke:#fff;
+  stroke: #fff;
 }
 
-
-@keyframes rotation
-{
+@keyframes rotation {
   0% {
     transform: rotate(0deg);
   }
@@ -21,16 +13,14 @@
   }
 }
 
-.circle
-{
+.circle {
   stroke-dasharray: 187;
   stroke-dashoffset: 0;
   transform-origin: center;
   animation: turn 1.4s ease-in-out infinite;
 }
 
-@-webkit-keyframes turn
-{
+@-webkit-keyframes turn {
   0% {
     stroke-dashoffset: 187;
   }
@@ -46,8 +36,7 @@
   }
 }
 
-@keyframes turn
-{
+@keyframes turn {
   0% {
     stroke-dashoffset: 187;
   }

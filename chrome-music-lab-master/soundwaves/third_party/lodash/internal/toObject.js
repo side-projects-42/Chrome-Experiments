@@ -1,4 +1,4 @@
-var isObject = require('../lang/isObject');
+var isObject = require("../lang/isObject");
 
 /**
  * Converts `value` to an object if it's not one.

@@ -1,10 +1,10 @@
 /** `Object#toString` result references. */
-var boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    numberTag = '[object Number]',
-    regexpTag = '[object RegExp]',
-    stringTag = '[object String]';
+var boolTag = "[object Boolean]",
+  dateTag = "[object Date]",
+  errorTag = "[object Error]",
+  numberTag = "[object Number]",
+  regexpTag = "[object RegExp]",
+  stringTag = "[object String]";
 
 /**
  * A specialized version of `baseIsEqualDeep` for comparing objects of
@@ -32,15 +32,13 @@ function equalByTag(object, other, tag) {
 
     case numberTag:
       // Treat `NaN` vs. `NaN` as equal.
-      return (object != +object)
-        ? other != +other
-        : object == +other;
+      return object != +object ? other != +other : object == +other;
 
     case regexpTag:
     case stringTag:
       // Coerce regexes to strings and treat strings primitives and string
       // objects as equal. See https://es5.github.io/#x15.10.6.4 for more details.
-      return object == (other + '');
+      return object == other + "";
   }
   return false;
 }

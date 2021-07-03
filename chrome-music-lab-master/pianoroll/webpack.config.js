@@ -16,44 +16,50 @@
 
 var webpack = require("webpack");
 
-var PROD = JSON.parse(process.env.PROD_ENV || '0');
+var PROD = JSON.parse(process.env.PROD_ENV || "0");
 
 module.exports = {
-	"context": __dirname,
-	entry: {
-		"PianoRoll": "app/Main",
-	},
-	output: {
-		filename: "./build/[name].js",
-		chunkFilename: "./build/[id].js",
-		sourceMapFilename : "[file].map",
-	},
-	resolve: {
-		root: __dirname,
-		modulesDirectories : ["node_modules", "style", "app", "third_party", "third_party/Tone.js/"],
-	},
-	plugins: PROD ? [
-	    new webpack.optimize.UglifyJsPlugin({minimize: true})
-	  ] : [],
-	 module: {
-		loaders: [
-			{
-				test: /\.scss$/,
-				loader: "style!css!autoprefixer!sass"
-			},
-			{
-				test: /\.(png|gif)$/,
-				loader: "url-loader",
-			},
-			{
-				test: /\.json$/,
-				loader: "json",
-			},
-			{
-				test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-				loader : "file-loader?name=images/font/[hash].[ext]"
-			}
-		]
-	}
-	// devtool: "#eval"
+  context: __dirname,
+  entry: {
+    PianoRoll: "app/Main",
+  },
+  output: {
+    filename: "./build/[name].js",
+    chunkFilename: "./build/[id].js",
+    sourceMapFilename: "[file].map",
+  },
+  resolve: {
+    root: __dirname,
+    modulesDirectories: [
+      "node_modules",
+      "style",
+      "app",
+      "third_party",
+      "third_party/Tone.js/",
+    ],
+  },
+  plugins: PROD
+    ? [new webpack.optimize.UglifyJsPlugin({ minimize: true })]
+    : [],
+  module: {
+    loaders: [
+      {
+        test: /\.scss$/,
+        loader: "style!css!autoprefixer!sass",
+      },
+      {
+        test: /\.(png|gif)$/,
+        loader: "url-loader",
+      },
+      {
+        test: /\.json$/,
+        loader: "json",
+      },
+      {
+        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        loader: "file-loader?name=images/font/[hash].[ext]",
+      },
+    ],
+  },
+  // devtool: "#eval"
 };

@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-import Listener from 'Tone/core/Listener';
-import {supported} from 'Config'
+import Listener from "Tone/core/Listener";
+import { supported } from "Config";
 
-AFRAME.registerComponent('listener', {
-    tick() {
-        if (!supported){
-            return 
-        }
-        const object3d = this.el.object3D;
-        object3d.updateMatrixWorld();
-        const matrixWorld = object3d.matrixWorld;
-        const position = new THREE.Vector3().setFromMatrixPosition(matrixWorld);
-        Listener.setPosition(position.x, position.y, position.z);
-        const mOrientation = matrixWorld.clone();
-        mOrientation.setPosition({
-            x: 0,
-            y: 0,
-            z: 0
-        });
-        const vFront = new THREE.Vector3(0, 0, 1);
-        vFront.applyMatrix4(mOrientation);
-        vFront.normalize();
-        const vUp = new THREE.Vector3(0, -1, 0);
-        vUp.applyMatrix4(mOrientation);
-        vUp.normalize();
-        Listener.setOrientation(vFront.x, vFront.y, vFront.z, vUp.x, vUp.y, vUp.z);
+AFRAME.registerComponent("listener", {
+  tick() {
+    if (!supported) {
+      return;
     }
+    const object3d = this.el.object3D;
+    object3d.updateMatrixWorld();
+    const matrixWorld = object3d.matrixWorld;
+    const position = new THREE.Vector3().setFromMatrixPosition(matrixWorld);
+    Listener.setPosition(position.x, position.y, position.z);
+    const mOrientation = matrixWorld.clone();
+    mOrientation.setPosition({
+      x: 0,
+      y: 0,
+      z: 0,
+    });
+    const vFront = new THREE.Vector3(0, 0, 1);
+    vFront.applyMatrix4(mOrientation);
+    vFront.normalize();
+    const vUp = new THREE.Vector3(0, -1, 0);
+    vUp.applyMatrix4(mOrientation);
+    vUp.normalize();
+    Listener.setOrientation(vFront.x, vFront.y, vFront.z, vUp.x, vUp.y, vUp.z);
+  },
 });

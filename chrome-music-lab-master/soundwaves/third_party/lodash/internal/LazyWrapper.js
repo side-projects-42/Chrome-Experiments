@@ -1,5 +1,5 @@
-var baseCreate = require('./baseCreate'),
-    baseLodash = require('./baseLodash');
+var baseCreate = require("./baseCreate"),
+  baseLodash = require("./baseLodash");
 
 /** Used as references for `-Infinity` and `Infinity`. */
 var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;

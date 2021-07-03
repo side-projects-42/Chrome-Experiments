@@ -1,5 +1,5 @@
-var baseSlice = require('../internal/baseSlice'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseSlice = require("../internal/baseSlice"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * Creates a slice of `array` with `n` elements dropped from the beginning.

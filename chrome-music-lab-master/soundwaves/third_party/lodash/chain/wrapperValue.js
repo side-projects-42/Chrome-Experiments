@@ -1,4 +1,4 @@
-var baseWrapperValue = require('../internal/baseWrapperValue');
+var baseWrapperValue = require("../internal/baseWrapperValue");
 
 /**
  * Executes the chained sequence to extract the unwrapped value.

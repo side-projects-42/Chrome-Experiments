@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-import 'aframe'
+import "aframe";
 
 /**
  * retical component
  * visually renders the retical circle,
  * this component should be applied to the camera so that it stays in the same position always
  */
-AFRAME.registerComponent('retical', {
-
-	init(){
-		// add a retical
-		this.el.setAttribute('geometry', 'primitive:ring; radius-inner: 1; radius-outer: 1.5')
-		this.el.setAttribute('material', 'color: white; transparent: true; opacity: 0.6; shader: flat')
-		this.el.setAttribute('scale', '0.02 0.02 0.02')
-		this.el.setAttribute('position', '0 0 -0.9')
-	},
-})
+AFRAME.registerComponent("retical", {
+  init() {
+    // add a retical
+    this.el.setAttribute(
+      "geometry",
+      "primitive:ring; radius-inner: 1; radius-outer: 1.5"
+    );
+    this.el.setAttribute(
+      "material",
+      "color: white; transparent: true; opacity: 0.6; shader: flat"
+    );
+    this.el.setAttribute("scale", "0.02 0.02 0.02");
+    this.el.setAttribute("position", "0 0 -0.9");
+  },
+});

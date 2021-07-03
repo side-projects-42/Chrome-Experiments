@@ -1,4 +1,4 @@
-var createCtorWrapper = require('./createCtorWrapper');
+var createCtorWrapper = require("./createCtorWrapper");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var BIND_FLAG = 1;
@@ -17,16 +17,16 @@ var BIND_FLAG = 1;
  */
 function createPartialWrapper(func, bitmask, thisArg, partials) {
   var isBind = bitmask & BIND_FLAG,
-      Ctor = createCtorWrapper(func);
+    Ctor = createCtorWrapper(func);
 
   function wrapper() {
     // Avoid `arguments` object use disqualifying optimizations by
     // converting it to an array before providing it `func`.
     var argsIndex = -1,
-        argsLength = arguments.length,
-        leftIndex = -1,
-        leftLength = partials.length,
-        args = Array(leftLength + argsLength);
+      argsLength = arguments.length,
+      leftIndex = -1,
+      leftLength = partials.length,
+      args = Array(leftLength + argsLength);
 
     while (++leftIndex < leftLength) {
       args[leftIndex] = partials[leftIndex];
@@ -34,7 +34,7 @@ function createPartialWrapper(func, bitmask, thisArg, partials) {
     while (argsLength--) {
       args[leftIndex++] = arguments[++argsIndex];
     }
-    var fn = (this && this !== global && this instanceof wrapper) ? Ctor : func;
+    var fn = this && this !== global && this instanceof wrapper ? Ctor : func;
     return fn.apply(isBind ? thisArg : this, args);
   }
   return wrapper;

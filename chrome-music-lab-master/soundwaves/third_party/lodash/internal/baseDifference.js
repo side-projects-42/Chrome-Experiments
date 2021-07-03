@@ -1,6 +1,6 @@
-var baseIndexOf = require('./baseIndexOf'),
-    cacheIndexOf = require('./cacheIndexOf'),
-    createCache = require('./createCache');
+var baseIndexOf = require("./baseIndexOf"),
+  cacheIndexOf = require("./cacheIndexOf"),
+  createCache = require("./createCache");
 
 /** Used as the size to enable large array optimizations. */
 var LARGE_ARRAY_SIZE = 200;
@@ -16,24 +16,26 @@ var LARGE_ARRAY_SIZE = 200;
  */
 function baseDifference(array, values) {
   var length = array ? array.length : 0,
-      result = [];
+    result = [];
 
   if (!length) {
     return result;
   }
   var index = -1,
-      indexOf = baseIndexOf,
-      isCommon = true,
-      cache = (isCommon && values.length >= LARGE_ARRAY_SIZE) ? createCache(values) : null,
-      valuesLength = values.length;
+    indexOf = baseIndexOf,
+    isCommon = true,
+    cache =
+      isCommon && values.length >= LARGE_ARRAY_SIZE
+        ? createCache(values)
+        : null,
+    valuesLength = values.length;
 
   if (cache) {
     indexOf = cacheIndexOf;
     isCommon = false;
     values = cache;
   }
-  outer:
-  while (++index < length) {
+  outer: while (++index < length) {
     var value = array[index];
 
     if (isCommon && value === value) {
@@ -44,8 +46,7 @@ function baseDifference(array, values) {
         }
       }
       result.push(value);
-    }
-    else if (indexOf(values, value, 0) < 0) {
+    } else if (indexOf(values, value, 0) < 0) {
       result.push(value);
     }
   }

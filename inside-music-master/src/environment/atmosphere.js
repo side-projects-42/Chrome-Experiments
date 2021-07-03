@@ -14,67 +14,51 @@
  * limitations under the License.
  */
 
-import vertexShader from '../shaders/basic.vert';
-import fragmentShader from '../shaders/atmosphere.frag';
-
+import vertexShader from "../shaders/basic.vert";
+import fragmentShader from "../shaders/atmosphere.frag";
 
 class AtmosphereMaterial extends THREE.ShaderMaterial {
+  constructor() {
+    super({
+      fog: true,
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        u_time: {
+          type: "f",
+          value: 0,
+        },
+        fogNear: {
+          type: "f",
+          value: 0,
+        },
+        fogFar: {
+          type: "f",
+          value: 0,
+        },
+        fogColor: {
+          type: "c",
+          value: new THREE.Color(),
+        },
+      },
+      transparent: true,
+    });
 
-
-	constructor(){
-
-		super({
-			fog: true,
-			vertexShader,
-			fragmentShader,
-			uniforms: {
-				u_time: {
-					type: 'f',
-					value: 0
-				},
-				fogNear: {
-					type: 'f',
-					value: 0
-				},
-				fogFar: {
-					type: 'f',
-					value: 0
-				},
-				fogColor: {
-					type: 'c',
-					value: new THREE.Color()
-				}
-			},
-			transparent: true
-		});
-
-		this.side = THREE.BackSide;
-
-	}
-
-
-
+    this.side = THREE.BackSide;
+  }
 }
 
+AFRAME.registerComponent("atmosphere", {
+  init() {
+    this.mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 36, 36),
+      new AtmosphereMaterial()
+    );
 
+    this.el.object3D.add(this.mesh);
+  },
 
-AFRAME.registerComponent('atmosphere', {
-
-
-	init(){
-
-		this.mesh = new THREE.Mesh(
-			new THREE.SphereGeometry(1, 36, 36),
-			new AtmosphereMaterial()
-		);
-
-
-		this.el.object3D.add(this.mesh);
-	},
-
-
-	tick(elapsed){
-		this.mesh.material.uniforms.u_time.value = elapsed / 1000;
-	}
-
+  tick(elapsed) {
+    this.mesh.material.uniforms.u_time.value = elapsed / 1000;
+  },
 });

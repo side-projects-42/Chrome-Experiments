@@ -1,10 +1,10 @@
-var createWrapper = require('../internal/createWrapper'),
-    replaceHolders = require('../internal/replaceHolders'),
-    restParam = require('./restParam');
+var createWrapper = require("../internal/createWrapper"),
+  replaceHolders = require("../internal/replaceHolders"),
+  restParam = require("./restParam");
 
 /** Used to compose bitmasks for wrapper metadata. */
 var BIND_FLAG = 1,
-    PARTIAL_FLAG = 32;
+  PARTIAL_FLAG = 32;
 
 /**
  * Creates a function that invokes `func` with the `this` binding of `thisArg`
@@ -41,7 +41,7 @@ var BIND_FLAG = 1,
  * bound('hi');
  * // => 'hi fred!'
  */
-var bind = restParam(function(func, thisArg, partials) {
+var bind = restParam(function (func, thisArg, partials) {
   var bitmask = BIND_FLAG;
   if (partials.length) {
     var holders = replaceHolders(partials, bind.placeholder);

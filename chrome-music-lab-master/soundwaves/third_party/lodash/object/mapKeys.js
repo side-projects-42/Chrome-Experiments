@@ -1,4 +1,4 @@
-var createObjectMapper = require('../internal/createObjectMapper');
+var createObjectMapper = require("../internal/createObjectMapper");
 
 /**
  * The opposite of `_.mapValues`; this method creates an object with the

@@ -15,5 +15,5 @@
  */
 
 define(function () {
-	return ["preludeInC", "turkishMarch", "beethoven5", "MinuetInG", "satie"];
+  return ["preludeInC", "turkishMarch", "beethoven5", "MinuetInG", "satie"];
 });

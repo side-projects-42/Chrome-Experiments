@@ -7,10 +7,10 @@
  */
 function initCloneObject(object) {
   var Ctor = object.constructor;
-  if (!(typeof Ctor == 'function' && Ctor instanceof Ctor)) {
+  if (!(typeof Ctor == "function" && Ctor instanceof Ctor)) {
     Ctor = Object;
   }
-  return new Ctor;
+  return new Ctor();
 }
 
 module.exports = initCloneObject;

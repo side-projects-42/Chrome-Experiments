@@ -14,64 +14,63 @@
  * limitations under the License.
  */
 
-import Transport from 'Tone/core/Transport'
-import {StreamingPlayer} from './StreamingPlayer'
-import events from 'events'
+import Transport from "Tone/core/Transport";
+import { StreamingPlayer } from "./StreamingPlayer";
+import events from "events";
 
 export class StreamingController extends events.EventEmitter {
-	constructor(folder, tracks, length){
+  constructor(folder, tracks, length) {
+    super();
 
-		super()
-
-		this.tracks = []
-		tracks.forEach(t => {
-			const track = new StreamingPlayer(folder, t, length)
-			this.tracks.push(track)
-			track.on('buffering', () => {
-				if (Transport.state === 'started'){
-					Transport.pause()
-					this.emit('buffering')
-				}
-			})
-			track.on('bufferingEnd', () => {
-				// when they are all buffered, restart it
-				if (!this.buffering){
-					Transport.start()
-					this.emit('bufferingEnd')
-				}
-			})
-			track.on('loaded', () => {
-				if (this.loaded){
-					this.emit('loaded')
-				}
-			})
-		})
-	}
-	get(num){
-		return this.tracks[num].output
-	}
-	dispose(){
-		Transport.stop()
-		Transport.off('start stop pause')
-		this.tracks.forEach(track => track.dispose())
-	}
-	start(){
-		Transport.start()
-	}
-	pause(){
-		Transport.pause()
-	}
-	get buffering(){
-		let buffering = false
-		this.tracks.forEach(t => buffering = buffering || t.buffering)
-		return buffering
-	}
-	get loaded(){
-		let loaded = true
-		this.tracks.forEach(t => loaded = loaded && t.loaded)
-		return loaded
-	}
-	forEach(cb){
-		this.tracks.forEach(cb)
-	}
+    this.tracks = [];
+    tracks.forEach((t) => {
+      const track = new StreamingPlayer(folder, t, length);
+      this.tracks.push(track);
+      track.on("buffering", () => {
+        if (Transport.state === "started") {
+          Transport.pause();
+          this.emit("buffering");
+        }
+      });
+      track.on("bufferingEnd", () => {
+        // when they are all buffered, restart it
+        if (!this.buffering) {
+          Transport.start();
+          this.emit("bufferingEnd");
+        }
+      });
+      track.on("loaded", () => {
+        if (this.loaded) {
+          this.emit("loaded");
+        }
+      });
+    });
+  }
+  get(num) {
+    return this.tracks[num].output;
+  }
+  dispose() {
+    Transport.stop();
+    Transport.off("start stop pause");
+    this.tracks.forEach((track) => track.dispose());
+  }
+  start() {
+    Transport.start();
+  }
+  pause() {
+    Transport.pause();
+  }
+  get buffering() {
+    let buffering = false;
+    this.tracks.forEach((t) => (buffering = buffering || t.buffering));
+    return buffering;
+  }
+  get loaded() {
+    let loaded = true;
+    this.tracks.forEach((t) => (loaded = loaded && t.loaded));
+    return loaded;
+  }
+  forEach(cb) {
+    this.tracks.forEach(cb);
+  }
 }

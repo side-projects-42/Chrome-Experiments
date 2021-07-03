@@ -14,34 +14,33 @@
  * limitations under the License.
  */
 
-import 'style/exit.scss'
-import {GA} from 'utils/GA'
-import {isMobile, is360} from 'utils/Helpers'
+import "style/exit.scss";
+import { GA } from "utils/GA";
+import { isMobile, is360 } from "utils/Helpers";
 
 export class ExitButton {
-	constructor(){
-		const element = this.element = document.querySelector('#exitButton')
+  constructor() {
+    const element = (this.element = document.querySelector("#exitButton"));
 
-		element.addEventListener('click', () => {
-			GA('ui', 'click', 'exit')
-			window.location.reload()
-		})
+    element.addEventListener("click", () => {
+      GA("ui", "click", "exit");
+      window.location.reload();
+    });
 
-		const scene = document.querySelector('a-scene')
-		scene.addEventListener('enter-360', () => this.show())
-		scene.addEventListener('enter-vr', () => this.show())
-		scene.addEventListener('exit-vr', () => this.hide())
-
-	}
-	show(){
-		setTimeout(() => {
-			if (!isMobile() || (isMobile() && is360())){
-				this.element.classList.add('visible')
-			}
-		}, 10)
-	}
-	hide(){
-		window.location.reload()
-		this.element.classList.remove('visible')
-	}
+    const scene = document.querySelector("a-scene");
+    scene.addEventListener("enter-360", () => this.show());
+    scene.addEventListener("enter-vr", () => this.show());
+    scene.addEventListener("exit-vr", () => this.hide());
+  }
+  show() {
+    setTimeout(() => {
+      if (!isMobile() || (isMobile() && is360())) {
+        this.element.classList.add("visible");
+      }
+    }, 10);
+  }
+  hide() {
+    window.location.reload();
+    this.element.classList.remove("visible");
+  }
 }

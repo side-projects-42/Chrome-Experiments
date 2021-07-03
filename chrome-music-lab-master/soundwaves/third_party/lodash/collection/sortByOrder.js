@@ -1,6 +1,6 @@
-var baseSortByOrder = require('../internal/baseSortByOrder'),
-    isArray = require('../lang/isArray'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseSortByOrder = require("../internal/baseSortByOrder"),
+  isArray = require("../lang/isArray"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * This method is like `_.sortByAll` except that it allows specifying the

@@ -1,4 +1,4 @@
-var bindCallback = require('./bindCallback');
+var bindCallback = require("./bindCallback");
 
 /**
  * Creates a function for `_.forOwn` or `_.forOwnRight`.
@@ -8,8 +8,8 @@ var bindCallback = require('./bindCallback');
  * @returns {Function} Returns the new each function.
  */
 function createForOwn(objectFunc) {
-  return function(object, iteratee, thisArg) {
-    if (typeof iteratee != 'function' || thisArg !== undefined) {
+  return function (object, iteratee, thisArg) {
+    if (typeof iteratee != "function" || thisArg !== undefined) {
       iteratee = bindCallback(iteratee, thisArg, 3);
     }
     return objectFunc(object, iteratee);

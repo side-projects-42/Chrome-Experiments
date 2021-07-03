@@ -14,114 +14,128 @@
  * limitations under the License.
  */
 
-import 'aframe'
-import 'song/Sphere'
-import 'song/TrackState'
-import 'sound/Player'
-import 'sound/PlayerSystem'
-import {trackRadius, trackConfig, getTrackData} from 'Config'
-
+import "aframe";
+import "song/Sphere";
+import "song/TrackState";
+import "sound/Player";
+import "sound/PlayerSystem";
+import { trackRadius, trackConfig, getTrackData } from "Config";
 
 /**
  * tracks component
  * a single component that creates all of the individual players and visuals
  */
-AFRAME.registerComponent('tracks', {
+AFRAME.registerComponent("tracks", {
+  schema: {
+    artist: {
+      type: "string",
+    },
+  },
 
-	schema : {
-		artist : {
-			type : 'string'
-		}
-	},
+  init() {
+    this.el.id = "tracks";
 
-	init(){
-		this.el.id = 'tracks'
+    // make all of the tracks initially
+    const maxTracks = trackConfig.reduce(
+      (max, track) => Math.max(max, track.names.length),
+      0
+    );
 
-		// make all of the tracks initially
-		const maxTracks = trackConfig.reduce((max, track)=> Math.max(max, track.names.length), 0);
+    this.tracks = [];
 
-		this.tracks = []
+    for (let i = 0; i < maxTracks; i++) {
+      const track = document.createElement("a-entity");
+      this.tracks.push(track);
+      track.setAttribute("sphere", "tintColor:#000000");
+      track.setAttribute("track-state", "");
+      track.setAttribute("pointer-events", false);
+      track.setAttribute("active", "false");
+      track.setAttribute("player", "");
+      track.setAttribute("track-index", `index : ${i}; length: ${maxTracks}`);
+      track.setAttribute("on-floor", true);
+      track.setAttribute("sound-rings", "");
+      this.el.appendChild(track);
+    }
 
-		for (let i = 0; i < maxTracks; i++){
-			const track = document.createElement('a-entity');
-			this.tracks.push(track);
-			track.setAttribute('sphere', 'tintColor:#000000');
-			track.setAttribute('track-state', '');
-			track.setAttribute('pointer-events', false);
-			track.setAttribute('active', 'false');
-			track.setAttribute('player', '');
-			track.setAttribute('track-index', `index : ${i}; length: ${maxTracks}`);
-			track.setAttribute('on-floor', true);
-			track.setAttribute('sound-rings', '');
-			this.el.appendChild(track);
-		}
+    //clear the artist when the song ends
+    this.el.sceneEl.addEventListener("song-end", () =>
+      this.el.setAttribute("tracks", "artist", "")
+    );
+  },
 
-		//clear the artist when the song ends
-		this.el.sceneEl.addEventListener('song-end', () =>
-			this.el.setAttribute('tracks', 'artist', '')
-		)
-	},
+  update() {
+    // set them all to -1
+    // this.tracks.forEach(t => t.setAttribute('track-index', 'index:-1'))
 
-	update(){
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
 
-		// set them all to -1
-		// this.tracks.forEach(t => t.setAttribute('track-index', 'index:-1'))
+    this.timeout = setTimeout(() => {
+      if (this.data.artist === "") {
+        return;
+      }
 
-		if (this.timeout){
-			clearTimeout(this.timeout)
-		}
+      const trackData = getTrackData(this.data.artist);
 
-		this.timeout = setTimeout(() => {
+      const shaderFloorEntity = document.querySelector(
+        "a-entity[shader-floor]"
+      );
+      if (shaderFloorEntity) {
+        shaderFloorEntity.setAttribute(
+          "shader-floor",
+          `color: ${trackData.floor.color}`
+        );
+      }
 
-			if (this.data.artist === ''){
-				return
-			}
+      for (let i = 0; i < trackData.names.length; i++) {
+        const track = this.tracks[i];
+        track.emit("refresh");
+        track.setAttribute(
+          "track-index",
+          `index : ${i}; length: ${trackData.names.length}`
+        );
+        track.setAttribute(
+          "player",
+          `folder:${trackData.folder};name:${trackData.trackNames[i]}; segments: ${trackData.segments}`
+        );
+        track.setAttribute(
+          "sphere",
+          `name: ${trackData.names[i]}; tintColor:${trackData.soundRings.startColor}`
+        );
 
-			const trackData = getTrackData(this.data.artist)
-
-			const shaderFloorEntity = document.querySelector('a-entity[shader-floor]');
-			if(shaderFloorEntity){
-				shaderFloorEntity.setAttribute('shader-floor',`color: ${trackData.floor.color}`);
-			}
-
-			for (let i = 0; i < trackData.names.length; i++){
-				const track = this.tracks[i]
-				track.emit('refresh')
-				track.setAttribute('track-index', `index : ${i}; length: ${trackData.names.length}`)
-				track.setAttribute('player', `folder:${trackData.folder};name:${trackData.trackNames[i]}; segments: ${trackData.segments}`)
-				track.setAttribute('sphere', `name: ${trackData.names[i]}; tintColor:${trackData.soundRings.startColor}`)
-
-				track.setAttribute('sound-rings', `
+        track.setAttribute(
+          "sound-rings",
+          `
 					size:${trackData.soundRings.size};
 					startColor:${trackData.soundRings.startColor};
 					endColor:${trackData.soundRings.endColor};
-				`);
-			}
-		}, 500)
-	}
-})
+				`
+        );
+      }
+    }, 500);
+  },
+});
 
-
-AFRAME.registerComponent('track-index', {
-	schema : {
-		index : {
-			type : 'int',
-			default : -1,
-		},
-		length : {
-			type : 'int',
-			default : 1,
-		}
-	},
-	init(){
-		// this.el.setAttribute('animate', 'attribute: scale; time: 300; easing: Quadratic.InOut')
-	},
-	update(){
-
-		const offset = Math.PI / 4
-		const segmentAngle = (Math.PI * 2 - offset) / this.data.length
-		const angle = segmentAngle * (this.data.index + 0.5) + offset/2
-		this.el.setAttribute('scale', '1 1 1')
-		this.el.setAttribute('rotation', `0 ${angle * 180 / Math.PI} 0`)
-	}
-})
+AFRAME.registerComponent("track-index", {
+  schema: {
+    index: {
+      type: "int",
+      default: -1,
+    },
+    length: {
+      type: "int",
+      default: 1,
+    },
+  },
+  init() {
+    // this.el.setAttribute('animate', 'attribute: scale; time: 300; easing: Quadratic.InOut')
+  },
+  update() {
+    const offset = Math.PI / 4;
+    const segmentAngle = (Math.PI * 2 - offset) / this.data.length;
+    const angle = segmentAngle * (this.data.index + 0.5) + offset / 2;
+    this.el.setAttribute("scale", "1 1 1");
+    this.el.setAttribute("rotation", `0 ${(angle * 180) / Math.PI} 0`);
+  },
+});

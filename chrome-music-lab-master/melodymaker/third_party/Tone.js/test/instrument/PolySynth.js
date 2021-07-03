@@ -1,12 +1,15 @@
-define(["Tone/instrument/PolySynth", "helper/Basic", "helper/InstrumentTests", "helper/OutputAudioStereo", "helper/Meter"], 
-function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter) {
+define([
+  "Tone/instrument/PolySynth",
+  "helper/Basic",
+  "helper/InstrumentTests",
+  "helper/OutputAudioStereo",
+  "helper/Meter",
+], function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter) {
+  describe("PolySynth", function () {
+    Basic(PolySynth);
+    InstrumentTests(PolySynth, "C4");
 
-	describe("PolySynth", function(){
-
-		Basic(PolySynth);
-		InstrumentTests(PolySynth, "C4");
-
-		/*context("Instrument Tests", function(){
+    /*context("Instrument Tests", function(){
 
 			it ("extends Tone.Instrument", function(){
 				var polySynth = new PolySynth();
@@ -91,9 +94,8 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter) {
 
 		});*/
 
-		context("API", function(){
-
-			/*it ("can get and set oscillator attributes", function(){
+    context("API", function () {
+      /*it ("can get and set oscillator attributes", function(){
 				var polySynth = new PolySynth();
 				polySynth.oscillator.type = "triangle";
 				expect(polySynth.oscillator.type).to.equal("triangle");
@@ -139,7 +141,6 @@ function (PolySynth, Basic, InstrumentTests, OutputAudioStereo, Meter) {
 				expect(polySynth.get().envelope.decay).to.equal(0.24);
 				polySynth.dispose();
 			});*/
-
-		});
-	});
+    });
+  });
 });

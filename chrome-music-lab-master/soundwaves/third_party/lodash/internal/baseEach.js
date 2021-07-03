@@ -1,5 +1,5 @@
-var baseForOwn = require('./baseForOwn'),
-    createBaseEach = require('./createBaseEach');
+var baseForOwn = require("./baseForOwn"),
+  createBaseEach = require("./createBaseEach");
 
 /**
  * The base implementation of `_.forEach` without support for callback

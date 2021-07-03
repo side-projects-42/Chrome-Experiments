@@ -1,6 +1,6 @@
-var LazyWrapper = require('../internal/LazyWrapper'),
-    LodashWrapper = require('../internal/LodashWrapper'),
-    thru = require('./thru');
+var LazyWrapper = require("../internal/LazyWrapper"),
+  LodashWrapper = require("../internal/LodashWrapper"),
+  thru = require("./thru");
 
 /**
  * Reverses the wrapped array so the first element becomes the last, the
@@ -25,7 +25,7 @@ var LazyWrapper = require('../internal/LazyWrapper'),
 function wrapperReverse() {
   var value = this.__wrapped__;
 
-  var interceptor = function(value) {
+  var interceptor = function (value) {
     return value.reverse();
   };
   if (value instanceof LazyWrapper) {
@@ -34,7 +34,11 @@ function wrapperReverse() {
       wrapped = new LazyWrapper(this);
     }
     wrapped = wrapped.reverse();
-    wrapped.__actions__.push({ 'func': thru, 'args': [interceptor], 'thisArg': undefined });
+    wrapped.__actions__.push({
+      func: thru,
+      args: [interceptor],
+      thisArg: undefined,
+    });
     return new LodashWrapper(wrapped, this.__chain__);
   }
   return this.thru(interceptor);

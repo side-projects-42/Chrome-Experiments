@@ -14,56 +14,71 @@
  * limitations under the License.
  */
 
- var webpack = require('webpack');
+var webpack = require("webpack");
 
- module.exports = {
- 	entry: {
-		'Main': './src/Main.js',
-		'Fallback' : 'src/Fallback.js',
-		'vendor' : ['aframe', 'aframe-auto-detect-controllers-component', 'aframe-look-at-component', '@ekolabs/aframe-spritesheet-component/dist/aframe-spritesheet-component']
-	},
-	output: {
-		filename: './build/[name].js',
-		chunkFilename: './build/[id].js',
-		sourceMapFilename : '[file].map',
-	},
-	resolve: {
-		modules : [/*'third_party',*/'node_modules', '../third-party/Tone.js', './node_modules/tone','src', '.', 'third_party'],
-	},
-	plugins: [
-		new webpack.optimize.CommonsChunkPlugin({name :'vendor', filename :'./build/vendor.bundle.js'})
-	],
-	/*plugins: [
+module.exports = {
+  entry: {
+    Main: "./src/Main.js",
+    Fallback: "src/Fallback.js",
+    vendor: [
+      "aframe",
+      "aframe-auto-detect-controllers-component",
+      "aframe-look-at-component",
+      "@ekolabs/aframe-spritesheet-component/dist/aframe-spritesheet-component",
+    ],
+  },
+  output: {
+    filename: "./build/[name].js",
+    chunkFilename: "./build/[id].js",
+    sourceMapFilename: "[file].map",
+  },
+  resolve: {
+    modules: [
+      /*'third_party',*/ "node_modules",
+      "../third-party/Tone.js",
+      "./node_modules/tone",
+      "src",
+      ".",
+      "third_party",
+    ],
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "vendor",
+      filename: "./build/vendor.bundle.js",
+    }),
+  ],
+  /*plugins: [
 		new webpack.optimize.UglifyJsPlugin({
 			minimize: false,
 			compress: false
 		})
 		],*/
-		module: {
-			loaders: [
-			{ test: /\.(glsl|vert|frag)$/, loader: 'shader-loader' },
-			{
-				test: /\.js$/,
-				// exclude: /((node_modules\/(?![(@ekolabs\/aframe\-spritesheet\-component)|(nosleep\.js)|(webvr\-ui)]))|Tone\.js)/,
-				exclude: /(node_modules|Tone\.js)/,
-				loader: 'babel-loader',
-				query: {
-					presets: ['es2015']
-				}
-			},
-			{
-				test: /\.scss$/,
-				loader: 'style-loader!css-loader!autoprefixer-loader!sass-loader'
-			},
-			{
-				test: /\.json$/,
-				loader: 'json-loader'
-			},
-			{
-				test: /\.(png|gif|svg|woff|woff2|eot|ttf)$/,
-				loader: 'url-loader',
-			}
-			]
-		},
-		// devtool: '#source-map'
-	};
+  module: {
+    loaders: [
+      { test: /\.(glsl|vert|frag)$/, loader: "shader-loader" },
+      {
+        test: /\.js$/,
+        // exclude: /((node_modules\/(?![(@ekolabs\/aframe\-spritesheet\-component)|(nosleep\.js)|(webvr\-ui)]))|Tone\.js)/,
+        exclude: /(node_modules|Tone\.js)/,
+        loader: "babel-loader",
+        query: {
+          presets: ["es2015"],
+        },
+      },
+      {
+        test: /\.scss$/,
+        loader: "style-loader!css-loader!autoprefixer-loader!sass-loader",
+      },
+      {
+        test: /\.json$/,
+        loader: "json-loader",
+      },
+      {
+        test: /\.(png|gif|svg|woff|woff2|eot|ttf)$/,
+        loader: "url-loader",
+      },
+    ],
+  },
+  // devtool: '#source-map'
+};

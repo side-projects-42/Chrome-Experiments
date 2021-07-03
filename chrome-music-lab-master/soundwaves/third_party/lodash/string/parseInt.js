@@ -1,5 +1,5 @@
-var isIterateeCall = require('../internal/isIterateeCall'),
-    trim = require('./trim');
+var isIterateeCall = require("../internal/isIterateeCall"),
+  trim = require("./trim");
 
 /** Used to detect hexadecimal string values. */
 var reHasHexPrefix = /^0[xX]/;
@@ -40,7 +40,10 @@ function parseInt(string, radix, guard) {
     radix = +radix;
   }
   string = trim(string);
-  return nativeParseInt(string, radix || (reHasHexPrefix.test(string) ? 16 : 10));
+  return nativeParseInt(
+    string,
+    radix || (reHasHexPrefix.test(string) ? 16 : 10)
+  );
 }
 
 module.exports = parseInt;

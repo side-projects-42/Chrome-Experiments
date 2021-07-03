@@ -1,5 +1,5 @@
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /**
  * The base implementation of `_.delay` and `_.defer` which accepts an index
@@ -12,10 +12,12 @@ var FUNC_ERROR_TEXT = 'Expected a function';
  * @returns {number} Returns the timer id.
  */
 function baseDelay(func, wait, args) {
-  if (typeof func != 'function') {
+  if (typeof func != "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
-  return setTimeout(function() { func.apply(undefined, args); }, wait);
+  return setTimeout(function () {
+    func.apply(undefined, args);
+  }, wait);
 }
 
 module.exports = baseDelay;

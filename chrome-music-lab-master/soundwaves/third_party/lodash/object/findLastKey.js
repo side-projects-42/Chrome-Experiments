@@ -1,5 +1,5 @@
-var baseForOwnRight = require('../internal/baseForOwnRight'),
-    createFindKey = require('../internal/createFindKey');
+var baseForOwnRight = require("../internal/baseForOwnRight"),
+  createFindKey = require("../internal/createFindKey");
 
 /**
  * This method is like `_.findKey` except that it iterates over elements of

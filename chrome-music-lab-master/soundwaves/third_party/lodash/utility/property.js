@@ -1,6 +1,6 @@
-var baseProperty = require('../internal/baseProperty'),
-    basePropertyDeep = require('../internal/basePropertyDeep'),
-    isKey = require('../internal/isKey');
+var baseProperty = require("../internal/baseProperty"),
+  basePropertyDeep = require("../internal/basePropertyDeep"),
+  isKey = require("../internal/isKey");
 
 /**
  * Creates a function that returns the property value at `path` on a

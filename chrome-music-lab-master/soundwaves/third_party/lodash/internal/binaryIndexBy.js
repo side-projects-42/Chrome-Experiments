@@ -1,10 +1,10 @@
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeFloor = Math.floor,
-    nativeMin = Math.min;
+  nativeMin = Math.min;
 
 /** Used as references for the maximum length and index of an array. */
 var MAX_ARRAY_LENGTH = 4294967295,
-    MAX_ARRAY_INDEX = MAX_ARRAY_LENGTH - 1;
+  MAX_ARRAY_INDEX = MAX_ARRAY_LENGTH - 1;
 
 /**
  * This function is like `binaryIndex` except that it invokes `iteratee` for
@@ -23,16 +23,16 @@ function binaryIndexBy(array, value, iteratee, retHighest) {
   value = iteratee(value);
 
   var low = 0,
-      high = array ? array.length : 0,
-      valIsNaN = value !== value,
-      valIsNull = value === null,
-      valIsUndef = value === undefined;
+    high = array ? array.length : 0,
+    valIsNaN = value !== value,
+    valIsNull = value === null,
+    valIsUndef = value === undefined;
 
   while (low < high) {
     var mid = nativeFloor((low + high) / 2),
-        computed = iteratee(array[mid]),
-        isDef = computed !== undefined,
-        isReflexive = computed === computed;
+      computed = iteratee(array[mid]),
+      isDef = computed !== undefined,
+      isReflexive = computed === computed;
 
     if (valIsNaN) {
       var setLow = isReflexive || retHighest;
@@ -43,7 +43,7 @@ function binaryIndexBy(array, value, iteratee, retHighest) {
     } else if (computed == null) {
       setLow = false;
     } else {
-      setLow = retHighest ? (computed <= value) : (computed < value);
+      setLow = retHighest ? computed <= value : computed < value;
     }
     if (setLow) {
       low = mid + 1;

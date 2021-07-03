@@ -1,4 +1,4 @@
-var baseEach = require('./baseEach');
+var baseEach = require("./baseEach");
 
 /**
  * Gets the extremum value of `collection` invoking `iteratee` for each value
@@ -14,11 +14,14 @@ var baseEach = require('./baseEach');
  */
 function baseExtremum(collection, iteratee, comparator, exValue) {
   var computed = exValue,
-      result = computed;
+    result = computed;
 
-  baseEach(collection, function(value, index, collection) {
+  baseEach(collection, function (value, index, collection) {
     var current = +iteratee(value, index, collection);
-    if (comparator(current, computed) || (current === exValue && current === result)) {
+    if (
+      comparator(current, computed) ||
+      (current === exValue && current === result)
+    ) {
       computed = current;
       result = value;
     }

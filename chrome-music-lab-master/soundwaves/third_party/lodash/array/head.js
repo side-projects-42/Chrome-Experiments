@@ -1,1 +1,1 @@
-module.exports = require('./first');
+module.exports = require("./first");

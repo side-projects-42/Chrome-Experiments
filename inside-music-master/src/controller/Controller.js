@@ -14,186 +14,205 @@
  * limitations under the License.
  */
 
-import 'aframe'
-import './Cursor'
-import './Retical'
-import './HandHeld'
-import 'aframe-auto-detect-controllers-component'
+import "aframe";
+import "./Cursor";
+import "./Retical";
+import "./HandHeld";
+import "aframe-auto-detect-controllers-component";
 
-AFRAME.registerComponent('controller', {
+AFRAME.registerComponent("controller", {
+  dependencies: ["raycaster"],
 
-	dependencies: ['raycaster'],
+  schema: {
+    front: {
+      type: "string",
+    },
+    back: {
+      type: "string",
+    },
+    touch: {
+      type: "boolean",
+      default: false,
+    },
+  },
 
-	schema : {
-		front : {
-			type : 'string'
-		},
-		back : {
-			type : 'string'
-		},
-		touch : {
-			type : 'boolean',
-			default : false
-		}
-	},
+  init() {
+    this.el.setAttribute("cursor", "fuse : false");
+    this.el.setAttribute(
+      "raycaster",
+      "far: 5; objects: .selectable; interval: 60"
+    );
 
-	init(){
-		this.el.setAttribute('cursor', 'fuse : false')
-		this.el.setAttribute('raycaster', 'far: 5; objects: .selectable; interval: 60')
+    this.el.addEventListener("raycaster-intersection", (event) => {
+      if (this.back) {
+        const intersected = this.el.components.raycaster.intersectedEls[0];
+        document
+          .querySelector(this.data.back)
+          .emit("intersection-start", intersected);
+      }
+    });
 
-		this.el.addEventListener('raycaster-intersection', event => {
-			if (this.back){
-				const intersected = this.el.components.raycaster.intersectedEls[0]
-				document.querySelector(this.data.back).emit('intersection-start', intersected)
-			}
-		})
+    this.el.addEventListener("raycaster-intersection-cleared", (event) => {
+      if (this.back) {
+        document.querySelector(this.data.back).emit("intersection-end");
+      }
+    });
+  },
 
-		this.el.addEventListener('raycaster-intersection-cleared', event => {
-			if (this.back){
-				document.querySelector(this.data.back).emit('intersection-end')
-			}
-		})
+  click() {
+    const intersected = this.el.components.raycaster.intersectedEls[0];
+    if (intersected) {
+      intersected.emit("click");
+    }
+  },
 
-	},
+  update() {
+    //get the front and back components
+    if (this.data.front) {
+      this.front = document.querySelector(this.data.front).object3D;
 
-	click(){
-		const intersected = this.el.components.raycaster.intersectedEls[0]
-		if (intersected){
-			intersected.emit('click')
-		}
-	},
+      document
+        .querySelector(this.data.front)
+        .addEventListener("touch-end", () => {
+          if (this.data.touch) {
+            this.el.setAttribute("raycaster", "far", 0);
+          }
+        });
 
-	update(){
+      document
+        .querySelector(this.data.front)
+        .addEventListener("touch-click", () => {
+          if (this.data.touch) {
+            this.click();
+          }
+        });
 
+      document
+        .querySelector(this.data.front)
+        .addEventListener("touch-start", () => {
+          if (this.data.touch) {
+            this.el.setAttribute("raycaster", "far", 5);
+          }
+        });
+    }
 
-		//get the front and back components
-		if (this.data.front){
-			this.front = document.querySelector(this.data.front).object3D
+    if (this.data.back) {
+      this.back = document.querySelector(this.data.back).object3D;
 
-			document.querySelector(this.data.front).addEventListener('touch-end', () => {
-				if (this.data.touch){
-					this.el.setAttribute('raycaster', 'far', 0)
-				}
-			})
+      document
+        .querySelector(this.data.back)
+        .addEventListener("controller-click", () => {
+          this.click();
+        });
+    }
 
-			document.querySelector(this.data.front).addEventListener('touch-click', () => {
-				if (this.data.touch){
-					this.click()
-				}
-			})
+    if (this.data.touch) {
+      this.el.setAttribute("raycaster", "far", 0);
+    }
+  },
 
-			document.querySelector(this.data.front).addEventListener('touch-start', () => {
-				if (this.data.touch){
-					this.el.setAttribute('raycaster', 'far', 5)
-				}
-			})
-		}
+  tick() {
+    // set the position of the back item
+    if (this.back && this.front) {
+      const frontPosition = this.front.getWorldPosition();
+      const backPosition = this.back.getWorldPosition();
+      this.el.object3D.position.copy(frontPosition);
+      this.el.object3D.lookAt(backPosition);
+    }
+  },
+});
 
-		if (this.data.back){
-			this.back = document.querySelector(this.data.back).object3D
+export class Controller {
+  constructor() {
+    this.currentController = null;
+  }
 
-			document.querySelector(this.data.back).addEventListener('controller-click', () => {
-				this.click()
-			})
-		}
+  isMobile() {
+    return document.querySelector("a-scene").isMobile;
+  }
 
-		if (this.data.touch){
-			this.el.setAttribute('raycaster', 'far', 0)
-		}
-	},
+  start360() {
+    this.startCursor();
+  }
 
-	tick(){
-		// set the position of the back item
-		if (this.back && this.front){
-			const frontPosition = this.front.getWorldPosition()
-			const backPosition = this.back.getWorldPosition()
-			this.el.object3D.position.copy(frontPosition)
-			this.el.object3D.lookAt(backPosition)
-		}
-	}
+  startVR() {
+    if (this.isMobile()) {
+      // if it's mobile, add a retical,
+      this.startRetical();
+    } else {
+      // otherwise add the vr controller
+      this.startHandHeld();
+    }
+  }
 
-})
+  startHandHeld() {
+    if (this.currentController !== "handheld") {
+      this.currentController = "handheld";
 
+      const rightHand = document.createElement("a-entity");
+      document.querySelector("a-scene").appendChild(rightHand);
+      rightHand.setAttribute(
+        "controller",
+        "front: #front-righthand; back: #righthand;"
+      );
 
-export class Controller{
-	constructor(){
-		this.currentController = null
-	}
+      const leftHand = document.createElement("a-entity");
+      document.querySelector("a-scene").appendChild(leftHand);
+      leftHand.setAttribute(
+        "controller",
+        "front: #front-lefthand; back: #lefthand;"
+      );
 
-	isMobile(){
-		return document.querySelector('a-scene').isMobile
-	}
+      //mark the handheld controllers as in use
+      document.querySelectorAll("[hand-held]").forEach((c) => {
+        c.setAttribute("hand-held", "use", true);
+      });
 
-	start360(){
-		this.startCursor()
-	}
+      this.logController();
+    }
+  }
 
-	startVR(){
-		if (this.isMobile()){
-			// if it's mobile, add a retical,
-			this.startRetical()
-		} else {
-			// otherwise add the vr controller
-			this.startHandHeld()
-		}
-	}
+  startCursor() {
+    if (this.currentController !== "cursor") {
+      this.currentController = "cursor";
 
-	startHandHeld(){
-		if (this.currentController !== 'handheld'){
-			this.currentController = 'handheld'
+      const mouseCursor = document.createElement("a-entity");
+      mouseCursor.setAttribute("mouse-cursor", true);
+      document.querySelector("a-scene").appendChild(mouseCursor);
 
-			const rightHand = document.createElement('a-entity')
-			document.querySelector('a-scene').appendChild(rightHand)
-			rightHand.setAttribute('controller', 'front: #front-righthand; back: #righthand;')
+      const entity = document.createElement("a-entity");
+      document.querySelector("a-scene").appendChild(entity);
+      entity.setAttribute(
+        "controller",
+        `front: [mouse-cursor]; back: [camera]; touch:${this.isMobile()};`
+      );
 
-			const leftHand = document.createElement('a-entity')
-			document.querySelector('a-scene').appendChild(leftHand)
-			leftHand.setAttribute('controller', 'front: #front-lefthand; back: #lefthand;')
+      this.logController();
+    }
+  }
 
-			//mark the handheld controllers as in use
-			document.querySelectorAll('[hand-held]').forEach(c => {
-				c.setAttribute('hand-held', 'use', true)
-			})
+  startRetical() {
+    if (this.currentController !== "retical") {
+      this.currentController = "retical";
 
-			this.logController()
-		}
-	}
+      const retical = document.createElement("a-entity");
+      retical.id = "retical";
+      retical.setAttribute("retical", true);
 
-	startCursor(){
-		if (this.currentController !== 'cursor'){
-			this.currentController = 'cursor'
+      document.querySelector("[camera]").appendChild(retical);
 
-			const mouseCursor = document.createElement('a-entity')
-			mouseCursor.setAttribute('mouse-cursor', true)
-			document.querySelector('a-scene').appendChild(mouseCursor)
+      const entity = document.createElement("a-entity");
+      document.querySelector("a-scene").appendChild(entity);
+      entity.setAttribute(
+        "controller",
+        "front: [retical]; back: [camera]; touch:false;"
+      );
 
-			const entity = document.createElement('a-entity')
-			document.querySelector('a-scene').appendChild(entity)
-			entity.setAttribute('controller', `front: [mouse-cursor]; back: [camera]; touch:${this.isMobile()};`)
+      this.logController();
+    }
+  }
 
-			this.logController()
-		}
-	}
-
-	startRetical(){
-		if (this.currentController !== 'retical'){
-			this.currentController = 'retical'
-
-			const retical = document.createElement('a-entity')
-			retical.id = 'retical'
-			retical.setAttribute('retical', true)
-
-			document.querySelector('[camera]').appendChild(retical)
-
-			const entity = document.createElement('a-entity')
-			document.querySelector('a-scene').appendChild(entity)
-			entity.setAttribute('controller', 'front: [retical]; back: [camera]; touch:false;')
-
-			this.logController()
-		}
-	}
-
-	logController(){
-		console.log(`using ${this.currentController}`)
-	}
+  logController() {
+    console.log(`using ${this.currentController}`);
+  }
 }

@@ -1,1 +1,1 @@
-module.exports = require('./wrapperReverse');
+module.exports = require("./wrapperReverse");

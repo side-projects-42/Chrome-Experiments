@@ -8,10 +8,10 @@
  */
 function arrayConcat(array, other) {
   var index = -1,
-      length = array.length,
-      othIndex = -1,
-      othLength = other.length,
-      result = Array(length + othLength);
+    length = array.length,
+    othIndex = -1,
+    othLength = other.length,
+    result = Array(length + othLength);
 
   while (++index < length) {
     result[index] = array[index];

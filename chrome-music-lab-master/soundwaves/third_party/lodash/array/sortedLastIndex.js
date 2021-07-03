@@ -1,4 +1,4 @@
-var createSortedIndex = require('../internal/createSortedIndex');
+var createSortedIndex = require("../internal/createSortedIndex");
 
 /**
  * This method is like `_.sortedIndex` except that it returns the highest

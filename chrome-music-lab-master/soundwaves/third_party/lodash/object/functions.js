@@ -1,5 +1,5 @@
-var baseFunctions = require('../internal/baseFunctions'),
-    keysIn = require('./keysIn');
+var baseFunctions = require("../internal/baseFunctions"),
+  keysIn = require("./keysIn");
 
 /**
  * Creates an array of function property names from all enumerable properties,

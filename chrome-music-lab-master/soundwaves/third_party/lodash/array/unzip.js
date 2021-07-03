@@ -1,7 +1,7 @@
-var arrayFilter = require('../internal/arrayFilter'),
-    arrayMap = require('../internal/arrayMap'),
-    baseProperty = require('../internal/baseProperty'),
-    isArrayLike = require('../internal/isArrayLike');
+var arrayFilter = require("../internal/arrayFilter"),
+  arrayMap = require("../internal/arrayMap"),
+  baseProperty = require("../internal/baseProperty"),
+  isArrayLike = require("../internal/isArrayLike");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -29,9 +29,9 @@ function unzip(array) {
     return [];
   }
   var index = -1,
-      length = 0;
+    length = 0;
 
-  array = arrayFilter(array, function(group) {
+  array = arrayFilter(array, function (group) {
     if (isArrayLike(group)) {
       length = nativeMax(group.length, length);
       return true;

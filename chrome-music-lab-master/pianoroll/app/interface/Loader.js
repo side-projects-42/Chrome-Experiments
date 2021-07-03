@@ -15,52 +15,53 @@
  */
 
 define(["style/loading.scss"], function (loadStyle) {
+  var Loader = function (type, info) {
+    this._loadingScreen = document.createElement("DIV");
+    this._loadingScreen.id = "LoadingScreen";
+    this._loadingScreen.classList.add("Visible");
+    document.body.appendChild(this._loadingScreen);
 
-	var Loader = function(type, info){
+    this._minLoadTime = 500;
 
-		this._loadingScreen = document.createElement("DIV");
-		this._loadingScreen.id = "LoadingScreen";
-		this._loadingScreen.classList.add("Visible");
-		document.body.appendChild(this._loadingScreen);
+    this._GIF = document.createElement("DIV");
+    this._GIF.id = "GIF";
+    this._loadingScreen.appendChild(this._GIF);
 
-		this._minLoadTime = 500;
+    if (type === "piano") {
+      this._GIF.classList.add("icon-svg_piano");
+    }
 
-		this._GIF = document.createElement("DIV");
-		this._GIF.id = "GIF";
-		this._loadingScreen.appendChild(this._GIF);
+    this._spinner = document.createElement("div");
+    this._spinner.innerHTML =
+      '<svg class="Spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="Circle" fill="none" stroke-width="3" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>';
+    this._GIF.appendChild(this._spinner);
 
-		if (type === "piano") {
-			this._GIF.classList.add("icon-svg_piano");
-		}
+    this._scoreText = document.createElement("DIV");
+    this._scoreText.id = "Text";
+    this._loadingScreen.appendChild(this._scoreText);
 
-		this._spinner  = document.createElement("div");
-		this._spinner.innerHTML = '<svg class="Spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="Circle" fill="none" stroke-width="3" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>';
-		this._GIF.appendChild(this._spinner);
+    if (type === "score") {
+      // this._scoreText.innerHTML = info.composer + "<br>" + info.name;
+    }
 
+    this._loadStart = Date.now();
+  };
 
-		this._scoreText = document.createElement("DIV");
-		this._scoreText.id = "Text";
-		this._loadingScreen.appendChild(this._scoreText);
+  Loader.prototype.resolve = function () {
+    var elapsedTime = Date.now() - this._loadStart;
+    if (elapsedTime < this._minLoadTime) {
+      setTimeout(this.resolve.bind(this), this._minLoadTime - elapsedTime + 10);
+    } else {
+      //remove the visibility
+      this._loadingScreen.classList.remove("Visible");
+      setTimeout(
+        function () {
+          this._loadingScreen.remove();
+        }.bind(this),
+        500
+      );
+    }
+  };
 
-		if (type === "score"){
-			// this._scoreText.innerHTML = info.composer + "<br>" + info.name;	
-		}
-
-		this._loadStart = Date.now();
-	};
-
-	Loader.prototype.resolve = function(){
-		var elapsedTime = Date.now() - this._loadStart;
-		if (elapsedTime < this._minLoadTime){
-			setTimeout(this.resolve.bind(this), this._minLoadTime - elapsedTime + 10);
-		} else {
-			//remove the visibility
-			this._loadingScreen.classList.remove("Visible");
-			setTimeout(function(){
-				this._loadingScreen.remove();
-			}.bind(this), 500);
-		}
-	};
-
-	return Loader;
+  return Loader;
 });

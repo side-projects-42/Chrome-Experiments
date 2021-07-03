@@ -1,6 +1,6 @@
-var baseIsMatch = require('../internal/baseIsMatch'),
-    bindCallback = require('../internal/bindCallback'),
-    getMatchData = require('../internal/getMatchData');
+var baseIsMatch = require("../internal/baseIsMatch"),
+  bindCallback = require("../internal/bindCallback"),
+  getMatchData = require("../internal/getMatchData");
 
 /**
  * Performs a deep comparison between `object` and `source` to determine if
@@ -42,7 +42,10 @@ var baseIsMatch = require('../internal/baseIsMatch'),
  * // => true
  */
 function isMatch(object, source, customizer, thisArg) {
-  customizer = typeof customizer == 'function' ? bindCallback(customizer, thisArg, 3) : undefined;
+  customizer =
+    typeof customizer == "function"
+      ? bindCallback(customizer, thisArg, 3)
+      : undefined;
   return baseIsMatch(object, getMatchData(source), customizer);
 }
 

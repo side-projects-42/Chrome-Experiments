@@ -1,6 +1,6 @@
-var baseAssign = require('../internal/baseAssign'),
-    baseCreate = require('../internal/baseCreate'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseAssign = require("../internal/baseAssign"),
+  baseCreate = require("../internal/baseCreate"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * Creates an object that inherits from the given `prototype` object. If a

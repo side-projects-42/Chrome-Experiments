@@ -1,6 +1,6 @@
-var baseCallback = require('./baseCallback'),
-    baseEach = require('./baseEach'),
-    isArray = require('../lang/isArray');
+var baseCallback = require("./baseCallback"),
+  baseEach = require("./baseEach"),
+  isArray = require("../lang/isArray");
 
 /**
  * Creates a `_.countBy`, `_.groupBy`, `_.indexBy`, or `_.partition` function.
@@ -11,20 +11,20 @@ var baseCallback = require('./baseCallback'),
  * @returns {Function} Returns the new aggregator function.
  */
 function createAggregator(setter, initializer) {
-  return function(collection, iteratee, thisArg) {
+  return function (collection, iteratee, thisArg) {
     var result = initializer ? initializer() : {};
     iteratee = baseCallback(iteratee, thisArg, 3);
 
     if (isArray(collection)) {
       var index = -1,
-          length = collection.length;
+        length = collection.length;
 
       while (++index < length) {
         var value = collection[index];
         setter(result, value, iteratee(value, index, collection), collection);
       }
     } else {
-      baseEach(collection, function(value, key, collection) {
+      baseEach(collection, function (value, key, collection) {
         setter(result, value, iteratee(value, key, collection), collection);
       });
     }

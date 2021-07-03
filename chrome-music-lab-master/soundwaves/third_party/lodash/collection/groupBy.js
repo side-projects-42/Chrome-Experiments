@@ -1,4 +1,4 @@
-var createAggregator = require('../internal/createAggregator');
+var createAggregator = require("../internal/createAggregator");
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -48,7 +48,7 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * _.groupBy(['one', 'two', 'three'], 'length');
  * // => { '3': ['one', 'two'], '5': ['three'] }
  */
-var groupBy = createAggregator(function(result, value, key) {
+var groupBy = createAggregator(function (result, value, key) {
   if (hasOwnProperty.call(result, key)) {
     result[key].push(value);
   } else {

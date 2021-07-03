@@ -1,5 +1,5 @@
-var baseFor = require('./baseFor'),
-    keysIn = require('../object/keysIn');
+var baseFor = require("./baseFor"),
+  keysIn = require("../object/keysIn");
 
 /**
  * The base implementation of `_.forIn` without support for callback

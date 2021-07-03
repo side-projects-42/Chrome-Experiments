@@ -1,1 +1,1 @@
-module.exports = require('./reduceRight');
+module.exports = require("./reduceRight");

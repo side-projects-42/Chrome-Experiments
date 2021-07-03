@@ -1,4 +1,4 @@
-var baseCompareAscending = require('./baseCompareAscending');
+var baseCompareAscending = require("./baseCompareAscending");
 
 /**
  * Used by `_.sortBy` to compare transformed elements of a collection and stable
@@ -10,7 +10,10 @@ var baseCompareAscending = require('./baseCompareAscending');
  * @returns {number} Returns the sort order indicator for `object`.
  */
 function compareAscending(object, other) {
-  return baseCompareAscending(object.criteria, other.criteria) || (object.index - other.index);
+  return (
+    baseCompareAscending(object.criteria, other.criteria) ||
+    object.index - other.index
+  );
 }
 
 module.exports = compareAscending;

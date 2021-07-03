@@ -1,5 +1,5 @@
-var baseForRight = require('../internal/baseForRight'),
-    createForIn = require('../internal/createForIn');
+var baseForRight = require("../internal/baseForRight"),
+  createForIn = require("../internal/createForIn");
 
 /**
  * This method is like `_.forIn` except that it iterates over properties of

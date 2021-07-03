@@ -1,7 +1,7 @@
-var isObjectLike = require('../internal/isObjectLike');
+var isObjectLike = require("../internal/isObjectLike");
 
 /** `Object#toString` result references. */
-var stringTag = '[object String]';
+var stringTag = "[object String]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -29,7 +29,10 @@ var objToString = objectProto.toString;
  * // => false
  */
 function isString(value) {
-  return typeof value == 'string' || (isObjectLike(value) && objToString.call(value) == stringTag);
+  return (
+    typeof value == "string" ||
+    (isObjectLike(value) && objToString.call(value) == stringTag)
+  );
 }
 
 module.exports = isString;

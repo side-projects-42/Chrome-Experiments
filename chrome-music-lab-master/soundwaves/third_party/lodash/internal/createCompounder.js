@@ -1,5 +1,5 @@
-var deburr = require('../string/deburr'),
-    words = require('../string/words');
+var deburr = require("../string/deburr"),
+  words = require("../string/words");
 
 /**
  * Creates a function that produces compound words out of the words in a
@@ -10,11 +10,11 @@ var deburr = require('../string/deburr'),
  * @returns {Function} Returns the new compounder function.
  */
 function createCompounder(callback) {
-  return function(string) {
+  return function (string) {
     var index = -1,
-        array = words(deburr(string)),
-        length = array.length,
-        result = '';
+      array = words(deburr(string)),
+      length = array.length,
+      result = "";
 
     while (++index < length) {
       result = callback(result, array[index], index);

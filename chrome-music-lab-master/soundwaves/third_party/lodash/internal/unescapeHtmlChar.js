@@ -1,11 +1,11 @@
 /** Used to map HTML entities to characters. */
 var htmlUnescapes = {
-  '&amp;': '&',
-  '&lt;': '<',
-  '&gt;': '>',
-  '&quot;': '"',
-  '&#39;': "'",
-  '&#96;': '`'
+  "&amp;": "&",
+  "&lt;": "<",
+  "&gt;": ">",
+  "&quot;": '"',
+  "&#39;": "'",
+  "&#96;": "`",
 };
 
 /**

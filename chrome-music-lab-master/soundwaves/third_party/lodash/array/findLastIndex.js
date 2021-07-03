@@ -1,4 +1,4 @@
-var createFindIndex = require('../internal/createFindIndex');
+var createFindIndex = require("../internal/createFindIndex");
 
 /**
  * This method is like `_.findIndex` except that it iterates over elements

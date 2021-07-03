@@ -1,6 +1,6 @@
-var baseIsMatch = require('./baseIsMatch'),
-    getMatchData = require('./getMatchData'),
-    toObject = require('./toObject');
+var baseIsMatch = require("./baseIsMatch"),
+  getMatchData = require("./getMatchData"),
+  toObject = require("./toObject");
 
 /**
  * The base implementation of `_.matches` which does not clone `source`.
@@ -13,16 +13,19 @@ function baseMatches(source) {
   var matchData = getMatchData(source);
   if (matchData.length == 1 && matchData[0][2]) {
     var key = matchData[0][0],
-        value = matchData[0][1];
+      value = matchData[0][1];
 
-    return function(object) {
+    return function (object) {
       if (object == null) {
         return false;
       }
-      return object[key] === value && (value !== undefined || (key in toObject(object)));
+      return (
+        object[key] === value &&
+        (value !== undefined || key in toObject(object))
+      );
     };
   }
-  return function(object) {
+  return function (object) {
     return baseIsMatch(object, matchData);
   };
 }

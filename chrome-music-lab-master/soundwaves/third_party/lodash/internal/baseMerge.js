@@ -1,11 +1,11 @@
-var arrayEach = require('./arrayEach'),
-    baseMergeDeep = require('./baseMergeDeep'),
-    isArray = require('../lang/isArray'),
-    isArrayLike = require('./isArrayLike'),
-    isObject = require('../lang/isObject'),
-    isObjectLike = require('./isObjectLike'),
-    isTypedArray = require('../lang/isTypedArray'),
-    keys = require('../object/keys');
+var arrayEach = require("./arrayEach"),
+  baseMergeDeep = require("./baseMergeDeep"),
+  isArray = require("../lang/isArray"),
+  isArrayLike = require("./isArrayLike"),
+  isObject = require("../lang/isObject"),
+  isObjectLike = require("./isObjectLike"),
+  isTypedArray = require("../lang/isTypedArray"),
+  keys = require("../object/keys");
 
 /**
  * The base implementation of `_.merge` without support for argument juggling,
@@ -23,10 +23,11 @@ function baseMerge(object, source, customizer, stackA, stackB) {
   if (!isObject(object)) {
     return object;
   }
-  var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source)),
-      props = isSrcArr ? undefined : keys(source);
+  var isSrcArr =
+      isArrayLike(source) && (isArray(source) || isTypedArray(source)),
+    props = isSrcArr ? undefined : keys(source);
 
-  arrayEach(props || source, function(srcValue, key) {
+  arrayEach(props || source, function (srcValue, key) {
     if (props) {
       key = srcValue;
       srcValue = source[key];
@@ -35,17 +36,20 @@ function baseMerge(object, source, customizer, stackA, stackB) {
       stackA || (stackA = []);
       stackB || (stackB = []);
       baseMergeDeep(object, source, key, baseMerge, customizer, stackA, stackB);
-    }
-    else {
+    } else {
       var value = object[key],
-          result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
-          isCommon = result === undefined;
+        result = customizer
+          ? customizer(value, srcValue, key, object, source)
+          : undefined,
+        isCommon = result === undefined;
 
       if (isCommon) {
         result = srcValue;
       }
-      if ((result !== undefined || (isSrcArr && !(key in object))) &&
-          (isCommon || (result === result ? (result !== value) : (value === value)))) {
+      if (
+        (result !== undefined || (isSrcArr && !(key in object))) &&
+        (isCommon || (result === result ? result !== value : value === value))
+      ) {
         object[key] = result;
       }
     }

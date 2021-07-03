@@ -1,4 +1,4 @@
-var createAggregator = require('../internal/createAggregator');
+var createAggregator = require("../internal/createAggregator");
 
 /**
  * Creates an object composed of keys generated from the results of running
@@ -46,7 +46,7 @@ var createAggregator = require('../internal/createAggregator');
  * }, String);
  * // => { 'a': { 'dir': 'left', 'code': 97 }, 'd': { 'dir': 'right', 'code': 100 } }
  */
-var indexBy = createAggregator(function(result, value, key) {
+var indexBy = createAggregator(function (result, value, key) {
   result[key] = value;
 });
 

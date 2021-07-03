@@ -1,1 +1,1 @@
-module.exports = require('../math/sum');
+module.exports = require("../math/sum");

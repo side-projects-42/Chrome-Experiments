@@ -1,8 +1,8 @@
-var baseCallback = require('../internal/baseCallback'),
-    baseMap = require('../internal/baseMap'),
-    baseSortBy = require('../internal/baseSortBy'),
-    compareAscending = require('../internal/compareAscending'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var baseCallback = require("../internal/baseCallback"),
+  baseMap = require("../internal/baseMap"),
+  baseSortBy = require("../internal/baseSortBy"),
+  compareAscending = require("../internal/compareAscending"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * Creates an array of elements, sorted in ascending order by the results of
@@ -62,8 +62,12 @@ function sortBy(collection, iteratee, thisArg) {
   var index = -1;
   iteratee = baseCallback(iteratee, thisArg, 3);
 
-  var result = baseMap(collection, function(value, key, collection) {
-    return { 'criteria': iteratee(value, key, collection), 'index': ++index, 'value': value };
+  var result = baseMap(collection, function (value, key, collection) {
+    return {
+      criteria: iteratee(value, key, collection),
+      index: ++index,
+      value: value,
+    };
   });
   return baseSortBy(result, compareAscending);
 }

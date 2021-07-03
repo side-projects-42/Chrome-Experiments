@@ -1,7 +1,7 @@
-var arrayMap = require('../internal/arrayMap'),
-    arrayReduce = require('../internal/arrayReduce'),
-    bindCallback = require('../internal/bindCallback'),
-    unzip = require('./unzip');
+var arrayMap = require("../internal/arrayMap"),
+  arrayReduce = require("../internal/arrayReduce"),
+  bindCallback = require("../internal/bindCallback"),
+  unzip = require("./unzip");
 
 /**
  * This method is like `_.unzip` except that it accepts an iteratee to specify
@@ -33,7 +33,7 @@ function unzipWith(array, iteratee, thisArg) {
     return result;
   }
   iteratee = bindCallback(iteratee, thisArg, 4);
-  return arrayMap(result, function(group) {
+  return arrayMap(result, function (group) {
     return arrayReduce(group, iteratee, undefined, true);
   });
 }

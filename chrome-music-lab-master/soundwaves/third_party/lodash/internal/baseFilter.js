@@ -1,4 +1,4 @@
-var baseEach = require('./baseEach');
+var baseEach = require("./baseEach");
 
 /**
  * The base implementation of `_.filter` without support for callback
@@ -11,7 +11,7 @@ var baseEach = require('./baseEach');
  */
 function baseFilter(collection, predicate) {
   var result = [];
-  baseEach(collection, function(value, index, collection) {
+  baseEach(collection, function (value, index, collection) {
     if (predicate(value, index, collection)) {
       result.push(value);
     }

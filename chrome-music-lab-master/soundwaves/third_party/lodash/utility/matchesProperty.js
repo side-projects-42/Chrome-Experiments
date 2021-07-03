@@ -1,5 +1,5 @@
-var baseClone = require('../internal/baseClone'),
-    baseMatchesProperty = require('../internal/baseMatchesProperty');
+var baseClone = require("../internal/baseClone"),
+  baseMatchesProperty = require("../internal/baseMatchesProperty");
 
 /**
  * Creates a function that compares the property value of `path` on a given

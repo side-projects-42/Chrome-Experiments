@@ -1,9 +1,9 @@
-var baseForIn = require('../internal/baseForIn'),
-    isArguments = require('./isArguments'),
-    isObjectLike = require('../internal/isObjectLike');
+var baseForIn = require("../internal/baseForIn"),
+  isArguments = require("./isArguments"),
+  isObjectLike = require("../internal/isObjectLike");
 
 /** `Object#toString` result references. */
-var objectTag = '[object Object]';
+var objectTag = "[object Object]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -51,8 +51,16 @@ function isPlainObject(value) {
   var Ctor;
 
   // Exit early for non `Object` objects.
-  if (!(isObjectLike(value) && objToString.call(value) == objectTag && !isArguments(value)) ||
-      (!hasOwnProperty.call(value, 'constructor') && (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
+  if (
+    !(
+      isObjectLike(value) &&
+      objToString.call(value) == objectTag &&
+      !isArguments(value)
+    ) ||
+    (!hasOwnProperty.call(value, "constructor") &&
+      ((Ctor = value.constructor),
+      typeof Ctor == "function" && !(Ctor instanceof Ctor)))
+  ) {
     return false;
   }
   // IE < 9 iterates inherited properties before own properties. If the first
@@ -62,7 +70,7 @@ function isPlainObject(value) {
   // In most environments an object's own properties are iterated before
   // its inherited properties. If the last iterated property is an object's
   // own property then there are no inherited enumerable properties.
-  baseForIn(value, function(subValue, key) {
+  baseForIn(value, function (subValue, key) {
     result = key;
   });
   return result === undefined || hasOwnProperty.call(value, result);

@@ -1,4 +1,4 @@
-var chain = require('./chain');
+var chain = require("./chain");
 
 /**
  * Enables explicit method chaining on the wrapper object.

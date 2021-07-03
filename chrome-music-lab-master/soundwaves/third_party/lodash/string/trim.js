@@ -1,9 +1,9 @@
-var baseToString = require('../internal/baseToString'),
-    charsLeftIndex = require('../internal/charsLeftIndex'),
-    charsRightIndex = require('../internal/charsRightIndex'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    trimmedLeftIndex = require('../internal/trimmedLeftIndex'),
-    trimmedRightIndex = require('../internal/trimmedRightIndex');
+var baseToString = require("../internal/baseToString"),
+  charsLeftIndex = require("../internal/charsLeftIndex"),
+  charsRightIndex = require("../internal/charsRightIndex"),
+  isIterateeCall = require("../internal/isIterateeCall"),
+  trimmedLeftIndex = require("../internal/trimmedLeftIndex"),
+  trimmedRightIndex = require("../internal/trimmedRightIndex");
 
 /**
  * Removes leading and trailing whitespace or specified characters from `string`.
@@ -33,10 +33,16 @@ function trim(string, chars, guard) {
     return string;
   }
   if (guard ? isIterateeCall(value, chars, guard) : chars == null) {
-    return string.slice(trimmedLeftIndex(string), trimmedRightIndex(string) + 1);
+    return string.slice(
+      trimmedLeftIndex(string),
+      trimmedRightIndex(string) + 1
+    );
   }
-  chars = (chars + '');
-  return string.slice(charsLeftIndex(string, chars), charsRightIndex(string, chars) + 1);
+  chars = chars + "";
+  return string.slice(
+    charsLeftIndex(string, chars),
+    charsRightIndex(string, chars) + 1
+  );
 }
 
 module.exports = trim;

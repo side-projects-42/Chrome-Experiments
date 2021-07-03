@@ -1,5 +1,5 @@
-var baseEach = require('./baseEach'),
-    isArrayLike = require('./isArrayLike');
+var baseEach = require("./baseEach"),
+  isArrayLike = require("./isArrayLike");
 
 /**
  * The base implementation of `_.map` without support for callback shorthands
@@ -12,9 +12,9 @@ var baseEach = require('./baseEach'),
  */
 function baseMap(collection, iteratee) {
   var index = -1,
-      result = isArrayLike(collection) ? Array(collection.length) : [];
+    result = isArrayLike(collection) ? Array(collection.length) : [];
 
-  baseEach(collection, function(value, key, collection) {
+  baseEach(collection, function (value, key, collection) {
     result[++index] = iteratee(value, key, collection);
   });
   return result;

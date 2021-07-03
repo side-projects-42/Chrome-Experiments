@@ -14,112 +14,127 @@
  * limitations under the License.
  */
 
-import 'aframe'
+import "aframe";
 
-AFRAME.registerComponent('menu-item', {
+AFRAME.registerComponent("menu-item", {
+  schema: {
+    artist: {
+      type: "string",
+    },
+    track: {
+      type: "string",
+    },
+    color: {
+      type: "color",
+    },
+    image: {
+      default: "pink",
+      type: "string",
+    },
+    selected: {
+      default: false,
+      type: "boolean",
+    },
+  },
 
-	schema : {
-		artist : {
-			type : 'string'
-		},
-		track : {
-			type : 'string'
-		},
-		color : {
-			type : 'color'
-		},
-		image : {
-			default : 'pink',
-			type : 'string'
-		},
-		selected : {
-			default : false,
-			type : 'boolean'
-		}
-	},
+  init() {
+    this.darkGray = "rgb(30, 30, 30)";
+    this.selectedColor = "rgb(60, 60, 60)";
+    this.lightGray = "rgb(80, 80, 80)";
 
-	init(){
+    const opacity = 1;
 
-		this.darkGray = 'rgb(30, 30, 30)'
-		this.selectedColor = 'rgb(60, 60, 60)'
-		this.lightGray = 'rgb(80, 80, 80)'
+    this.el.setAttribute(
+      "material",
+      `side: double; transparent:true; opacity: 0.5`
+    );
+    const width = (this._width = 800);
+    const height = (this._height = 600);
 
-		const opacity = 1
+    // scale it
+    const scaling = 0.95;
+    this.el.setAttribute(
+      "scale",
+      `${scaling} ${(scaling * height) / width} ${scaling}`
+    );
 
-		this.el.setAttribute('material', `side: double; transparent:true; opacity: 0.5`)
-		const width = this._width = 800
-		const height = this._height = 600
+    //text
+    const text = document.createElement("a-text");
+    text.setAttribute("value", this.data.artist.toUpperCase());
+    text.setAttribute("align", "center");
+    text.setAttribute("material", "shader: flat");
+    text.setAttribute("color", "white");
+    text.setAttribute("wrap-count", 20);
+    text.setAttribute("width", 1);
+    text.setAttribute("side", "double");
+    text.setAttribute("scale", `1 ${width / height} 1`);
+    text.setAttribute("position", "0 0.08 0");
+    this.el.appendChild(text);
 
-		// scale it
-		const scaling = 0.95
-		this.el.setAttribute('scale', `${scaling} ${scaling * height/width} ${scaling}`)
+    const subText = document.createElement("a-text");
+    subText.setAttribute("value", this.data.track.toUpperCase());
+    subText.setAttribute("align", "center");
+    subText.setAttribute("material", "shader: flat");
+    subText.setAttribute("color", "white");
+    subText.setAttribute("wrap-count", 26);
+    subText.setAttribute("width", 1);
+    subText.setAttribute("side", "double");
+    subText.setAttribute("scale", `1 ${width / height} 1`);
+    subText.setAttribute("position", "0 -0.1 0");
+    this.el.appendChild(subText);
 
-		//text
-		const text = document.createElement('a-text')
-		text.setAttribute('value', this.data.artist.toUpperCase())
-		text.setAttribute('align', 'center')
-		text.setAttribute('material', 'shader: flat')
-		text.setAttribute('color', 'white')
-		text.setAttribute('wrap-count', 20)
-		text.setAttribute('width', 1)
-		text.setAttribute('side', 'double')
-		text.setAttribute('scale', `1 ${width/height} 1`)
-		text.setAttribute('position', '0 0.08 0')
-		this.el.appendChild(text)
+    //border
+    const bgElement = (this.bgElement = document.createElement("a-plane"));
+    this.el.appendChild(bgElement);
 
-		const subText = document.createElement('a-text')
-		subText.setAttribute('value', this.data.track.toUpperCase())
-		subText.setAttribute('align', 'center')
-		subText.setAttribute('material', 'shader: flat')
-		subText.setAttribute('color', 'white')
-		subText.setAttribute('wrap-count', 26)
-		subText.setAttribute('width', 1)
-		subText.setAttribute('side', 'double')
-		subText.setAttribute('scale', `1 ${width/height} 1`)
-		subText.setAttribute('position', '0 -0.1 0')
-		this.el.appendChild(subText)
+    bgElement.setAttribute(
+      "material",
+      `shader: flat; color: ${this.darkGray}; side: double; transparent: true; opacity: 0.5`
+    );
+    bgElement.classList.add("selectable");
 
-		//border
-		const bgElement = this.bgElement = document.createElement('a-plane')
-		this.el.appendChild(bgElement)
+    //mouse events
+    this.el.addEventListener("mouseenter", () => {
+      bgElement.setAttribute("material", "color", this.lightGray);
+      // bgElement.setAttribute('material', 'opacity', 1)
+    });
+    this.el.addEventListener("mouseleave", () => {
+      if (this.data.selected) {
+        bgElement.setAttribute("material", "color", this.selectedColor);
+      } else {
+        bgElement.setAttribute("material", "color", this.darkGray);
+      }
+    });
 
-		bgElement.setAttribute('material', `shader: flat; color: ${this.darkGray}; side: double; transparent: true; opacity: 0.5`)
-		bgElement.classList.add('selectable')
+    //unselect the item when the song is over
+    this.el.sceneEl.addEventListener("song-end", () => {
+      this.el.setAttribute("menu-item", "selected", false);
+    });
+  },
 
-		//mouse events
-		this.el.addEventListener('mouseenter', () => {
-			bgElement.setAttribute('material', 'color', this.lightGray)
-			// bgElement.setAttribute('material', 'opacity', 1)
-		})
-		this.el.addEventListener('mouseleave', () => {
-			if (this.data.selected){
-				bgElement.setAttribute('material', 'color', this.selectedColor)
-			} else {
-				bgElement.setAttribute('material', 'color', this.darkGray)
-			}
-		})
+  _makeBorder(entered) {
+    const context = this._context;
+    const width = this._width;
+    const height = this._height;
+    const borderWidth = entered ? 20 : 10;
+    context.lineWidth = borderWidth;
+    context.clearRect(0, 0, width, width);
+    const yOffset = (width - height) / 2;
+    const padding = 6;
+    const halfBorder = borderWidth / 2;
+    context.strokeRect(
+      padding + halfBorder,
+      0 + padding + halfBorder,
+      width - padding * 2 - halfBorder * 2,
+      height - padding * 2 - halfBorder * 2
+    );
+  },
 
-		//unselect the item when the song is over
-		this.el.sceneEl.addEventListener('song-end', () => {
-			this.el.setAttribute('menu-item', 'selected', false)
-		})
-
-	},
-
-	_makeBorder(entered){
-		const context = this._context
-		const width = this._width
-		const height = this._height
-		const borderWidth = entered ? 20 : 10
-		context.lineWidth = borderWidth
-		context.clearRect(0, 0, width, width)
-		const yOffset = (width - height)/2
-		const padding = 6
-		const halfBorder = borderWidth/2
-		context.strokeRect(padding + halfBorder, 0 + padding + halfBorder, width - padding * 2 - halfBorder*2, height - padding * 2 - halfBorder*2)
-	},
-
-	update(){
-		this.bgElement.setAttribute('material', 'color', this.data.selected ? this.selectedColor : this.darkGray)
-	}
-})
+  update() {
+    this.bgElement.setAttribute(
+      "material",
+      "color",
+      this.data.selected ? this.selectedColor : this.darkGray
+    );
+  },
+});

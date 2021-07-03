@@ -1,5 +1,5 @@
-var createExtremum = require('../internal/createExtremum'),
-    lt = require('../lang/lt');
+var createExtremum = require("../internal/createExtremum"),
+  lt = require("../lang/lt");
 
 /** Used as references for `-Infinity` and `Infinity`. */
 var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;

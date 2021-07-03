@@ -1,5 +1,5 @@
-var baseCopy = require('./baseCopy'),
-    keys = require('../object/keys');
+var baseCopy = require("./baseCopy"),
+  keys = require("../object/keys");
 
 /**
  * The base implementation of `_.assign` without support for argument juggling,
@@ -11,9 +11,7 @@ var baseCopy = require('./baseCopy'),
  * @returns {Object} Returns `object`.
  */
 function baseAssign(object, source) {
-  return source == null
-    ? object
-    : baseCopy(source, keys(source), object);
+  return source == null ? object : baseCopy(source, keys(source), object);
 }
 
 module.exports = baseAssign;

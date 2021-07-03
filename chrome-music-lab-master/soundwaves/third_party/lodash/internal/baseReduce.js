@@ -12,10 +12,16 @@
  * @param {Function} eachFunc The function to iterate over `collection`.
  * @returns {*} Returns the accumulated value.
  */
-function baseReduce(collection, iteratee, accumulator, initFromCollection, eachFunc) {
-  eachFunc(collection, function(value, index, collection) {
+function baseReduce(
+  collection,
+  iteratee,
+  accumulator,
+  initFromCollection,
+  eachFunc
+) {
+  eachFunc(collection, function (value, index, collection) {
     accumulator = initFromCollection
-      ? (initFromCollection = false, value)
+      ? ((initFromCollection = false), value)
       : iteratee(accumulator, value, index, collection);
   });
   return accumulator;

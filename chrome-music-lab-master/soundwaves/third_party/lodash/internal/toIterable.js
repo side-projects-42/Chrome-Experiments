@@ -1,6 +1,6 @@
-var isArrayLike = require('./isArrayLike'),
-    isObject = require('../lang/isObject'),
-    values = require('../object/values');
+var isArrayLike = require("./isArrayLike"),
+  isObject = require("../lang/isObject"),
+  values = require("../object/values");
 
 /**
  * Converts `value` to an array-like object if it's not one.

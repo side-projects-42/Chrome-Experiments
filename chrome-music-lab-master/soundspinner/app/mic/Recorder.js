@@ -14,133 +14,138 @@
  * limitations under the License.
  */
 
-define(["Tone/source/Microphone", "Tone/core/Tone"], function (Microphone, Tone) {
+define(["Tone/source/Microphone", "Tone/core/Tone"], function (
+  Microphone,
+  Tone
+) {
+  /**
+   *  the recorder
+   */
+  var Recorder = function (bufferDuration) {
+    /**
+     *  the mic input
+     *  @type  {Tone.Microphone}
+     */
+    this.mic = new Microphone();
 
-	/**
-	 *  the recorder
-	 */
-	var Recorder = function(bufferDuration){
+    /**
+     *  @private
+     *  @type {ScriptProcessorNode}
+     */
+    this.jsNode = Tone.context.createScriptProcessor(4096, 1, 1);
+    //so it doesn't get garbage collected
+    this.jsNode.noGC();
 
-		/**
-		 *  the mic input
-		 *  @type  {Tone.Microphone}
-		 */
-		this.mic = new Microphone();
+    this.mic.connect(this.jsNode);
 
-		/** 
-		 *  @private
-		 *  @type {ScriptProcessorNode}
-		 */
-		this.jsNode = Tone.context.createScriptProcessor(4096, 1, 1);
-		//so it doesn't get garbage collected
-		this.jsNode.noGC();
+    /**
+     *  The buffer to record into
+     */
+    this.audioBuffer = Tone.context.createBuffer(
+      1,
+      Tone.context.sampleRate * bufferDuration,
+      Tone.context.sampleRate
+    );
 
-		this.mic.connect(this.jsNode);
+    /**
+     *  the array to record into
+     */
+    this.bufferArray = this.audioBuffer.getChannelData(0);
 
-		/**
-		 *  The buffer to record into
-		 */
-		this.audioBuffer = Tone.context.createBuffer(1, Tone.context.sampleRate * bufferDuration, Tone.context.sampleRate);
+    /**
+     *  the position of the recording head within the buffer
+     */
+    this.bufferPosition = 0;
 
-		/**
-		 *  the array to record into
-		 */
-		this.bufferArray = this.audioBuffer.getChannelData(0);
+    /**
+     * the normalized position of the recording head
+     */
+    this.position = 0;
 
-		/**
-		 *  the position of the recording head within the buffer
-		 */
-		this.bufferPosition = 0;
+    /**
+     *  if it's recording or not
+     */
+    this.isRecording = false;
 
-		/**
-		 * the normalized position of the recording head
-		 */
-		this.position = 0;
+    /**
+     * the duraiton
+     */
+    this._bufferDuration = bufferDuration;
 
-		/**
-		 *  if it's recording or not
-		 */
-		this.isRecording = false;
+    /**
+     *  the callback when it's done recording
+     */
+    this.onended = Tone.noOp;
+  };
 
-		/**
-		 * the duraiton
-		 */
-		this._bufferDuration = bufferDuration;
+  /**
+   *  start the microphone
+   */
+  Recorder.prototype.open = function (callback, err) {
+    this.jsNode.onaudioprocess = this._onprocess.bind(this);
+    this.mic.open(callback, err);
+  };
 
-		 /**
-		  *  the callback when it's done recording
-		  */
-		 this.onended = Tone.noOp;
-	};
+  /**
+   *  record the input
+   */
+  Recorder.prototype.start = function () {
+    //0 out the buffer
+    for (var i = 0; i < this.bufferArray.length; i++) {
+      this.bufferArray[i] = 0;
+    }
+    this.bufferPosition = 0;
+    this.isRecording = true;
+    this.mic.start();
+  };
 
-	/**
-	 *  start the microphone
-	 */
-	Recorder.prototype.open = function(callback, err) {
-		this.jsNode.onaudioprocess = this._onprocess.bind(this);
-		this.mic.open(callback, err);
-	};
+  /**
+   *  stop recording
+   */
+  Recorder.prototype.stop = function () {
+    //blank callback
+    this.mic.close();
+    this.jsNode.onaudioprocess = function () {};
+    this.isRecording = false;
+  };
 
-	/**
-	 *  record the input
-	 */
-	Recorder.prototype.start = function() {
-		//0 out the buffer
-		for (var i = 0; i < this.bufferArray.length; i++){
-			this.bufferArray[i] = 0;
-		}
-		this.bufferPosition = 0;
-		this.isRecording = true;
-		this.mic.start();
-	};
+  /**
+   *  the audio process event
+   */
+  Recorder.prototype._onprocess = function (event) {
+    //meter the input
+    var bufferSize = this.jsNode.bufferSize;
+    // var smoothing = 0.3;
+    var input = event.inputBuffer.getChannelData(0);
+    var x;
+    var recordBufferLen = this.bufferArray.length;
+    for (var i = 0; i < bufferSize; i++) {
+      x = input[i];
+      // sum += x * x;
+      //if it's recording, fill the record buffer
+      if (this.isRecording) {
+        if (this.bufferPosition < recordBufferLen) {
+          this.bufferArray[this.bufferPosition] = x;
+          this.bufferPosition++;
+        } else {
+          this.stop();
+          //get out of the audio thread
+          setTimeout(this.onended.bind(this), 5);
+        }
+      }
+    }
+    this.position = this.bufferPosition / recordBufferLen;
+    // var rms = Math.sqrt(sum / bufferSize);
+    // this.meter = Math.max(rms, this.meter * smoothing);
+  };
 
-	/**
-	 *  stop recording
-	 */
-	Recorder.prototype.stop = function() {
-		//blank callback
-		this.mic.close();
-		this.jsNode.onaudioprocess = function(){};
-		this.isRecording = false;
-	};
+  Recorder.prototype.setBuffer = function (buffer) {
+    var targetArray = this.audioBuffer.getChannelData(0);
+    var copyArray = buffer.getChannelData(0);
+    for (var i = 0; i < copyArray.length; i++) {
+      targetArray[i] = copyArray[i];
+    }
+  };
 
-	/**
-	 *  the audio process event
-	 */
-	Recorder.prototype._onprocess = function(event){
-		//meter the input
-		var bufferSize = this.jsNode.bufferSize;
-		// var smoothing = 0.3;
-		var input = event.inputBuffer.getChannelData(0);
-		var x;
-		var recordBufferLen = this.bufferArray.length;
-		for (var i = 0; i < bufferSize; i++){
-			x = input[i];
-	    	// sum += x * x;
-			//if it's recording, fill the record buffer
-			if (this.isRecording){
-				if (this.bufferPosition < recordBufferLen){
-					this.bufferArray[this.bufferPosition] = x;
-					this.bufferPosition++;
-				} else {
-					this.stop();
-					//get out of the audio thread
-					setTimeout(this.onended.bind(this), 5);
-				}
-			}
-		}
-		this.position = this.bufferPosition / recordBufferLen;
-		// var rms = Math.sqrt(sum / bufferSize);
-		// this.meter = Math.max(rms, this.meter * smoothing);
-	};
-
-	Recorder.prototype.setBuffer = function(buffer){
-		var targetArray = this.audioBuffer.getChannelData(0);
-		var copyArray = buffer.getChannelData(0);
-		for (var i = 0; i < copyArray.length; i++){
-			targetArray[i] = copyArray[i];
-		}
-	};
-
-	return Recorder;
+  return Recorder;
 });

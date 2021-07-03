@@ -1,5 +1,5 @@
-var baseMatches = require('../internal/baseMatches'),
-    filter = require('./filter');
+var baseMatches = require("../internal/baseMatches"),
+  filter = require("./filter");
 
 /**
  * Performs a deep comparison between each element in `collection` and the

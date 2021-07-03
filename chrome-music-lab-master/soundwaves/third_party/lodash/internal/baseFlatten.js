@@ -1,8 +1,8 @@
-var arrayPush = require('./arrayPush'),
-    isArguments = require('../lang/isArguments'),
-    isArray = require('../lang/isArray'),
-    isArrayLike = require('./isArrayLike'),
-    isObjectLike = require('./isObjectLike');
+var arrayPush = require("./arrayPush"),
+  isArguments = require("../lang/isArguments"),
+  isArray = require("../lang/isArray"),
+  isArrayLike = require("./isArrayLike"),
+  isObjectLike = require("./isObjectLike");
 
 /**
  * The base implementation of `_.flatten` with added support for restricting
@@ -19,12 +19,15 @@ function baseFlatten(array, isDeep, isStrict, result) {
   result || (result = []);
 
   var index = -1,
-      length = array.length;
+    length = array.length;
 
   while (++index < length) {
     var value = array[index];
-    if (isObjectLike(value) && isArrayLike(value) &&
-        (isStrict || isArray(value) || isArguments(value))) {
+    if (
+      isObjectLike(value) &&
+      isArrayLike(value) &&
+      (isStrict || isArray(value) || isArguments(value))
+    ) {
       if (isDeep) {
         // Recursively flatten arrays (susceptible to call stack limits).
         baseFlatten(value, isDeep, isStrict, result);

@@ -1,8 +1,8 @@
-var arraySome = require('../internal/arraySome'),
-    baseCallback = require('../internal/baseCallback'),
-    baseSome = require('../internal/baseSome'),
-    isArray = require('../lang/isArray'),
-    isIterateeCall = require('../internal/isIterateeCall');
+var arraySome = require("../internal/arraySome"),
+  baseCallback = require("../internal/baseCallback"),
+  baseSome = require("../internal/baseSome"),
+  isArray = require("../lang/isArray"),
+  isIterateeCall = require("../internal/isIterateeCall");
 
 /**
  * Checks if `predicate` returns truthy for **any** element of `collection`.
@@ -58,7 +58,7 @@ function some(collection, predicate, thisArg) {
   if (thisArg && isIterateeCall(collection, predicate, thisArg)) {
     predicate = undefined;
   }
-  if (typeof predicate != 'function' || thisArg !== undefined) {
+  if (typeof predicate != "function" || thisArg !== undefined) {
     predicate = baseCallback(predicate, thisArg, 3);
   }
   return func(collection, predicate);

@@ -1,99 +1,105 @@
-define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/OutputAudio"], 
-	function (BasicTests, Noise, SourceTests, OutputAudio) {
+define([
+  "helper/Basic",
+  "Tone/source/Noise",
+  "helper/SourceTests",
+  "helper/OutputAudio",
+], function (BasicTests, Noise, SourceTests, OutputAudio) {
+  describe("Noise", function () {
+    //run the common tests
+    BasicTests(Noise);
+    SourceTests(Noise);
 
-	describe("Noise", function(){
+    context("Get/Set", function () {
+      it("can be constructed with an options object", function () {
+        var noise = new Noise({
+          type: "brown",
+        });
+        expect(noise.type).to.equal("brown");
+        noise.dispose();
+      });
 
-		//run the common tests
-		BasicTests(Noise);
-		SourceTests(Noise);
+      it("can set the playbackRate in the constructor", function () {
+        var noise = new Noise({
+          playbackRate: 2,
+        });
+        expect(noise.playbackRate).to.equal(2);
+        noise.dispose();
+      });
 
-		context("Get/Set", function(){
+      it("can set the playbackRate", function () {
+        var noise = new Noise();
+        noise.playbackRate = 3;
+        expect(noise.playbackRate).to.equal(3);
+        noise.dispose();
+      });
+    });
 
-			it("can be constructed with an options object", function(){
-				var noise = new Noise({
-					"type" : "brown"
-				});
-				expect(noise.type).to.equal("brown");
-				noise.dispose();
-			});
+    context("Type", function () {
+      it("can be set to 3 noise types", function () {
+        var noise = new Noise();
+        var types = ["white", "brown", "pink"];
+        for (var i = 0; i < types.length; i++) {
+          noise.type = types[i];
+          expect(noise.type).to.equal(types[i]);
+        }
+        noise.dispose();
+      });
 
-			it("can set the playbackRate in the constructor", function(){
-				var noise = new Noise({
-					"playbackRate" : 2
-				});
-				expect(noise.playbackRate).to.equal(2);
-				noise.dispose();
-			});
+      it("cant set invalid type", function () {
+        var noise = new Noise();
+        expect(function () {
+          noise.type = "else";
+        }).to.throw(Error);
+        noise.dispose();
+      });
 
-			it("can set the playbackRate", function(){
-				var noise = new Noise();
-				noise.playbackRate = 3;
-				expect(noise.playbackRate).to.equal(3);
-				noise.dispose();
-			});
+      it("outputs white noise", function (done) {
+        var noise;
+        OutputAudio(
+          function (dest) {
+            noise = new Noise("white");
+            noise.connect(dest);
+            noise.start();
+          },
+          function () {
+            noise.dispose();
+            done();
+          }
+        );
+      });
 
-		});
+      it("outputs pink noise", function (done) {
+        var noise;
+        OutputAudio(
+          function (dest) {
+            noise = new Noise("pink");
+            noise.connect(dest);
+            noise.start();
+          },
+          function () {
+            noise.dispose();
+            done();
+          }
+        );
+      });
 
-		context("Type", function(){
+      it("outputs brown noise", function (done) {
+        var noise;
+        OutputAudio(
+          function (dest) {
+            noise = new Noise("brown");
+            noise.connect(dest);
+            noise.start();
+          },
+          function () {
+            noise.dispose();
+            done();
+          }
+        );
+      });
+    });
 
-			it ("can be set to 3 noise types", function(){
-				var noise = new Noise();
-				var types = ["white", "brown", "pink"];
-				for (var i = 0; i < types.length; i++){
-					noise.type = types[i];
-					expect(noise.type).to.equal(types[i]);
-					
-				}
-				noise.dispose();
-			});
-
-			it ("cant set invalid type", function(){
-				var noise = new Noise();
-				expect(function(){
-					noise.type = "else";
-				}).to.throw(Error);
-				noise.dispose();
-			});
-
-			it("outputs white noise", function(done){
-				var noise;
-				OutputAudio(function(dest){
-					noise = new Noise("white");
-					noise.connect(dest);
-					noise.start();
-				}, function(){
-					noise.dispose();
-					done();
-				});
-			});		
-
-			it("outputs pink noise", function(done){
-				var noise;
-				OutputAudio(function(dest){
-					noise = new Noise("pink");
-					noise.connect(dest);
-					noise.start();
-				}, function(){
-					noise.dispose();
-					done();
-				});
-			});		
-
-			it("outputs brown noise", function(done){
-				var noise;
-				OutputAudio(function(dest){
-					noise = new Noise("brown");
-					noise.connect(dest);
-					noise.start();
-				}, function(){
-					noise.dispose();
-					done();
-				});
-			});		
-		});
-
-
-		/*it("be scheduled to start in the future", function(done){
+    /*it("be scheduled to start in the future", function(done){
 			var noise;
 			var offline = new Offline();
 			Test.offlineTest(1, function(dest){
@@ -140,5 +146,5 @@ define(["helper/Basic", "Tone/source/Noise", "helper/SourceTests", "helper/Outpu
 			expect(noise.type).to.equal("pink");
 			noise.dispose();
 		});*/
-	});
+  });
 });

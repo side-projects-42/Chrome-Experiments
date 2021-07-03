@@ -1,7 +1,7 @@
-var isObjectLike = require('../internal/isObjectLike');
+var isObjectLike = require("../internal/isObjectLike");
 
 /** `Object#toString` result references. */
-var errorTag = '[object Error]';
+var errorTag = "[object Error]";
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -30,7 +30,11 @@ var objToString = objectProto.toString;
  * // => false
  */
 function isError(value) {
-  return isObjectLike(value) && typeof value.message == 'string' && objToString.call(value) == errorTag;
+  return (
+    isObjectLike(value) &&
+    typeof value.message == "string" &&
+    objToString.call(value) == errorTag
+  );
 }
 
 module.exports = isError;

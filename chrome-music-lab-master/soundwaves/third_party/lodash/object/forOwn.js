@@ -1,5 +1,5 @@
-var baseForOwn = require('../internal/baseForOwn'),
-    createForOwn = require('../internal/createForOwn');
+var baseForOwn = require("../internal/baseForOwn"),
+  createForOwn = require("../internal/createForOwn");
 
 /**
  * Iterates over own enumerable properties of an object invoking `iteratee`

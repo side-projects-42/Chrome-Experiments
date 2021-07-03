@@ -10,9 +10,9 @@
  */
 function baseFindIndex(array, predicate, fromRight) {
   var length = array.length,
-      index = fromRight ? length : -1;
+    index = fromRight ? length : -1;
 
-  while ((fromRight ? index-- : ++index < length)) {
+  while (fromRight ? index-- : ++index < length) {
     if (predicate(array[index], index, array)) {
       return index;
     }

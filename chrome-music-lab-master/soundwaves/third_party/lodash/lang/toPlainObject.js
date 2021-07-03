@@ -1,5 +1,5 @@
-var baseCopy = require('../internal/baseCopy'),
-    keysIn = require('../object/keysIn');
+var baseCopy = require("../internal/baseCopy"),
+  keysIn = require("../object/keysIn");
 
 /**
  * Converts `value` to a plain object flattening inherited enumerable

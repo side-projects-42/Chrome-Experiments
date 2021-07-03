@@ -1,6 +1,6 @@
-var arrayReduce = require('../internal/arrayReduce'),
-    baseEach = require('../internal/baseEach'),
-    createReduce = require('../internal/createReduce');
+var arrayReduce = require("../internal/arrayReduce"),
+  baseEach = require("../internal/baseEach"),
+  createReduce = require("../internal/createReduce");
 
 /**
  * Reduces `collection` to a value which is the accumulated result of running

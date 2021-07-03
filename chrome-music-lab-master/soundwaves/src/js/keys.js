@@ -15,73 +15,76 @@ limitations under the License.
 *********************************************************/
 
 /** @jsx element */
-import element from 'virtual-element'
-import _ from 'lodash'
-import { tree } from 'deku'
-import math from './math'
+import element from "virtual-element";
+import _ from "lodash";
+import { tree } from "deku";
+import math from "./math";
 
-
-const C_MAJOR = 'D4 E4 F4 G4 A4 B4 C5 D5 E5 F5 G5 A5 B5 C6 D6'.split(' ')
+const C_MAJOR = "D4 E4 F4 G4 A4 B4 C5 D5 E5 F5 G5 A5 B5 C6 D6".split(" ");
 let numKeys = C_MAJOR.length;
-let keyWidth = 'width:'+String( 100/numKeys )+'%;'
+let keyWidth = "width:" + String(100 / numKeys) + "%;";
 
-window.mouseDown = false
+window.mouseDown = false;
 
-let mix = ( a, b, n ) => a * ( 1 - n ) + b * n;
-let mixColor = ( a, b, n ) => a.map(( v, channel ) => mix( v, b[channel], n )|0);
+let mix = (a, b, n) => a * (1 - n) + b * n;
+let mixColor = (a, b, n) => a.map((v, channel) => mix(v, b[channel], n) | 0);
 
-export default function( down, up ){
+export default function (down, up) {
+  let lastKey = null;
 
+  return tree(
+    <div class="MyApp">
+      {_.range(numKeys).map((v, i) => {
+        let onMouseDown = (e) => {
+          e.preventDefault();
+          window.mouseDown = true;
+          down(C_MAJOR[i]);
+        };
 
-	let lastKey = null
+        let onMouseUp = (e) => {
+          e.preventDefault();
+          console.log("sdfs");
+          window.mouseDown = false;
+          up(C_MAJOR[i]);
+        };
 
+        let onMouseOver = () => {
+          if (window.mouseDown) down(C_MAJOR[i]);
+        };
 
-	return tree(
-		<div class="MyApp">
-			{ _.range( numKeys ).map(( v, i ) => {  
+        let onMouseOut = () => {
+          if (window.mouseDown) up(C_MAJOR[i]);
+        };
 
+        let onTouchMove = (e) => {
+          let v = math.clamp(
+            e.targetTouches[0].clientX / window.innerWidth,
+            0,
+            1
+          );
+          v = math.clamp(math.mix(v, 0, numKeys) | 0, 0, numKeys - 1);
+          // up( C_MAJOR[v] )
 
+          if (lastKey !== v) down(C_MAJOR[v]);
+          lastKey = v;
+        };
 
-				let onMouseDown = e => {
-					e.preventDefault();
-					window.mouseDown = true
-					down( C_MAJOR[i] )
-				}
-
-				let onMouseUp = e =>{
-					e.preventDefault();
-					console.log( 'sdfs')
-					window.mouseDown = false
-					up( C_MAJOR[i] )
-				}
-
-				let onMouseOver = () =>{
-					if( window.mouseDown ) down( C_MAJOR[i] )
-				}
-
-				let onMouseOut = ()=>{
-					if( window.mouseDown ) up( C_MAJOR[i] )
-				}
-
-
-				let onTouchMove = (e) => {
-					 let v = math.clamp( e.targetTouches[0].clientX / window.innerWidth , 0, 1 )
-					 v = math.clamp( math.mix( v, 0, numKeys )|0, 0, numKeys - 1 );
-					 // up( C_MAJOR[v] )
-					
-					 if( lastKey !== v )down( C_MAJOR[v] )
-					 lastKey = v
-				}
-
-
-				let color = mixColor( [ 195, 22, 61 ], [254, 229, 70], i/(numKeys-1) );
-				let colorString = 'background-color: rgb('+ color.join(',') + ')';
-			return <button class='mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect key' 
-				onMouseDown={onMouseDown} onMouseUp={onMouseUp} onMouseOver={onMouseOver} onMouseOut={onMouseOut}
-				onTouchStart={onMouseDown} onTouchEnd={onMouseUp} onTouchMove={onTouchMove}
-				style={keyWidth+colorString}></button> 
-			})}
-		</div>
-	)
+        let color = mixColor([195, 22, 61], [254, 229, 70], i / (numKeys - 1));
+        let colorString = "background-color: rgb(" + color.join(",") + ")";
+        return (
+          <button
+            class="mdl-button mdl-js-button mdl-button--accent mdl-js-ripple-effect key"
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseOver={onMouseOver}
+            onMouseOut={onMouseOut}
+            onTouchStart={onMouseDown}
+            onTouchEnd={onMouseUp}
+            onTouchMove={onTouchMove}
+            style={keyWidth + colorString}
+          ></button>
+        );
+      })}
+    </div>
+  );
 }
-

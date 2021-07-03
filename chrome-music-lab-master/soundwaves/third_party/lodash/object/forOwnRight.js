@@ -1,5 +1,5 @@
-var baseForOwnRight = require('../internal/baseForOwnRight'),
-    createForOwn = require('../internal/createForOwn');
+var baseForOwnRight = require("../internal/baseForOwnRight"),
+  createForOwn = require("../internal/createForOwn");
 
 /**
  * This method is like `_.forOwn` except that it iterates over properties of

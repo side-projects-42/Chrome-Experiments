@@ -1,5 +1,5 @@
 /** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+var FUNC_ERROR_TEXT = "Expected a function";
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeIsFinite = global.isFinite;
@@ -28,8 +28,8 @@ var nativeIsFinite = global.isFinite;
  * // => logs 'done saving!' after the two async saves have completed
  */
 function after(n, func) {
-  if (typeof func != 'function') {
-    if (typeof n == 'function') {
+  if (typeof func != "function") {
+    if (typeof n == "function") {
       var temp = n;
       n = func;
       func = temp;
@@ -37,8 +37,8 @@ function after(n, func) {
       throw new TypeError(FUNC_ERROR_TEXT);
     }
   }
-  n = nativeIsFinite(n = +n) ? n : 0;
-  return function() {
+  n = nativeIsFinite((n = +n)) ? n : 0;
+  return function () {
     if (--n < 1) {
       return func.apply(this, arguments);
     }

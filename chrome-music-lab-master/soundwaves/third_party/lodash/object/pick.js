@@ -1,8 +1,8 @@
-var baseFlatten = require('../internal/baseFlatten'),
-    bindCallback = require('../internal/bindCallback'),
-    pickByArray = require('../internal/pickByArray'),
-    pickByCallback = require('../internal/pickByCallback'),
-    restParam = require('../function/restParam');
+var baseFlatten = require("../internal/baseFlatten"),
+  bindCallback = require("../internal/bindCallback"),
+  pickByArray = require("../internal/pickByArray"),
+  pickByCallback = require("../internal/pickByCallback"),
+  restParam = require("../function/restParam");
 
 /**
  * Creates an object composed of the picked `object` properties. Property
@@ -30,11 +30,11 @@ var baseFlatten = require('../internal/baseFlatten'),
  * _.pick(object, _.isString);
  * // => { 'user': 'fred' }
  */
-var pick = restParam(function(object, props) {
+var pick = restParam(function (object, props) {
   if (object == null) {
     return {};
   }
-  return typeof props[0] == 'function'
+  return typeof props[0] == "function"
     ? pickByCallback(object, bindCallback(props[0], props[1], 3))
     : pickByArray(object, baseFlatten(props));
 });

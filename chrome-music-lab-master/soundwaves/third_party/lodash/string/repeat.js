@@ -1,8 +1,8 @@
-var baseToString = require('../internal/baseToString');
+var baseToString = require("../internal/baseToString");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeFloor = Math.floor,
-    nativeIsFinite = global.isFinite;
+  nativeIsFinite = global.isFinite;
 
 /**
  * Repeats the given string `n` times.
@@ -25,7 +25,7 @@ var nativeFloor = Math.floor,
  * // => ''
  */
 function repeat(string, n) {
-  var result = '';
+  var result = "";
   string = baseToString(string);
   n = +n;
   if (n < 1 || !string || !nativeIsFinite(n)) {

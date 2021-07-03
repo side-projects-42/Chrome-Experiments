@@ -1,10 +1,10 @@
-var getNative = require('../internal/getNative'),
-    isArrayLike = require('../internal/isArrayLike'),
-    isObject = require('../lang/isObject'),
-    shimKeys = require('../internal/shimKeys');
+var getNative = require("../internal/getNative"),
+  isArrayLike = require("../internal/isArrayLike"),
+  isObject = require("../lang/isObject"),
+  shimKeys = require("../internal/shimKeys");
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeKeys = getNative(Object, 'keys');
+var nativeKeys = getNative(Object, "keys");
 
 /**
  * Creates an array of the own enumerable property names of `object`.
@@ -33,13 +33,17 @@ var nativeKeys = getNative(Object, 'keys');
  * _.keys('hi');
  * // => ['0', '1']
  */
-var keys = !nativeKeys ? shimKeys : function(object) {
-  var Ctor = object == null ? undefined : object.constructor;
-  if ((typeof Ctor == 'function' && Ctor.prototype === object) ||
-      (typeof object != 'function' && isArrayLike(object))) {
-    return shimKeys(object);
-  }
-  return isObject(object) ? nativeKeys(object) : [];
-};
+var keys = !nativeKeys
+  ? shimKeys
+  : function (object) {
+      var Ctor = object == null ? undefined : object.constructor;
+      if (
+        (typeof Ctor == "function" && Ctor.prototype === object) ||
+        (typeof object != "function" && isArrayLike(object))
+      ) {
+        return shimKeys(object);
+      }
+      return isObject(object) ? nativeKeys(object) : [];
+    };
 
 module.exports = keys;

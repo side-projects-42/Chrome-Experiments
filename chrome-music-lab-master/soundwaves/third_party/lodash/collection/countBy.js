@@ -1,4 +1,4 @@
-var createAggregator = require('../internal/createAggregator');
+var createAggregator = require("../internal/createAggregator");
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -47,7 +47,7 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * _.countBy(['one', 'two', 'three'], 'length');
  * // => { '3': 2, '5': 1 }
  */
-var countBy = createAggregator(function(result, value, key) {
+var countBy = createAggregator(function (result, value, key) {
   hasOwnProperty.call(result, key) ? ++result[key] : (result[key] = 1);
 });
 

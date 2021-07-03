@@ -1,9 +1,9 @@
-var bindCallback = require('../internal/bindCallback');
+var bindCallback = require("../internal/bindCallback");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeFloor = Math.floor,
-    nativeIsFinite = global.isFinite,
-    nativeMin = Math.min;
+  nativeIsFinite = global.isFinite,
+  nativeMin = Math.min;
 
 /** Used as references for the maximum length and index of an array. */
 var MAX_ARRAY_LENGTH = 4294967295;
@@ -44,7 +44,7 @@ function times(n, iteratee, thisArg) {
     return [];
   }
   var index = -1,
-      result = Array(nativeMin(n, MAX_ARRAY_LENGTH));
+    result = Array(nativeMin(n, MAX_ARRAY_LENGTH));
 
   iteratee = bindCallback(iteratee, thisArg, 1);
   while (++index < n) {

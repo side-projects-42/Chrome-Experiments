@@ -1,5 +1,5 @@
-var baseCallback = require('./baseCallback'),
-    baseFind = require('./baseFind');
+var baseCallback = require("./baseCallback"),
+  baseFind = require("./baseFind");
 
 /**
  * Creates a `_.findKey` or `_.findLastKey` function.
@@ -9,7 +9,7 @@ var baseCallback = require('./baseCallback'),
  * @returns {Function} Returns the new find function.
  */
 function createFindKey(objectFunc) {
-  return function(object, predicate, thisArg) {
+  return function (object, predicate, thisArg) {
     predicate = baseCallback(predicate, thisArg, 3);
     return baseFind(object, predicate, objectFunc, true);
   };

@@ -1,5 +1,5 @@
-var baseCallback = require('../internal/baseCallback'),
-    basePullAt = require('../internal/basePullAt');
+var baseCallback = require("../internal/baseCallback"),
+  basePullAt = require("../internal/basePullAt");
 
 /**
  * Removes all elements from `array` that `predicate` returns truthy for
@@ -46,8 +46,8 @@ function remove(array, predicate, thisArg) {
     return result;
   }
   var index = -1,
-      indexes = [],
-      length = array.length;
+    indexes = [],
+    length = array.length;
 
   predicate = baseCallback(predicate, thisArg, 3);
   while (++index < length) {

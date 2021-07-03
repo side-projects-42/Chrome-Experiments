@@ -1,4 +1,4 @@
-var createCompounder = require('../internal/createCompounder');
+var createCompounder = require("../internal/createCompounder");
 
 /**
  * Converts `string` to [start case](https://en.wikipedia.org/wiki/Letter_case#Stylistic_or_specialised_usage).
@@ -19,8 +19,10 @@ var createCompounder = require('../internal/createCompounder');
  * _.startCase('__foo_bar__');
  * // => 'Foo Bar'
  */
-var startCase = createCompounder(function(result, word, index) {
-  return result + (index ? ' ' : '') + (word.charAt(0).toUpperCase() + word.slice(1));
+var startCase = createCompounder(function (result, word, index) {
+  return (
+    result + (index ? " " : "") + (word.charAt(0).toUpperCase() + word.slice(1))
+  );
 });
 
 module.exports = startCase;

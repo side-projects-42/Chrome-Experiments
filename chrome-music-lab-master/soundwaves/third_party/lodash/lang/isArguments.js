@@ -1,5 +1,5 @@
-var isArrayLike = require('../internal/isArrayLike'),
-    isObjectLike = require('../internal/isObjectLike');
+var isArrayLike = require("../internal/isArrayLike"),
+  isObjectLike = require("../internal/isObjectLike");
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -27,8 +27,12 @@ var propertyIsEnumerable = objectProto.propertyIsEnumerable;
  * // => false
  */
 function isArguments(value) {
-  return isObjectLike(value) && isArrayLike(value) &&
-    hasOwnProperty.call(value, 'callee') && !propertyIsEnumerable.call(value, 'callee');
+  return (
+    isObjectLike(value) &&
+    isArrayLike(value) &&
+    hasOwnProperty.call(value, "callee") &&
+    !propertyIsEnumerable.call(value, "callee")
+  );
 }
 
 module.exports = isArguments;

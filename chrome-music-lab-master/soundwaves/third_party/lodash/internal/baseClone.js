@@ -1,53 +1,66 @@
-var arrayCopy = require('./arrayCopy'),
-    arrayEach = require('./arrayEach'),
-    baseAssign = require('./baseAssign'),
-    baseForOwn = require('./baseForOwn'),
-    initCloneArray = require('./initCloneArray'),
-    initCloneByTag = require('./initCloneByTag'),
-    initCloneObject = require('./initCloneObject'),
-    isArray = require('../lang/isArray'),
-    isObject = require('../lang/isObject');
+var arrayCopy = require("./arrayCopy"),
+  arrayEach = require("./arrayEach"),
+  baseAssign = require("./baseAssign"),
+  baseForOwn = require("./baseForOwn"),
+  initCloneArray = require("./initCloneArray"),
+  initCloneByTag = require("./initCloneByTag"),
+  initCloneObject = require("./initCloneObject"),
+  isArray = require("../lang/isArray"),
+  isObject = require("../lang/isObject");
 
 /** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    funcTag = '[object Function]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    objectTag = '[object Object]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    weakMapTag = '[object WeakMap]';
+var argsTag = "[object Arguments]",
+  arrayTag = "[object Array]",
+  boolTag = "[object Boolean]",
+  dateTag = "[object Date]",
+  errorTag = "[object Error]",
+  funcTag = "[object Function]",
+  mapTag = "[object Map]",
+  numberTag = "[object Number]",
+  objectTag = "[object Object]",
+  regexpTag = "[object RegExp]",
+  setTag = "[object Set]",
+  stringTag = "[object String]",
+  weakMapTag = "[object WeakMap]";
 
-var arrayBufferTag = '[object ArrayBuffer]',
-    float32Tag = '[object Float32Array]',
-    float64Tag = '[object Float64Array]',
-    int8Tag = '[object Int8Array]',
-    int16Tag = '[object Int16Array]',
-    int32Tag = '[object Int32Array]',
-    uint8Tag = '[object Uint8Array]',
-    uint8ClampedTag = '[object Uint8ClampedArray]',
-    uint16Tag = '[object Uint16Array]',
-    uint32Tag = '[object Uint32Array]';
+var arrayBufferTag = "[object ArrayBuffer]",
+  float32Tag = "[object Float32Array]",
+  float64Tag = "[object Float64Array]",
+  int8Tag = "[object Int8Array]",
+  int16Tag = "[object Int16Array]",
+  int32Tag = "[object Int32Array]",
+  uint8Tag = "[object Uint8Array]",
+  uint8ClampedTag = "[object Uint8ClampedArray]",
+  uint16Tag = "[object Uint16Array]",
+  uint32Tag = "[object Uint32Array]";
 
 /** Used to identify `toStringTag` values supported by `_.clone`. */
 var cloneableTags = {};
-cloneableTags[argsTag] = cloneableTags[arrayTag] =
-cloneableTags[arrayBufferTag] = cloneableTags[boolTag] =
-cloneableTags[dateTag] = cloneableTags[float32Tag] =
-cloneableTags[float64Tag] = cloneableTags[int8Tag] =
-cloneableTags[int16Tag] = cloneableTags[int32Tag] =
-cloneableTags[numberTag] = cloneableTags[objectTag] =
-cloneableTags[regexpTag] = cloneableTags[stringTag] =
-cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
-cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
-cloneableTags[errorTag] = cloneableTags[funcTag] =
-cloneableTags[mapTag] = cloneableTags[setTag] =
-cloneableTags[weakMapTag] = false;
+cloneableTags[argsTag] =
+  cloneableTags[arrayTag] =
+  cloneableTags[arrayBufferTag] =
+  cloneableTags[boolTag] =
+  cloneableTags[dateTag] =
+  cloneableTags[float32Tag] =
+  cloneableTags[float64Tag] =
+  cloneableTags[int8Tag] =
+  cloneableTags[int16Tag] =
+  cloneableTags[int32Tag] =
+  cloneableTags[numberTag] =
+  cloneableTags[objectTag] =
+  cloneableTags[regexpTag] =
+  cloneableTags[stringTag] =
+  cloneableTags[uint8Tag] =
+  cloneableTags[uint8ClampedTag] =
+  cloneableTags[uint16Tag] =
+  cloneableTags[uint32Tag] =
+    true;
+cloneableTags[errorTag] =
+  cloneableTags[funcTag] =
+  cloneableTags[mapTag] =
+  cloneableTags[setTag] =
+  cloneableTags[weakMapTag] =
+    false;
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -91,7 +104,7 @@ function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
     }
   } else {
     var tag = objToString.call(value),
-        isFunc = tag == funcTag;
+      isFunc = tag == funcTag;
 
     if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
       result = initCloneObject(isFunc ? {} : value);
@@ -101,7 +114,9 @@ function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
     } else {
       return cloneableTags[tag]
         ? initCloneByTag(value, tag, isDeep)
-        : (object ? value : {});
+        : object
+        ? value
+        : {};
     }
   }
   // Check for circular references and return its corresponding clone.
@@ -119,8 +134,16 @@ function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
   stackB.push(result);
 
   // Recursively populate clone (susceptible to call stack limits).
-  (isArr ? arrayEach : baseForOwn)(value, function(subValue, key) {
-    result[key] = baseClone(subValue, isDeep, customizer, key, value, stackA, stackB);
+  (isArr ? arrayEach : baseForOwn)(value, function (subValue, key) {
+    result[key] = baseClone(
+      subValue,
+      isDeep,
+      customizer,
+      key,
+      value,
+      stackA,
+      stackB
+    );
   });
   return result;
 }

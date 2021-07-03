@@ -1,4 +1,4 @@
-var dropRight = require('./dropRight');
+var dropRight = require("./dropRight");
 
 /**
  * Gets all but the last element of `array`.

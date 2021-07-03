@@ -1,8 +1,8 @@
-var baseDifference = require('../internal/baseDifference'),
-    baseFlatten = require('../internal/baseFlatten'),
-    isArrayLike = require('../internal/isArrayLike'),
-    isObjectLike = require('../internal/isObjectLike'),
-    restParam = require('../function/restParam');
+var baseDifference = require("../internal/baseDifference"),
+  baseFlatten = require("../internal/baseFlatten"),
+  isArrayLike = require("../internal/isArrayLike"),
+  isObjectLike = require("../internal/isObjectLike"),
+  restParam = require("../function/restParam");
 
 /**
  * Creates an array of unique `array` values not included in the other
@@ -20,8 +20,8 @@ var baseDifference = require('../internal/baseDifference'),
  * _.difference([1, 2, 3], [4, 2]);
  * // => [1, 3]
  */
-var difference = restParam(function(array, values) {
-  return (isObjectLike(array) && isArrayLike(array))
+var difference = restParam(function (array, values) {
+  return isObjectLike(array) && isArrayLike(array)
     ? baseDifference(array, baseFlatten(values, false, true))
     : [];
 });

@@ -1,4 +1,4 @@
-var baseToString = require('../internal/baseToString');
+var baseToString = require("../internal/baseToString");
 
 /**
  * Capitalizes the first character of `string`.
@@ -15,7 +15,7 @@ var baseToString = require('../internal/baseToString');
  */
 function capitalize(string) {
   string = baseToString(string);
-  return string && (string.charAt(0).toUpperCase() + string.slice(1));
+  return string && string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 module.exports = capitalize;

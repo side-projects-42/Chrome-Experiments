@@ -1,4 +1,4 @@
-var baseProperty = require('./baseProperty');
+var baseProperty = require("./baseProperty");
 
 /**
  * Gets the "length" property value of `object`.
@@ -10,6 +10,6 @@ var baseProperty = require('./baseProperty');
  * @param {Object} object The object to query.
  * @returns {*} Returns the "length" value.
  */
-var getLength = baseProperty('length');
+var getLength = baseProperty("length");
 
 module.exports = getLength;

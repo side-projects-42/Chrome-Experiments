@@ -14,71 +14,67 @@
  * limitations under the License.
  */
 
-import 'aframe'
-import Transport from 'Tone/core/Transport'
-import AudioBuffer from 'Tone/core/Buffer'
-import Master from 'Tone/core/Master'
-import {GA} from 'utils/GA'
+import "aframe";
+import Transport from "Tone/core/Transport";
+import AudioBuffer from "Tone/core/Buffer";
+import Master from "Tone/core/Master";
+import { GA } from "utils/GA";
 
-AFRAME.registerComponent('playbutton', {
+AFRAME.registerComponent("playbutton", {
+  schema: {
+    playing: {
+      default: false,
+      type: "boolean",
+    },
+    visible: {
+      type: "boolean",
+      default: false,
+    },
+  },
 
-	schema : {
-		playing : {
-			default : false,
-			type : 'boolean'
-		}, 
-		visible : {
-			type : 'boolean',
-			default : false
-		}
-	},
+  init() {
+    let lastClick = 0;
+    this.el.addEventListener("click", () => {
+      //debounce
+      if (Date.now() - lastClick > 500) {
+        lastClick = Date.now();
+      } else {
+        return;
+      }
+      const playing = Transport.state === "started";
+      this.el.setAttribute("playbutton", "playing", !playing);
+      GA("playbutton", "click", !playing ? "play" : "pause");
+    });
 
-	init(){
+    this.el.sceneEl.addEventListener("menu-selection", (e) => {
+      Transport.stop();
+    });
 
-		let lastClick = 0
-		this.el.addEventListener('click', () => {
-			//debounce
-			if (Date.now() - lastClick > 500){
-				lastClick = Date.now()
-			} else {
-				return
-			}
-			const playing = Transport.state === 'started'
-			this.el.setAttribute('playbutton', 'playing', !playing)
-			GA('playbutton', 'click', !playing ? 'play' : 'pause')
-		})
-
-		this.el.sceneEl.addEventListener('menu-selection', (e) => {
-			Transport.stop()
-		})
-
-
-		/*this.el.sceneEl.addEventListener('end-vr', () => {
+    /*this.el.sceneEl.addEventListener('end-vr', () => {
 			
 			Transport.stop()
 		})*/
-	},
+  },
 
-	update(){
+  update() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
 
-		if (this.timeout){
-			clearTimeout(this.timeout)
-		}
+    if (this.data.playing) {
+      Transport.start("+0.25");
+      this.el.querySelector("a-plane").setAttribute("src", "#pause_button");
+      // this.el.querySelector('a-text').setAttribute('value', 'PAUSE')
+    } else {
+      Transport.pause();
+      this.el.querySelector("a-plane").setAttribute("src", "#play_button");
+      // this.el.querySelector('a-text').setAttribute('value', 'START')
+    }
 
-		if (this.data.playing){
-			Transport.start('+0.25')
-			this.el.querySelector('a-plane').setAttribute('src', '#pause_button')
-			// this.el.querySelector('a-text').setAttribute('value', 'PAUSE')
-		} else {
-			Transport.pause()
-			this.el.querySelector('a-plane').setAttribute('src', '#play_button')
-			// this.el.querySelector('a-text').setAttribute('value', 'START')
-		}
-
-		if (this.data.visible){
-			this.el.setAttribute('scale', '0.15 0.015 0.15')
-		} else {
-			this.el.setAttribute('scale', '0 0 0')
-		}
-	}
-})
+    if (this.data.visible) {
+      this.el.setAttribute("scale", "0.15 0.015 0.15");
+    } else {
+      this.el.setAttribute("scale", "0 0 0");
+    }
+  },
+});

@@ -14,51 +14,51 @@
  * limitations under the License.
  */
 
-import 'interface/Menu'
-import 'interface/PlayButton'
-import 'environment/Floor'
-import 'environment/sound-rings'
-import 'environment/atmosphere'
-import 'song/Tracks'
-import 'component/Animate'
-import 'controller/ray-intersection-emitter'
-import 'sound/Loading'
-import 'controller/controls'
-import Transport from 'Tone/core/Transport'
-import {getTrackData} from 'Config'
+import "interface/Menu";
+import "interface/PlayButton";
+import "environment/Floor";
+import "environment/sound-rings";
+import "environment/atmosphere";
+import "song/Tracks";
+import "component/Animate";
+import "controller/ray-intersection-emitter";
+import "sound/Loading";
+import "controller/controls";
+import Transport from "Tone/core/Transport";
+import { getTrackData } from "Config";
 
+export default function initASceneController() {
+  const [menuEl, sceneEl, tracksEl] = [
+    "a-entity[menu]",
+    "a-scene",
+    "a-entity[tracks]",
+  ].map((q) => document.querySelector(q));
 
-export default function initASceneController(){
-	const [
-		menuEl,
-		sceneEl,
-		tracksEl
-	] = ['a-entity[menu]', 'a-scene', 'a-entity[tracks]'].map(q=>document.querySelector(q));
+  sceneEl.addEventListener("enter-360", () => {
+    document.querySelector("a-scene").classList.add("is360");
+  });
 
-	sceneEl.addEventListener('enter-360', ()=>{
-		document.querySelector('a-scene').classList.add('is360');
-	});
+  // sceneEl.addEventListener('enter-360', cFact.start360.bind(cFact));
+  // sceneEl.addEventListener('enter-vr',  cFact.startVR.bind(cFact));
 
+  menuEl.addEventListener("select", (e) => {
+    console.log("starting", e.detail.artist);
 
-	// sceneEl.addEventListener('enter-360', cFact.start360.bind(cFact));
-	// sceneEl.addEventListener('enter-vr',  cFact.startVR.bind(cFact));
+    tracksEl.setAttribute("tracks", {
+      artist: e.detail.artist,
+    });
 
-	menuEl.addEventListener('select', e=>{
-		console.log('starting', e.detail.artist)
+    //update all of the waveforms
+    document
+      .querySelectorAll("a-entity[track]")
+      .forEach((t) => t.setAttribute("waveform", e.detail.waveform));
 
-		tracksEl.setAttribute('tracks', {
-			artist : e.detail.artist
-		});
+    // set the sky also
+    document.querySelector("a-sky").setAttribute("bg-color", e.detail.color);
 
-		//update all of the waveforms
-		document.querySelectorAll('a-entity[track]').forEach(t => t.setAttribute('waveform', e.detail.waveform))
-
-		// set the sky also
-		document.querySelector('a-sky').setAttribute('bg-color', e.detail.color)
-
-		// set the scene to loading
-		sceneEl.setAttribute('loading', 'loader', true)
-		//start the voice over
-		sceneEl.setAttribute('loading', 'voiceOver', true)
-	});
+    // set the scene to loading
+    sceneEl.setAttribute("loading", "loader", true);
+    //start the voice over
+    sceneEl.setAttribute("loading", "voiceOver", true);
+  });
 }

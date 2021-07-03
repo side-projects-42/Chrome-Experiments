@@ -1,6 +1,6 @@
-var arrayReduceRight = require('../internal/arrayReduceRight'),
-    baseEachRight = require('../internal/baseEachRight'),
-    createReduce = require('../internal/createReduce');
+var arrayReduceRight = require("../internal/arrayReduceRight"),
+  baseEachRight = require("../internal/baseEachRight"),
+  createReduce = require("../internal/createReduce");
 
 /**
  * This method is like `_.reduce` except that it iterates over elements of

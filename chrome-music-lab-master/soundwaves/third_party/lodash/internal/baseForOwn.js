@@ -1,5 +1,5 @@
-var baseFor = require('./baseFor'),
-    keys = require('../object/keys');
+var baseFor = require("./baseFor"),
+  keys = require("../object/keys");
 
 /**
  * The base implementation of `_.forOwn` without support for callback

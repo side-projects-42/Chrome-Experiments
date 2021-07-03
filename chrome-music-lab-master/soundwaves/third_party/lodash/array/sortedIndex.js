@@ -1,4 +1,4 @@
-var createSortedIndex = require('../internal/createSortedIndex');
+var createSortedIndex = require("../internal/createSortedIndex");
 
 /**
  * Uses a binary search to determine the lowest index at which `value` should

@@ -1,4 +1,4 @@
-var isSpace = require('./isSpace');
+var isSpace = require("./isSpace");
 
 /**
  * Used by `_.trim` and `_.trimLeft` to get the index of the first non-whitespace
@@ -10,7 +10,7 @@ var isSpace = require('./isSpace');
  */
 function trimmedLeftIndex(string) {
   var index = -1,
-      length = string.length;
+    length = string.length;
 
   while (++index < length && isSpace(string.charCodeAt(index))) {}
   return index;

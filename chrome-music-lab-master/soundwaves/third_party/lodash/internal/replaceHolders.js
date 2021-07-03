@@ -1,5 +1,5 @@
 /** Used as the internal argument placeholder. */
-var PLACEHOLDER = '__lodash_placeholder__';
+var PLACEHOLDER = "__lodash_placeholder__";
 
 /**
  * Replaces all `placeholder` elements in `array` with an internal placeholder
@@ -12,9 +12,9 @@ var PLACEHOLDER = '__lodash_placeholder__';
  */
 function replaceHolders(array, placeholder) {
   var index = -1,
-      length = array.length,
-      resIndex = -1,
-      result = [];
+    length = array.length,
+    resIndex = -1,
+    result = [];
 
   while (++index < length) {
     if (array[index] === placeholder) {

@@ -1,4 +1,4 @@
-var baseToString = require('../internal/baseToString');
+var baseToString = require("../internal/baseToString");
 
 /** Used to generate unique IDs. */
 var idCounter = 0;

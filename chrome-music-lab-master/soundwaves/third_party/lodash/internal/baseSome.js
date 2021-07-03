@@ -1,4 +1,4 @@
-var baseEach = require('./baseEach');
+var baseEach = require("./baseEach");
 
 /**
  * The base implementation of `_.some` without support for callback shorthands
@@ -13,7 +13,7 @@ var baseEach = require('./baseEach');
 function baseSome(collection, predicate) {
   var result;
 
-  baseEach(collection, function(value, index, collection) {
+  baseEach(collection, function (value, index, collection) {
     result = predicate(value, index, collection);
     return !result;
   });

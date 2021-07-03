@@ -1,7 +1,7 @@
-var baseCallback = require('../internal/baseCallback'),
-    baseUniq = require('../internal/baseUniq'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    sortedUniq = require('../internal/sortedUniq');
+var baseCallback = require("../internal/baseCallback"),
+  baseUniq = require("../internal/baseUniq"),
+  isIterateeCall = require("../internal/isIterateeCall"),
+  sortedUniq = require("../internal/sortedUniq");
 
 /**
  * Creates a duplicate-free version of an array, using
@@ -57,15 +57,13 @@ function uniq(array, isSorted, iteratee, thisArg) {
   if (!length) {
     return [];
   }
-  if (isSorted != null && typeof isSorted != 'boolean') {
+  if (isSorted != null && typeof isSorted != "boolean") {
     thisArg = iteratee;
     iteratee = isIterateeCall(array, isSorted, thisArg) ? undefined : isSorted;
     isSorted = false;
   }
   iteratee = iteratee == null ? iteratee : baseCallback(iteratee, thisArg, 3);
-  return (isSorted)
-    ? sortedUniq(array, iteratee)
-    : baseUniq(array, iteratee);
+  return isSorted ? sortedUniq(array, iteratee) : baseUniq(array, iteratee);
 }
 
 module.exports = uniq;

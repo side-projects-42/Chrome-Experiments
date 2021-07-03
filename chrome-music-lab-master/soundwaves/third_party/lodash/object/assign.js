@@ -1,6 +1,6 @@
-var assignWith = require('../internal/assignWith'),
-    baseAssign = require('../internal/baseAssign'),
-    createAssigner = require('../internal/createAssigner');
+var assignWith = require("../internal/assignWith"),
+  baseAssign = require("../internal/baseAssign"),
+  createAssigner = require("../internal/createAssigner");
 
 /**
  * Assigns own enumerable properties of source object(s) to the destination
@@ -34,7 +34,7 @@ var assignWith = require('../internal/assignWith'),
  * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
  * // => { 'user': 'barney', 'age': 36 }
  */
-var assign = createAssigner(function(object, source, customizer) {
+var assign = createAssigner(function (object, source, customizer) {
   return customizer
     ? assignWith(object, source, customizer)
     : baseAssign(object, source);

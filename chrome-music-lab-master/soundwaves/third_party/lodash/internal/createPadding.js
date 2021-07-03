@@ -1,8 +1,8 @@
-var repeat = require('../string/repeat');
+var repeat = require("../string/repeat");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeCeil = Math.ceil,
-    nativeIsFinite = global.isFinite;
+  nativeIsFinite = global.isFinite;
 
 /**
  * Creates the padding required for `string` based on the given `length`.
@@ -19,11 +19,14 @@ function createPadding(string, length, chars) {
   length = +length;
 
   if (strLength >= length || !nativeIsFinite(length)) {
-    return '';
+    return "";
   }
   var padLength = length - strLength;
-  chars = chars == null ? ' ' : (chars + '');
-  return repeat(chars, nativeCeil(padLength / chars.length)).slice(0, padLength);
+  chars = chars == null ? " " : chars + "";
+  return repeat(chars, nativeCeil(padLength / chars.length)).slice(
+    0,
+    padLength
+  );
 }
 
 module.exports = createPadding;

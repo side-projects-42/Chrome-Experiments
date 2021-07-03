@@ -1,7 +1,7 @@
-var baseRandom = require('../internal/baseRandom'),
-    isIterateeCall = require('../internal/isIterateeCall'),
-    toArray = require('../lang/toArray'),
-    toIterable = require('../internal/toIterable');
+var baseRandom = require("../internal/baseRandom"),
+  isIterateeCall = require("../internal/isIterateeCall"),
+  toArray = require("../lang/toArray"),
+  toIterable = require("../internal/toIterable");
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeMin = Math.min;
@@ -31,14 +31,14 @@ function sample(collection, n, guard) {
     return length > 0 ? collection[baseRandom(0, length - 1)] : undefined;
   }
   var index = -1,
-      result = toArray(collection),
-      length = result.length,
-      lastIndex = length - 1;
+    result = toArray(collection),
+    length = result.length,
+    lastIndex = length - 1;
 
-  n = nativeMin(n < 0 ? 0 : (+n || 0), length);
+  n = nativeMin(n < 0 ? 0 : +n || 0, length);
   while (++index < n) {
     var rand = baseRandom(index, lastIndex),
-        value = result[rand];
+      value = result[rand];
 
     result[rand] = result[index];
     result[index] = value;

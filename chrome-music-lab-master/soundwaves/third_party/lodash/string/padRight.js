@@ -1,4 +1,4 @@
-var createPadDir = require('../internal/createPadDir');
+var createPadDir = require("../internal/createPadDir");
 
 /**
  * Pads `string` on the right side if it's shorter than `length`. Padding
