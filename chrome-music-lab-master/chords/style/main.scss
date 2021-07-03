@@ -1,0 +1,30 @@
+@import "common.scss";
+
+body, html, #Container{
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	margin: 0px;
+	overflow: hidden;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+
+	#Container {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		position: absolute;
+	}
+
+	#iOSTap {
+		width: 100%;
+		height: 100%;
+		top: 0px;
+		left: 0px;
+		position: absolute;
+		background-color: white;
+		z-index: 100000;
+	}
+}

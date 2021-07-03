@@ -1,0 +1,9 @@
+# automatically generated files
+*.cache
+*.log
+
+# code coverage reports
+/*_coverage
+
+# vendor libraries
+/node_modules

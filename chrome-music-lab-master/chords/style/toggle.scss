@@ -1,0 +1,17 @@
+@import "common.scss";
+
+$lightBlue : rgb(131, 211, 248);
+
+$SliderWidth: 50px;
+$SliderHeight : 20px;
+$HandleSize : 30px;
+$transitionTime: 0.2s;
+
+#ToggleContainer {
+	margin-top: 20vh;
+	position: relative;
+
+	.Label {
+		font-weight: 400;
+	}
+}

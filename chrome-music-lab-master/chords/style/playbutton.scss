@@ -1,0 +1,23 @@
+@import "common.scss";
+
+$buttonSize : 50px;
+
+#PlayButton {
+	position: absolute;
+	top: $BottomHeight / 2;
+	margin-top: -$buttonSize/2;
+	right: 20px;
+	background-color: $blue;
+	width: $buttonSize;
+	height: $buttonSize;
+	border-radius: 50%;
+	cursor: pointer;
+	background-image: url(../images/play_white.png);
+	background-size: 100% 100%;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+#PlayButton.Playing {
+	background-image: url(../images/pause_white.png);
+	background-size: 100% 100%;
+}

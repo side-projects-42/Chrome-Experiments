@@ -1,0 +1,94 @@
+@import "common.scss";
+
+$sliderWidth: 50px;
+$handleSize : 30px;
+$railHeight : 20px;
+$labelHeight : $railHeight;
+$transitionTime: 0.1s;
+
+$lightBlue : rgb(142, 211, 247);
+$blue: rgb(30, 170, 241);
+
+.Toggle {
+
+	$labelMargin : 20px;
+
+	#Left {
+		right: 50%;
+		margin-right: $sliderWidth/2 + $labelMargin;
+		text-align: right;
+	}
+
+	#Right {
+		left: 50%;
+		margin-left: $sliderWidth/2 + $labelMargin;
+		text-align: left;
+	}
+
+	.Label {
+		cursor: pointer;
+		position: absolute;
+		top: 50%;
+		font-family: "Poppins", sans-serif;
+		font-weight: 300;
+		color: $grey;
+		font-size: $railHeight;
+		line-height: $labelHeight;
+		margin-top: -$labelHeight/2;
+		transition: color $transitionTime;
+	}
+
+	.Label.Selected {
+		color: $blue;
+	}
+
+	#Slider {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: $sliderWidth;
+		height: $handleSize;
+		margin-left: -$sliderWidth/2;
+		margin-top: -$handleSize/2;
+		cursor: pointer;
+
+		#Rail, #Handle {
+			pointer-events: none;
+		}
+
+		#Rail {
+			position: absolute;
+			top: 50%;
+			width: 100%;
+			height: $railHeight;
+			margin-top: -$railHeight/2;
+			border-radius: $railHeight/2!important;
+			background-color: $lightBlue;
+			background-color: $lightBlue;
+			border-top-left-radius: $railHeight/2;
+			border-bottom-left-radius: $railHeight/2;
+
+		}
+
+		#Handle {
+			position: absolute;
+			margin-top: -$handleSize/2;
+			top: 50%;
+			height: $handleSize;
+			width: $handleSize;
+			border-radius: $handleSize/2;
+			background-color: $blue;
+			transition: left $transitionTime, margin-left $transitionTime;
+			margin-left: 0px;
+			left: 0px;
+			@include buttonShadow;
+		}
+	}
+
+	#Slider.Right {
+		#Handle {
+			left: 100%;
+			margin-left: -$handleSize;
+		}
+	}
+}

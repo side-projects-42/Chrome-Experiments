@@ -1,0 +1,85 @@
+@import "common.scss";
+
+$sliderColor : rgb(66, 133, 244);
+
+$trackHeight : 10px;
+$sliderButtonSize : 50px;
+
+$sliderMargin : 30px;
+
+$animationDuration : 0.5s;
+
+#SpeedSlider {
+	position: absolute;
+	appearance: none;
+	width: calc(100% - #{$sliderMargin * 2});
+ 	max-width: 450px;
+	left: 50%;
+	transform: translate(-50%, 0px);
+	margin:0.5rem 0;
+ 	outline: none;
+	bottom: $bottomSize;
+ 	// bottom: $bottomSize;
+
+	$railHeight : 8px;
+
+	#Rail {
+		background: $GRAY_300;
+		height: $railHeight;
+		width: 100%;
+		left: 0px;
+		position: absolute;
+		top: $sliderButtonSize / 2;
+		margin-top: -$railHeight/2;
+		pointer-events: none;
+		border-radius: $railHeight/2;
+
+		#Dot {
+			position: absolute;
+			left: 50%;
+			width: $railHeight;
+			height: $railHeight;
+			top: 0px;
+			margin-left: -$railHeight / 2;
+			background-color: $GRAY_600;
+			border-radius: 50%;
+			opacity: 0.2;
+		}
+	}
+
+	#Handle {
+		position: absolute;
+		top: 0px;
+		left: 50%;
+		border-radius: $sliderButtonSize/2;
+		width: $sliderButtonSize;
+		height: $sliderButtonSize;
+		background-color: white;
+		background-image: url(../images/arrows_grey.png);
+		background-size: 100% 100%;
+		pointer-events: none;
+		box-shadow: 0.1rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.2);
+	}
+
+	#Handle:active:hover {
+		background-color: $YELLOW_500;
+		background-image: url(../images/arrows_white.png);
+	}
+
+	#Range {
+		width: 100%;
+		margin: 0px;
+		height: $sliderButtonSize;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		opacity: 0;
+		cursor: ew-resize;
+
+		&::-webkit-slider-thumb {
+			appearance: none;
+			width:$sliderButtonSize;
+			height:$sliderButtonSize;
+		}
+	}
+}

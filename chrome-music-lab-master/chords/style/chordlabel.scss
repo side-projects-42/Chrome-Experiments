@@ -1,0 +1,24 @@
+@import "common.scss";
+
+$labelSize : 25px;
+
+#ChordLabel{
+	position: relative;
+	left: 0px;
+	top: 0px;
+	height: $labelHeight;
+
+	#Text {
+		position: absolute;
+		text-align: center;
+		width: 100%;
+		top: 50%;
+		margin-top: -$labelSize/2;
+		height: $labelSize;
+		font-size: $labelSize;
+		line-height: $labelSize;
+		font-family: "Poppins", sans-serif;
+		font-weight: 300;
+		color: $darkGrey;
+	}
+}

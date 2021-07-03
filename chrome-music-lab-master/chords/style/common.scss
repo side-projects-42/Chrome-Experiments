@@ -1,0 +1,34 @@
+$blue : rgb(22, 168, 240);
+$grey : rgb(175, 175, 175);
+$lightGrey : rgb(230, 231, 232);
+$darkGrey : rgb(102, 102, 102);
+$charcoal : rgb(50, 51, 52);
+
+$margin: 26px;
+
+$topbarHeight : 76px;
+$buttonsHeight : 90px;
+
+$pianoHeight : 120px;
+$boxHeight : 300px;
+
+$C: #4e61d8;
+$Cs: #8064c6;
+$D: #a542b1;
+$Ds: #ed3883;
+$E: #f75839;
+$F: #f7943d;
+$Fs: #f6be37;
+$G: #d1c12e;
+$Gs: #95c631;
+$A: #4bb250;
+$As: #45b5a1;
+$B: #4598b6;
+
+$labelHeight : 45%;
+
+$toggleHeight : calc(100% - #{$labelHeight} - #{$pianoHeight});
+
+@mixin buttonShadow {
+	box-shadow: 0 0px 2px $grey;
+}

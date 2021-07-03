@@ -1,0 +1,77 @@
+@import "common.scss";
+
+$trackHeight : 10px;
+$sliderButtonSize : 50px;
+
+$sliderMargin : 30px;
+
+
+$animationDuration : 0.5s;
+
+#WaveDisplay {
+	width: 100%;
+	height: $spinnerSize;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+}
+
+$buttonSize : 95px;
+$smallButtonSize : 0.5 * $buttonSize;
+
+@keyframes AnimateIn {
+	0% {
+		top: -$buttonSize;
+		transform: scale(0.5);
+	}
+	60% {
+		top: 55%;
+		transform: scale(0.5);
+	}
+	80% {
+		top: 50%;
+		transform: scale(0.5);
+	}
+	100% {
+		top: 50%;
+		transform: scale(1);
+	}
+}
+
+
+#RecordButton {
+	z-index: 10;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	height: $buttonSize;
+	width: $buttonSize;
+	font-size: $buttonSize;
+	margin-left: -$buttonSize / 2;
+	margin-top: -$buttonSize / 2;
+	background-color: white;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0.1rem 0.1rem 1rem 0.1rem rgba(0, 0, 0, 0.2);
+	transition: transform 0.1s;
+	color: $GRAY_700;
+
+	&:before {
+		top: -4px;
+	    position: absolute;
+	}
+
+	&.disabled {
+		color: $GRAY_200;
+	}
+
+	&.recording {
+		background-color : $red;
+		color: white;
+	}
+
+	&:active {
+		transform: scale(1.1);
+	}
+}

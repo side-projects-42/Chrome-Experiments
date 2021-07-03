@@ -1,0 +1,31 @@
+{
+  "name": "Arpeggios",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/Main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "author": "Yotam Mann",
+  "devDependencies": {
+    "autoprefixer-loader": "^2.0.0",
+    "css-loader": "^0.15.1",
+    "file-loader": "^0.8.4",
+    "json-loader": "^0.5.2",
+    "node-libs-browser": "^0.5.2",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^1.0.2",
+    "style-loader": "^0.12.3",
+    "url-loader": "^0.5.6",
+    "webpack": "^1.9.11"
+  },
+  "dependencies": {
+    "domready": "^1.0.8",
+    "jquery": "^2.2.0",
+    "jquery-knob": "^1.2.11",
+    "slick-carousel": "^1.5.8",
+    "startaudiocontext": "^1.1.0",
+    "teoria": "^1.12.0",
+    "tinycolor2": "^1.3.0"
+  }
+}

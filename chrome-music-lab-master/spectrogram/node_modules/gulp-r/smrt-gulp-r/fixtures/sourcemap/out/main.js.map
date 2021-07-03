@@ -1,0 +1,1 @@
+{"version":3,"file":"main.build.js","sources":["main.js"],"names":[],"mappings":"AAEA,OAAA,UAAA,WAGA,OAAA","sourcesContent":["/*global define: false */\n\ndefine('main',[],function () {\n    \"use strict\";\n\n    return [\"main\"];\n});\n\n"]}

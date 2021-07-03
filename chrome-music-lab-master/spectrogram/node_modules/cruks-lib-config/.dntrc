@@ -1,0 +1,6 @@
+NODE_VERSIONS="\
+    v0.11.13 \
+    v0.10.28 \
+"
+OUTPUT_PREFIX="cruks-lib-config/"
+TEST_CMD="cd /dnt/ && npm install && npm test"

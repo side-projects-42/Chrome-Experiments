@@ -1,0 +1,25 @@
+{
+  "name": "Melody",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/Main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "author": "Yotam Mann",
+  "dependencies": {
+    "autoprefixer": "^6.3.1",
+    "autoprefixer-loader": "^3.2.0",
+    "css-loader": "^0.23.1",
+    "domready": "^1.0.8",
+    "file-loader": "^0.8.5",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.1.2",
+    "startaudiocontext": "^1.1.0",
+    "style-loader": "^0.13.0",
+    "tween.js": "^16.3.4",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.11"
+  }
+}

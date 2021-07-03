@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Harmonics</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="https://gweb-musiclab-site.appspot.com/static/js/Tone.min.js"></script>
+    <script src="js/third-party/StartAudioContext.js"></script>
+    <script src="js/Harmonic.js"></script>
+    <script src="js/HarmonicController.js"></script>
+    <script src="js/Thread.js"></script>
+    <script src="js/ThreadGrabber.js"></script>
+    <script src="js/ThreadController.js"></script>
+    <script src="js/index.js"></script>	
+  </head>
+  <body>
+	 
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      margin: 0px;
+    }
+    #main-layer, #canvas0 {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+      background-color: white;
+    }
+
+    #iOSTap {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      height: 100%;
+      width: 100%;
+      background-color: #f0f;
+    }
+  </style>
+	<div id="main-layer">
+		<canvas id="canvas0"></canvas>
+	</div>
+
+  </body>
+</html>
